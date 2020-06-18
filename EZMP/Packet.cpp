@@ -2,16 +2,20 @@
 #include "Packet.h"
 
 uint16_t metaDataChunkSize = sizeof(uint32_t) + sizeof(uint16_t) + sizeof(uint8_t); // metedata semantics ::: VARIABLE INDEX | VARIABLE SIZE | VARIABLE TYPE
-uint16_t headerDataSize = sizeof(uint32_t) + sizeof(bool) + sizeof(bool) + sizeof(bool) + sizeof(uint8_t) + sizeof(uint16_t) + sizeof(uint32_t) + sizeof(uint32_t) + sizeof(uint32_t) + sizeof(uint32_t);
+uint16_t headerDataSize;
 // header semantics ::: PACKET NUMBER | ORDERED? | ENCRYPTED? | AWAIT ACK? | PACKET TYPE | HEADER LENGTH | DATA 0TH INDEX | DATA LENGTH | METADATA 0TH INDEX | METADATA LENGTH
 
 Packet::Packet(uint32_t packetSize, bool ordered, bool encrypted, bool awaitACK, uint8_t typeId, uint32_t packetNum)
 {
+	headerDataSize = sizeof(uint32_t) + sizeof(bool) + sizeof(bool) + sizeof(bool) + sizeof(uint8_t) + sizeof(uint16_t) + sizeof(uint32_t) + sizeof(uint32_t) + sizeof(uint32_t) + sizeof(uint32_t);
+
 	data = (uint8_t*)malloc(packetSize); // allocate space for the data
+	meta = (uint8_t*)malloc(1);
 	dataBytes = 0;
 	appendedBytes = 0;
 
-	header = (uint8_t*)malloc(headerDataSize); // ALLOCATING DATA SIZE
+	header = (uint8_t*)malloc(headerDataSize); // ALLOCATING HEADER
+	if(header == nullptr) throw std::runtime_error("packet header initialization failed");
 	header[0] = ((uint8_t*)&packetNum)[0]; // PACKET NUMBER
 	header[1] = ((uint8_t*)&packetNum)[1];
 	header[2] = ((uint8_t*)&packetNum)[2];
@@ -46,7 +50,7 @@ Packet::~Packet()
  * @param whatever data you want to append to the packet
  * @return the index of the variable in the array
  */
-uint32_t Packet::appendData(uint8_t idata[], uint8_t type = 0)
+uint32_t Packet::appendData(uint8_t idata[], uint8_t type)
 {
 	uint32_t appendIndex = appendedBytes;
 	uint16_t dataSize = sizeof(idata);
@@ -147,7 +151,7 @@ uint32_t Packet::getDataLength()
 uint8_t* Packet::getFullPacket()
 {
 	trimPacket();
-	uint8_t* completePacket = new uint8_t[headerDataSize + appendedBytes + appendedMetaBytes];
+	uint8_t* completePacket = new uint8_t[(uint32_t)headerDataSize + appendedBytes + appendedMetaBytes];
 
 	header[14] = ((uint8_t*)&(appendedBytes))[0]; // DATA LENGTH
 	header[15] = ((uint8_t*)&(appendedBytes))[1];
@@ -165,15 +169,15 @@ uint8_t* Packet::getFullPacket()
 	header[24] = ((uint8_t*)&(appendedMetaBytes))[2];
 	header[25] = ((uint8_t*)&(appendedMetaBytes))[3];
 
-	for (int i = 0; i < headerDataSize; i++) // laying all the header bytes
+	for (unsigned int i = 0; i < headerDataSize; i++) // laying all the header bytes
 	{
 		completePacket[i] = header[i];
 	}
-	for (int i = 0; i < appendedBytes; i++) // laying all the data bytes
+	for (unsigned int i = 0; i < appendedBytes; i++) // laying all the data bytes
 	{
 		completePacket[headerDataSize + i] = data[i];
 	}
-	for (int i = 0; i < appendedMetaBytes; i++) // laying all the metadata bytes
+	for (unsigned int i = 0; i < appendedMetaBytes; i++) // laying all the metadata bytes
 	{
 		completePacket[headerDataSize + appendedMetaBytes + i] = meta[i];
 	}
@@ -187,6 +191,5 @@ uint32_t Packet::trimPacket()
 	memcpy(finalData, data, appendedBytes);
 	delete data;
 	data = finalData;
-	delete finalData;
 	return appendedBytes;
 }

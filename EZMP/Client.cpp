@@ -6,10 +6,12 @@ uint64_t count_digit(uint64_t number)
 	return uint64_t(log10((double)number) + 1);
 }
 
-Client::Client(uint64_t ClientUUID, char* password)
+Client::Client(uint64_t ClientUUID, char* password, uint16_t port, uint8_t* address)
 {
 	uuid = ClientUUID;
 	publicSecret = generatePublicSecret(NULL);
+
+	//TODO: SERGEI FINISH SENDING PACKET
 }
 
 Client::~Client()
@@ -21,21 +23,25 @@ bool Client::exchangeKeys()
 	return false;
 }
 
-bool Client::sendSecureSafe()
+bool Client::sendSecureReliable(Packet pkt)
 {
 	return false;
 }
 
-bool Client::sendSafe()
+bool Client::sendReliable(Packet pkt)
 {
 	return false;
 }
 
-void Client::sendSecure()
+void Client::sendSecure(Packet pkt)
 {
 }
 
-void Client::send()
+void Client::send(Packet pkt)
+{
+}
+
+void Client::sendPacketRaw(Packet pkt)
 {
 }
 
@@ -62,7 +68,7 @@ uint64_t Client::generatePublicSecret(uint64_t referenceMillis)
 	{
 		maxMinNumber += (uint64_t)(10, i);
 	}
-	srand(milliseconds);
+	srand((uint32_t)(milliseconds%UINT32_MAX));
 	uint64_t publicKey = (rand() + maxMinNumber) % UINT64_MAX;
 	publicKey = publicKey ^ uuid;
 

@@ -1,8 +1,1 @@
-﻿  Client.cpp
-C:\Users\NIK\Source\Repos\ezMP\EZMP\Client.cpp(62,8): warning C4244: 'argument': conversion from 'uint64_t' to 'unsigned int', possible loss of data
-C:\Users\NIK\Source\Repos\ezMP\EZMP\Client.cpp(68,37): warning C4244: 'argument': conversion from 'uint64_t' to 'const _Kty', possible loss of data
-          with
-          [
-              _Kty=long
-          ]
-  EZMP.vcxproj -> C:\Users\NIK\Source\Repos\ezMP\EZMP\x64\Debug\EZMP.lib
+﻿

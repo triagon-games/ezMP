@@ -25,9 +25,9 @@ public:
     uint32_t trimPacket();
 
 private:
-    uint8_t* header;
-    uint8_t* data;
-    uint8_t* meta;
+    uint8_t* header = nullptr;
+    uint8_t* data = nullptr;
+    uint8_t* meta = nullptr;
     uint32_t dataBytes = 0;
     uint32_t appendedBytes = 0;
     uint32_t appendedMetaBytes = 0;

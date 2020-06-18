@@ -8,9 +8,12 @@
 #define PCH_H
 
 // add headers that you want to pre-compile here
+#define WIN32_LEAN_AND_MEAN
+
 #include "framework.h"
 #include <stdint.h>
 #include <cstring>
 #include <stdlib.h>
+#include <stdexcept>
 
 #endif //PCH_H

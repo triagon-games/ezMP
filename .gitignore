@@ -26,6 +26,10 @@
 *.a
 *.lib
 
+# Visual Studio Files
+*.ipch
+*.db
+
 # Executables
 *.exe
 *.out
