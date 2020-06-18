@@ -1,2 +1,2 @@
 # ezMP
-Easy multi platform multiplayer
+Easy WIN10 Multiplayer
