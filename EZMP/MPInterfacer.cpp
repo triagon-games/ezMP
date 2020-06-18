@@ -1,4 +1,4 @@
-#include "Client.h"
+#include "MPInterfacer.h"
 uint64_t uuid;
 
 uint64_t count_digit(uint64_t number)
@@ -6,7 +6,7 @@ uint64_t count_digit(uint64_t number)
 	return uint64_t(log10((double)number) + 1);
 }
 
-Client::Client(uint64_t ClientUUID, char* password, uint16_t port, uint8_t* address)
+MPInterfacer::MPInterfacer(uint64_t ClientUUID, char* password, uint16_t port, uint8_t* address)
 {
 	uuid = ClientUUID;
 	publicSecret = generatePublicSecret(NULL);
@@ -14,43 +14,38 @@ Client::Client(uint64_t ClientUUID, char* password, uint16_t port, uint8_t* addr
 	//TODO: SERGEI FINISH SENDING PACKET
 }
 
-Client::~Client()
+MPInterfacer::~MPInterfacer()
 {
 }
 
-bool Client::exchangeKeys()
-{
-	return false;
-}
-
-bool Client::sendSecureReliable(Packet pkt)
+bool MPInterfacer::sendSecureReliable(Packet pkt)
 {
 	return false;
 }
 
-bool Client::sendReliable(Packet pkt)
+bool MPInterfacer::sendReliable(Packet pkt)
 {
 	return false;
 }
 
-void Client::sendSecure(Packet pkt)
+void MPInterfacer::sendSecure(Packet pkt)
 {
 }
 
-void Client::send(Packet pkt)
+void MPInterfacer::send(Packet pkt)
 {
 }
 
-void Client::sendPacketRaw(Packet pkt)
+void MPInterfacer::sendPacket(Packet pkt)
 {
 }
 
-uint64_t Client::generatePublicSecret(uint64_t referenceMillis)
+uint64_t MPInterfacer::generatePublicSecret(uint64_t referenceMillis)
 {
-	
+	return std::hash<long>{}(referenceMillis);
 }
 
-uint64_t Client::generatePrivateSecret(char* password)
+uint64_t MPInterfacer::generatePrivateSecret(char* password)
 {
 	std::chrono::milliseconds ms = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());
 	uint64_t milliseconds = _byteswap_uint64(ms.count());
@@ -76,5 +71,5 @@ uint64_t Client::generatePrivateSecret(char* password)
 	size_t keyHash = std::hash<long>{}(privateKey);
 
 	delete& milliseconds;
-	return keyHash^passHash;
+	return keyHash ^ passHash;
 }
