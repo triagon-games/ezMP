@@ -16,8 +16,11 @@ public:
     uint32_t appendData(uint64_t idata);
 
     uint8_t* getMetaData();
+    uint32_t getMetaLength();
     uint8_t* getHeaderData();
+    uint32_t getHeaderLength();
     uint8_t* getData();
+    uint32_t getDataLength();
     uint8_t* getFullPacket();
     uint32_t trimPacket();
 
