@@ -11,7 +11,7 @@ Packet::Packet(uint32_t packetSize, bool ordered, bool encrypted, bool awaitACK,
 
 	data = (uint8_t*)malloc(packetSize); // allocate space for the data
 	meta = (uint8_t*)malloc(1);
-	dataBytes = 0;
+	dataBytes = packetSize;
 	appendedBytes = 0;
 
 	header = (uint8_t*)malloc(headerDataSize); // ALLOCATING HEADER
@@ -44,11 +44,21 @@ Packet::~Packet()
 	delete data;
 }
 
+void Packet::setCompleteData(uint8_t* hdr, uint16_t hdrLen, uint8_t* payload, uint32_t payloadLen, uint8_t* meta, uint16_t metaLen)
+{
+	memcpy(header, hdr, hdrLen);
+	memcpy(data, payload, payloadLen);
+	memcpy(this->meta, meta, metaLen);
+
+	appendedBytes = payloadLen;
+	appendedMetaBytes = metaLen;
+}
+
 /*
  * Appends Data to the network Packet
  *
  * @param whatever data you want to append to the packet
- * @return the index of the variable in the array
+ * @return the index of the variable in the array ... basically a pointer you could use for interpreting received data
  */
 uint32_t Packet::appendData(uint8_t idata[], uint8_t type)
 {
@@ -183,6 +193,11 @@ uint8_t* Packet::getFullPacket()
 	}
 
 	return completePacket;
+}
+
+uint32_t Packet::getFullPacketLength()
+{
+	return headerDataSize + appendedBytes + appendedMetaBytes;
 }
 
 uint32_t Packet::trimPacket()

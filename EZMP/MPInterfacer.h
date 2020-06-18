@@ -3,6 +3,8 @@
 #include <time.h>
 #include <chrono>
 #include "Packet.h"
+#include <WinSock2.h>
+#include "CommonDefinitions.h"
 
 #pragma comment (lib, "Ws2_32.lib")
 #pragma comment (lib, "Mswsock.lib")
@@ -11,12 +13,14 @@
 class MPInterfacer
 {
 public:
-	MPInterfacer(uint64_t ClientUUID, char* password, uint16_t port, uint8_t* address);
+	MPInterfacer(uint64_t ClientUUID, char* password, uint16_t sendPort, uint8_t* address, uint16_t recvPort);
 	~MPInterfacer();
 	bool sendSecureReliable(Packet pkt);
 	bool sendReliable(Packet pkt);
 	void sendSecure(Packet pkt);
-	void send(Packet pkt);
+	void sendSimple(Packet pkt);
+
+	Packet recvPacket();
 
 private:
 	void sendPacket(Packet pkt);

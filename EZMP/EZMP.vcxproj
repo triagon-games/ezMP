@@ -148,6 +148,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Client.h" />
+    <ClInclude Include="CommonDefinitions.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="MPInterfacer.h" />
     <ClInclude Include="Packet.h" />

@@ -7,6 +7,7 @@ public:
     Packet(uint32_t packetSize, bool ordered, bool encrypted, bool awaitACK, uint8_t typeId, uint32_t packetNum);
     ~Packet();
 
+    void setCompleteData(uint8_t* hdr, uint16_t hdrLen, uint8_t* payload, uint32_t payloadLen, uint8_t* meta, uint16_t metaLen);
     uint32_t appendData(uint8_t idata[], uint8_t type = 0);
     uint32_t appendData(float diata);
     uint32_t appendData(double idata);
@@ -22,7 +23,11 @@ public:
     uint8_t* getData();
     uint32_t getDataLength();
     uint8_t* getFullPacket();
+    uint32_t getFullPacketLength();
     uint32_t trimPacket();
+
+    uint8_t* sourceAddr = new uint8_t[4];
+    uint16_t sourcePort = NULL;
 
 private:
     uint8_t* header = nullptr;
