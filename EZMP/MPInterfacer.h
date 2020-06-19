@@ -15,15 +15,16 @@ class MPInterfacer
 public:
 	MPInterfacer(uint64_t ClientUUID, char* password, uint16_t sendPort, uint8_t* address, uint16_t recvPort);
 	~MPInterfacer();
-	bool sendSecureReliable(Packet pkt);
-	bool sendReliable(Packet pkt);
-	void sendSecure(Packet pkt);
-	void sendSimple(Packet pkt);
+
+	void sendPacket(Packet pkt);
 
 	Packet recvPacket();
 
 private:
-	void sendPacket(Packet pkt);
+	bool sendSecureReliable(Packet pkt);
+	bool sendReliable(Packet pkt);
+	void sendSecure(Packet pkt);
+	void sendSimple(Packet pkt);
 
 	uint64_t generatePublicSecret(uint64_t referenceMillis);
 	uint64_t generatePrivateSecret(char* password);

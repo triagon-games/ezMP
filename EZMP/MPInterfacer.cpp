@@ -119,11 +119,11 @@ Packet MPInterfacer::recvPacket()
 	memcpy(header, recvBuffer, headerLen);
 
 	uint8_t* payload = (uint8_t*)malloc(payloadLen); // creating and extracting the payload from the incoming bytes
-	if (header == nullptr) throw std::runtime_error("incoming packet payload initialization failed");
+	if (payload == nullptr) throw std::runtime_error("incoming packet payload initialization failed");
 	memcpy(payload, recvBuffer+payloadStart, payloadLen);
 
 	uint8_t* meta = (uint8_t*)malloc(metaLen); // creating and extracting the payload from he incoming bytes
-	if (header == nullptr) throw std::runtime_error("incoming packet meta initialization failed");
+	if (meta == nullptr) throw std::runtime_error("incoming packet meta initialization failed");
 	memcpy(meta, recvBuffer+metaStart, metaLen);
 
 	incoming.setCompleteData(header, headerLen, payload, payloadLen, meta, metaLen); // shoving the data into the packet

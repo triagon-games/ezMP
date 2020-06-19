@@ -9,8 +9,6 @@ C:\Users\NIK\Source\Repos\ezMP\EZMP\MPInterfacer.cpp(182,37): warning C4244: 'ar
           [
               _Kty=long
           ]
-  Packet.cpp
-  Generating Code...
 Client.obj : warning LNK4006: "unsigned __int64 uuid" (?uuid@@3_KA) already defined in MPInterfacer.obj; second definition ignored
 MPInterfacer.obj : warning LNK4006: "unsigned __int64 __cdecl count_digit(unsigned __int64)" (?count_digit@@YA_K_K@Z) already defined in MPInterfacer.obj; second definition ignored
   EZMP.vcxproj -> C:\Users\NIK\Source\Repos\ezMP\EZMP\x64\Debug\EZMP.lib
