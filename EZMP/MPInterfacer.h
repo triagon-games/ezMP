@@ -21,10 +21,8 @@ public:
 	Packet recvPacket();
 
 private:
-	bool sendSecureReliable(Packet pkt);
-	bool sendReliable(Packet pkt);
-	void sendSecure(Packet pkt);
-	void sendSimple(Packet pkt);
+	bool awaitPacket();
+	Packet encryptPacket(Packet pkt);
 
 	uint64_t generatePublicSecret(uint64_t referenceMillis);
 	uint64_t generatePrivateSecret(char* password);

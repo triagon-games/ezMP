@@ -72,24 +72,6 @@ MPInterfacer::~MPInterfacer()
 	WSACleanup();
 }
 
-bool MPInterfacer::sendSecureReliable(Packet pkt)
-{
-	return false;
-}
-
-bool MPInterfacer::sendReliable(Packet pkt)
-{
-	return false;
-}
-
-void MPInterfacer::sendSecure(Packet pkt)
-{
-}
-
-void MPInterfacer::sendSimple(Packet pkt)
-{
-}
-
 Packet MPInterfacer::recvPacket()
 {
 	ZeroMemory(recvBuffer, RECEIVE_BUFFER_LEN);
@@ -134,6 +116,16 @@ Packet MPInterfacer::recvPacket()
 	incoming.sourceAddr[3] = client.sin_addr.S_un.S_un_b.s_b4;
 	
 	return incoming;
+}
+
+bool MPInterfacer::awaitPacket()
+{
+	return false;
+}
+
+Packet MPInterfacer::encryptPacket(Packet pkt)
+{
+	return Packet();
 }
 
 void MPInterfacer::sendPacket(Packet pkt)
