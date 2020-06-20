@@ -10,11 +10,14 @@ Packet::Packet(uint32_t packetSize, bool ordered, bool encrypted, bool awaitACK,
 	headerDataSize = sizeof(uint32_t) + sizeof(bool) + sizeof(bool) + sizeof(bool) + sizeof(uint8_t) + sizeof(uint16_t) + sizeof(uint32_t) + sizeof(uint32_t) + sizeof(uint32_t) + sizeof(uint32_t);
 
 	data = (uint8_t*)malloc(packetSize); // allocate space for the data
+	memset(data, 0, packetSize);
 	meta = (uint8_t*)malloc(1);
+	memset(meta, 0, 1);
 	dataBytes = packetSize;
 	appendedBytes = 0;
 
 	header = (uint8_t*)malloc(headerDataSize); // ALLOCATING HEADER
+	memset(header, 0, headerDataSize);
 	if(header == nullptr) throw std::runtime_error("packet header initialization failed");
 	header[0] = ((uint8_t*)&packetNum)[0]; // PACKET NUMBER
 	header[1] = ((uint8_t*)&packetNum)[1];

@@ -8,24 +8,28 @@
 int main(int argc, char* argv[])
 {
 	char password[] = "im stuff";
-	uint8_t addr[] = {127, 0, 0, 1};
-	MPInterfacer interfacer = MPInterfacer(123, (char*)password, (uint16_t)1, addr, (uint16_t)1);;
-	if (argv[0] == "server")
+	uint8_t addr[] = {192, 168, 11, 19};
+
+	for (int i = 0; i < argc; ++i)
+		std::cout << argv[i] << "\n";
+
+	if (strcmp(argv[1], "server") == 0)
 	{
-		interfacer = MPInterfacer(123, (char*)password, (uint16_t)49950, addr, (uint16_t)49951);
-	}
-	else if (argv[0] == "client")
-	{
-		interfacer = MPInterfacer(123, (char*)password, (uint16_t)49951, addr, (uint16_t)4995);
-	}
-	while (true)
-	{
-		if (argv[0] == "server")
+		MPInterfacer interfacer = MPInterfacer(123, (char*)password, (uint16_t)49950, addr, (uint16_t)49951);
+		printf("server mode");
+
+		while (true)
 		{
 			Packet received = interfacer.recvPacket();
 			printf("Received Packet: %s", received.getData());
 		}
-		else if (argv[0] == "client")
+	}
+	if (strcmp(argv[1], "client") == 0)
+	{
+		MPInterfacer interfacer = MPInterfacer(123, (char*)password, (uint16_t)49951, addr, (uint16_t)4995);
+		printf("client mode");
+
+		while (true)
 		{
 			Packet send = Packet(1000, false, false, false, 1, 1);
 			std::string toSend;
