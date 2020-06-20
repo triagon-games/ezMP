@@ -28,7 +28,6 @@ MPInterfacer::MPInterfacer(uint64_t ClientUUID, char* password, uint16_t sendPor
 	uuid = ClientUUID;
 	publicSecret = generatePublicSecret(NULL);
 
-	//TODO: SERGEI FINISH SENDING PACKET
 	iError = WSAStartup(MAKEWORD(2, 2), &wsaData);
 	if (iError != 0)
 	{
@@ -61,7 +60,7 @@ MPInterfacer::MPInterfacer(uint64_t ClientUUID, char* password, uint16_t sendPor
 	ip += std::to_string(address[3]);
 	
 	IN_ADDR dstAddr;
-	inet_ntop(AF_INET, &dstAddr, (PSTR)ip.c_str(), ip.length);
+	inet_ntop(AF_INET, &dstAddr, (PSTR)ip.c_str(), ip.length());
 	senderSocket.sin_addr = dstAddr;
 
 	sendSock = socket(AF_INET, SOCK_DGRAM, 0);
