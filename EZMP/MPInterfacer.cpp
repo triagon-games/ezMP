@@ -13,7 +13,9 @@ sockaddr_in client;
 uint8_t recvBuffer[RECEIVE_BUFFER_LEN];
 int clientLength;
 
+WSADATA sendWsaData;
 SOCKET sendSock;
+sockaddr_in senderSocket;
 
 uint8_t* sendFromAddr;
 uint16_t sendToPort;
@@ -52,16 +54,28 @@ MPInterfacer::MPInterfacer(uint64_t ClientUUID, char* password, uint16_t sendPor
 
 	ZeroMemory(recvBuffer, RECEIVE_BUFFER_LEN); // allocating space for the receiving buffer
 
+
+	iError = WSAStartup(MAKEWORD(2, 2), &sendWsaData);
+	if (iError != 0)
+	{
+		printf("%s function failed when creating sender WSADATA line: %d\n error: %d", __func__, __LINE__, iError);
+		throw std::runtime_error("unable to create sender WSADATA");
+	}
+
 	std::string ip;
-	sockaddr_in senderSocket; // creating a socket that will SEND packets
+	senderSocket; // creating a socket that will SEND packets
 	senderSocket.sin_family = AF_INET; // ipv4
 	senderSocket.sin_port = htons(sendPort); // little to big endian conversion
 	for (int i = 0; i < 3; i++) ip += std::to_string(address[i]) + '.';
 	ip += std::to_string(address[3]);
 	
-	IN_ADDR dstAddr;
-	inet_ntop(AF_INET, &dstAddr, (PSTR)ip.c_str(), ip.length());
-	senderSocket.sin_addr = dstAddr;
+	IN_ADDR dstAddr = IN_ADDR();
+	iError = inet_pton(AF_INET, (PSTR)ip.c_str(), &senderSocket.sin_addr);
+	if (!iError)
+	{
+		printf("%s function failed parsing IP: %d\n error: %d", __func__, __LINE__, iError);
+		throw std::runtime_error("unable to parse IP");
+	}
 
 	sendSock = socket(AF_INET, SOCK_DGRAM, 0);
 }
@@ -136,8 +150,10 @@ void MPInterfacer::sendPacket(Packet pkt)
 
 	char* fullPacket = (char*)pkt.getFullPacket();
 
-	iError = send(sendSock, fullPacket, pkt.getFullPacketLength(), 0); // sending the packet and getting a result code to see if it failed
-	if (iError != 0)
+	unsigned int pktlen = pkt.getFullPacketLength();
+	
+	iError = sendto(sendSock, fullPacket, pktlen, 0, (sockaddr*)&senderSocket, sizeof(senderSocket)); // sending the packet and getting a result code to see if it failed
+	if (iError == 0 || iError == -1)
 	{
 		printf("%s function failed when sending a packet line: %d\n error: %d", __func__, __LINE__, iError);
 		throw std::runtime_error("unable to send packet over from SOCKET");

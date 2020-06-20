@@ -34,7 +34,7 @@ int main(int argc, char* argv[])
 			Packet send = Packet(1000, false, false, false, 1, 1);
 			std::string toSend;
 			std::getline(std::cin, toSend);
-			send.appendData(const_cast<uint8_t*>(reinterpret_cast<const uint8_t*>(toSend.c_str())));
+			send.appendData(const_cast<uint8_t*>(reinterpret_cast<const uint8_t*>(toSend.c_str())), toSend.length());
 			send.getFullPacket();
 			interfacer.sendPacket(send);
 		}

@@ -149,6 +149,7 @@
   <ItemGroup>
     <ClInclude Include="Client.h" />
     <ClInclude Include="CommonDefinitions.h" />
+    <ClInclude Include="DataStructures.h" />
     <ClInclude Include="EZMP.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="MPInterfacer.h" />
@@ -157,6 +158,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp" />
+    <ClCompile Include="DataStructures.cpp" />
     <ClCompile Include="EZMP.cpp" />
     <ClCompile Include="MPInterfacer.cpp" />
     <ClCompile Include="Packet.cpp" />
