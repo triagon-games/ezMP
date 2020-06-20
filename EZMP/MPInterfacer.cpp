@@ -53,14 +53,16 @@ MPInterfacer::MPInterfacer(uint64_t ClientUUID, char* password, uint16_t sendPor
 
 	ZeroMemory(recvBuffer, RECEIVE_BUFFER_LEN); // allocating space for the receiving buffer
 
-
+	std::string ip;
 	sockaddr_in senderSocket; // creating a socket that will SEND packets
 	senderSocket.sin_family = AF_INET; // ipv4
 	senderSocket.sin_port = htons(sendPort); // little to big endian conversion
-	senderSocket.sin_addr.S_un.S_un_b.s_b1 = address[0]; // xxx.000.000.000
-	senderSocket.sin_addr.S_un.S_un_b.s_b2 = address[1]; // 000.xxx.000.000
-	senderSocket.sin_addr.S_un.S_un_b.s_b3 = address[2]; // 000.000.xxx.000
-	senderSocket.sin_addr.S_un.S_un_b.s_b4 = address[3]; // 000.000.000.xxx
+	for (int i = 0; i < 3; i++) ip += std::to_string(address[i]) + '.';
+	ip += std::to_string(address[3]);
+	
+	IN_ADDR dstAddr;
+	inet_ntop(AF_INET, &dstAddr, (PSTR)ip.c_str(), ip.length);
+	senderSocket.sin_addr = dstAddr;
 
 	sendSock = socket(AF_INET, SOCK_DGRAM, 0);
 }
@@ -125,7 +127,7 @@ bool MPInterfacer::awaitPacket()
 
 Packet MPInterfacer::encryptPacket(Packet pkt)
 {
-	return Packet();
+	return pkt;
 }
 
 void MPInterfacer::sendPacket(Packet pkt)

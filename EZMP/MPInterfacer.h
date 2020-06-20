@@ -5,6 +5,7 @@
 #include "Packet.h"
 #include <WinSock2.h>
 #include "CommonDefinitions.h"
+#include <ws2tcpip.h>
 
 #pragma comment (lib, "Ws2_32.lib")
 #pragma comment (lib, "Mswsock.lib")

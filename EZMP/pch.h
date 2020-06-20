@@ -13,5 +13,6 @@
 #include <cstring>
 #include <stdlib.h>
 #include <stdexcept>
+#include <string>
 
 #endif //PCH_H
