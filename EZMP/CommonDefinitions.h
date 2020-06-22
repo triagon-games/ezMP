@@ -1,3 +1,15 @@
 #pragma once
 
 #define RECEIVE_BUFFER_LEN 1024
+
+#define LIB_VER 0.0.0
+
+#ifndef GAME_VER
+#define GAME_VER
+#endif
+
+#define LATENCY_PACKET 0
+#define HANDSHAKE_PACKET 100
+#define HIDDEN_PACKET 101
+#define SERVICE_PACKET 102
+#define UNSPECIFIED_PACKET 0b11111111

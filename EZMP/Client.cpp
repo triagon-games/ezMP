@@ -1,7 +1,6 @@
 #include "Client.h"
-uint64_t uuid;
 
-uint64_t count_digit(uint64_t number)
+bool Client::Login()
 {
-	return uint64_t(log10((double)number) + 1);
+	return false; // there is no login ... take off your clothes
 }

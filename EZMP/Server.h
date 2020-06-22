@@ -1,8 +1,8 @@
 #pragma once
 #include "MPInterfacer.h"
-class Client : public MPInterfacer
+class Server : public MPInterfacer
 {
 public:
-	bool Login();
+
 };
 

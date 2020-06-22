@@ -21,7 +21,7 @@ uint8_t* sendFromAddr;
 uint16_t sendToPort;
 uint16_t listenOnPort;
 
-MPInterfacer::MPInterfacer(uint64_t ClientUUID, char* password, uint16_t sendPort, uint8_t* address, uint16_t recvPort)
+MPInterfacer::MPInterfacer(uint64_t ClientUUID, std::string password, uint16_t sendPort, uint8_t* address, uint16_t recvPort)
 {
 	sendFromAddr = address;
 	sendToPort = sendPort;
@@ -133,6 +133,10 @@ Packet MPInterfacer::recvPacket()
 	return incoming;
 }
 
+void MPInterfacer::attachReceiveCallback(void* func(Packet pkt))
+{
+}
+
 bool MPInterfacer::awaitPacket()
 {
 	return false;
@@ -162,10 +166,11 @@ void MPInterfacer::sendPacket(Packet pkt)
 
 uint64_t MPInterfacer::generatePublicSecret(uint64_t referenceMillis)
 {
+	srand((uint32_t)(referenceMillis % UINT32_MAX));
 	return std::hash<long>{}(referenceMillis);
 }
 
-uint64_t MPInterfacer::generatePrivateSecret(char* password)
+uint64_t MPInterfacer::generatePrivateSecret(char* password, size_t pwdLen)
 {
 	std::chrono::milliseconds ms = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());
 	uint64_t milliseconds = _byteswap_uint64(ms.count());
@@ -187,9 +192,20 @@ uint64_t MPInterfacer::generatePrivateSecret(char* password)
 
 	privateKey = (((uint64_t)(((uint32_t*)&privateKey)[0] ^ salt)) << 32) | (((uint32_t*)&privateKey)[1] ^ salt);
 
-	size_t passHash = std::hash<char*>{}(password);
+	std::string pwd;
+	for (int i = 0; i < pwdLen; i++)
+	{
+		pwd += password[i];
+	}
+
+	size_t passHash = std::hash<std::string>{}(pwd);
 	size_t keyHash = std::hash<long>{}(privateKey);
 
 	delete& milliseconds;
 	return keyHash ^ passHash;
+}
+
+void MPInterfacer::ListenerThread()
+{
+
 }

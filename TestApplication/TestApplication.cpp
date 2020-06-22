@@ -8,7 +8,7 @@
 int main(int argc, char* argv[])
 {
 	char password[] = "im stuff";
-	uint8_t addr[] = {192, 168, 11, 19};
+	uint8_t addr[] = {127, 0, 0, 1};
 
 	for (int i = 0; i < argc; ++i)
 		std::cout << argv[i] << "\n";

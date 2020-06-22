@@ -53,7 +53,7 @@ Packet::Packet(uint32_t packetSize, bool ordered, bool encrypted, bool awaitACK,
 
 Packet::~Packet()
 {
-	delete data;
+	//delete data;
 }
 
 void Packet::setCompleteData(uint8_t* hdr, uint16_t hdrLen, uint8_t* payload, uint32_t payloadLen, uint8_t* meta, uint16_t metaLen)
@@ -175,7 +175,7 @@ uint32_t Packet::getDataLength()
 uint8_t* Packet::getFullPacket()
 {
 	trimPacket();
-	uint8_t* completePacket = new uint8_t[(uint32_t)headerDataSize + appendedBytes + appendedMetaBytes];
+	uint8_t* completePacket = new uint8_t[((uint64_t)headerDataSize) + appendedBytes + appendedMetaBytes];
 
 	header[14] = ((uint8_t*)&(appendedBytes))[0]; // DATA LENGTH
 	header[15] = ((uint8_t*)&(appendedBytes))[1];

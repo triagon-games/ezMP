@@ -1,2 +1,2 @@
-﻿  TestApplication.cpp
-  TestApplication.vcxproj -> C:\Users\NIK\Source\Repos\ezMP\EZMP\x64\Debug\TestApplication.exe
+﻿TestApplication.obj : error LNK2019: unresolved external symbol "public: __cdecl MPInterfacer::MPInterfacer(unsigned __int64,char *,unsigned short,unsigned char *,unsigned short)" (??0MPInterfacer@@QEAA@_KPEADGPEAEG@Z) referenced in function main
+C:\Users\NIK\Source\Repos\ezMP\EZMP\x64\Debug\TestApplication.exe : fatal error LNK1120: 1 unresolved externals

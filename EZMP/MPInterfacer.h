@@ -14,20 +14,25 @@
 class MPInterfacer
 {
 public:
-	MPInterfacer(uint64_t ClientUUID, char* password, uint16_t sendPort, uint8_t* address, uint16_t recvPort);
+	MPInterfacer(uint64_t ClientUUID, std::string password, uint16_t sendPort, uint8_t* address, uint16_t recvPort);
 	~MPInterfacer();
 
 	void sendPacket(Packet pkt);
 
 	Packet recvPacket();
 
+	void attachReceiveCallback(void* func(Packet pkt));
+
 private:
 	bool awaitPacket();
 	Packet encryptPacket(Packet pkt);
 
 	uint64_t generatePublicSecret(uint64_t referenceMillis);
-	uint64_t generatePrivateSecret(char* password);
+	uint64_t generatePrivateSecret(char* password, size_t pwdLen);
 
 	uint64_t publicSecret;
 	uint64_t privateSecret;
+
+	void* ReceiveCallback();
+	void ListenerThread();
 };
