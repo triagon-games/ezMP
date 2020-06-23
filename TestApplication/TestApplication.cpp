@@ -36,7 +36,7 @@ int main(int argc, char* argv[])
 			std::getline(std::cin, toSend);
 			send.appendData(const_cast<uint8_t*>(reinterpret_cast<const uint8_t*>(toSend.c_str())), toSend.length());
 			send.getFullPacket();
-			interfacer.sendPacket(send);
+			interfacer.sendPacket(&send);
 		}
 	}
 }

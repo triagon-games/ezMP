@@ -1,0 +1,1 @@
+for /R .. %%f in (*.h) do copy %%f ..\include

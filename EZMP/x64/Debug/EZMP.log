@@ -1,20 +1,51 @@
-﻿  MPInterfacer.cpp
-C:\Users\NIK\Source\Repos\ezMP\EZMP\MPInterfacer.h(30,31): warning C4244: 'argument': conversion from 'uint64_t' to 'double', possible loss of data
-C:\Users\NIK\Source\Repos\ezMP\EZMP\MPInterfacer.h(30,28): warning C4244: 'argument': conversion from 'uint64_t' to 'double', possible loss of data
-C:\Users\NIK\Source\Repos\ezMP\EZMP\MPInterfacer.cpp(198,27): warning C4244: 'argument': conversion from 'uint64_t' to 'const _Kty', possible loss of data
-          with
-          [
-              _Kty=long
-          ]
-C:\Users\NIK\Source\Repos\ezMP\EZMP\MPInterfacer.cpp(224,37): warning C4244: 'argument': conversion from 'uint64_t' to 'const _Kty', possible loss of data
-          with
-          [
-              _Kty=long
-          ]
-C:\Users\NIK\Source\Repos\ezMP\EZMP\MPInterfacer.cpp(263,28): warning C4018: '<': signed/unsigned mismatch
-  Packet.cpp
-C:\Users\NIK\Source\Repos\ezMP\EZMP\Packet.cpp(93,26): warning C4267: 'initializing': conversion from 'size_t' to 'uint16_t', possible loss of data
-C:\Users\NIK\Source\Repos\ezMP\EZMP\Packet.cpp(94,23): warning C4267: '+=': conversion from 'size_t' to 'uint32_t', possible loss of data
-C:\Users\NIK\Source\Repos\ezMP\EZMP\Packet.cpp(128,27): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
-  Generating Code...
+﻿  
+  -------------------------------------------------------------------------------
+     ROBOCOPY     ::     Robust File Copy for Windows                              
+  -------------------------------------------------------------------------------
+  
+    Started : Tuesday, June 23, 2020 9:59:17 AM
+     Source : C:\Users\NIK\Source\Repos\ezMP\EZMP\
+       Dest : C:\Users\NIK\Source\Repos\ezMP\EZMP\include\
+  
+      Files : *.h
+  	    
+   Exc Dirs : C:\Users\NIK\Source\Repos\ezMP\EZMP\include
+  	    
+    Options : /S /DCOPY:DA /COPY:DAT /R:1000000 /W:30 
+  
+  ------------------------------------------------------------------------------
+  
+  	                   9	C:\Users\NIK\Source\Repos\ezMP\EZMP\
+  	  New Dir          0	C:\Users\NIK\Source\Repos\ezMP\EZMP\.vs\
+  	  New Dir          0	C:\Users\NIK\Source\Repos\ezMP\EZMP\.vs\EZMP\
+  	  New Dir          0	C:\Users\NIK\Source\Repos\ezMP\EZMP\.vs\EZMP\v16\
+  	  New Dir          0	C:\Users\NIK\Source\Repos\ezMP\EZMP\.vs\EZMP\v16\ipch\
+  	  New Dir          0	C:\Users\NIK\Source\Repos\ezMP\EZMP\.vs\EZMP\v16\ipch\AutoPCH\
+  	  New Dir          0	C:\Users\NIK\Source\Repos\ezMP\EZMP\.vs\EZMP\v16\ipch\AutoPCH\1087ef0baba497db\
+  	  New Dir          0	C:\Users\NIK\Source\Repos\ezMP\EZMP\.vs\EZMP\v16\ipch\AutoPCH\2024c52217d50ee3\
+  	  New Dir          0	C:\Users\NIK\Source\Repos\ezMP\EZMP\.vs\EZMP\v16\ipch\AutoPCH\2edee2af34eeb83b\
+  	  New Dir          0	C:\Users\NIK\Source\Repos\ezMP\EZMP\.vs\EZMP\v16\ipch\AutoPCH\69983ed2c66fc630\
+  	  New Dir          0	C:\Users\NIK\Source\Repos\ezMP\EZMP\.vs\EZMP\v16\ipch\AutoPCH\7b40a68f1f79b6bf\
+  	  New Dir          0	C:\Users\NIK\Source\Repos\ezMP\EZMP\.vs\EZMP\v16\ipch\AutoPCH\91f51de9ebedb003\
+  	  New Dir          0	C:\Users\NIK\Source\Repos\ezMP\EZMP\.vs\EZMP\v16\ipch\AutoPCH\bf15139ce9256527\
+  	  New Dir          0	C:\Users\NIK\Source\Repos\ezMP\EZMP\.vs\EZMP\v16\ipch\AutoPCH\c38d6b4671e66e1c\
+  	  New Dir          0	C:\Users\NIK\Source\Repos\ezMP\EZMP\.vs\EZMP\v16\ipch\AutoPCH\c504aef30338b081\
+  	  New Dir          0	C:\Users\NIK\Source\Repos\ezMP\EZMP\.vs\EZMP\v16\ipch\AutoPCH\e3774b11f05dae78\
+  	  New Dir          0	C:\Users\NIK\Source\Repos\ezMP\EZMP\.vs\EZMP\v16\ipch\AutoPCH\e76f56cb0c6c21e0\
+  	  New Dir          0	C:\Users\NIK\Source\Repos\ezMP\EZMP\.vs\EZMP\v16\ipch\AutoPCH\ec8974ddd7c71188\
+  	  New Dir          0	C:\Users\NIK\Source\Repos\ezMP\EZMP\.vs\EZMP\v16\ipch\AutoPCH\ed4a3f21543c72fb\
+  	  New Dir          0	C:\Users\NIK\Source\Repos\ezMP\EZMP\scripts\
+  	  New Dir          0	C:\Users\NIK\Source\Repos\ezMP\EZMP\x64\
+  	  New Dir          0	C:\Users\NIK\Source\Repos\ezMP\EZMP\x64\Debug\
+  	  New Dir          0	C:\Users\NIK\Source\Repos\ezMP\EZMP\x64\Debug\EZMP.tlog\
+  
+  ------------------------------------------------------------------------------
+  
+                 Total    Copied   Skipped  Mismatch    FAILED    Extras
+      Dirs :        24        22         2         0         0         0
+     Files :         9         0         9         0         0         0
+     Bytes :     5.0 k         0     5.0 k         0         0         0
+     Times :   0:00:00   0:00:00                       0:00:00   0:00:00
+     Ended : Tuesday, June 23, 2020 9:59:17 AM
+  
   EZMP.vcxproj -> C:\Users\NIK\Source\Repos\ezMP\EZMP\x64\Debug\EZMP.lib
