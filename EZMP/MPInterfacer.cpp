@@ -165,7 +165,7 @@ void MPInterfacer::startHandshake()
 	sendPacket(init); // send personal key
 }
 
-void MPInterfacer::sendPacket(Packet* pkt)
+void MPInterfacer::sendPacket(Packet* pkt, bool retry)
 {
 	memcpy(pkt->sourceAddr, sendFromAddr, 4); // paste the source data into the packet object
 	memcpy(&pkt->sourcePort, &sendToPort, sizeof(uint16_t)); // this data wont be sent anyways but who cares
@@ -181,7 +181,7 @@ void MPInterfacer::sendPacket(Packet* pkt)
 		throw std::runtime_error("unable to send packet over from SOCKET");
 	}
 	pkt->timeSent = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count(); // packet time of sending
-	if (pkt->isAwaitACK()) // if the packet is awaitable, add it to the buffer to be checked and reset if timed out
+	if (pkt->isAwaitACK() && !retry) // if the packet is awaitable, add it to the buffer to be checked and reset if timed out
 	{
 		Packet** newACKBuffer = (Packet**)malloc((uint64_t)ACKBufferLength + 1);
 		if (newACKBuffer == nullptr) throw std::runtime_error("malloc failed");
@@ -262,7 +262,7 @@ void MPInterfacer::ListenerThread() // will run continuously, invoking callbacks
 				uint32_t ACKBufferIndex = 0;
 				for (uint32_t i = 0; i < ACKBufferLength; i++) // go through the buffer
 				{
-					if (!incoming.getPacketNum()) // add all packet that are not the one we just received
+					if (incoming.getPacketNum() != ACKBuffer[i]->getPacketNum()) // add all packet that are not the one we just received
 					{
 						newACKBuffer[newACKBufferLength] = ACKBuffer[i];
 						newACKBufferLength++;
@@ -273,6 +273,7 @@ void MPInterfacer::ListenerThread() // will run continuously, invoking callbacks
 						ACKBuffer[i]->Deliver();
 					}
 				}
+				ACKBuffer = newACKBuffer;
 			}
 			if (ACKBufferLength == 1 && incoming.getPacketNum() == ACKBuffer[0]->getPacketNum())
 			{
@@ -289,6 +290,53 @@ void MPInterfacer::ListenerThread() // will run continuously, invoking callbacks
 			}
 			break;
 		}
+		}
+	}
+}
+
+void MPInterfacer::ACKManager()
+{
+	while (true)
+	{
+#ifdef ACK_INTERVAL
+		std::this_thread::sleep_for(std::chrono::milliseconds(ACK_INTERVAL));
+#endif
+		uint64_t time = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+		for (int i = 0; i < ACKBufferLength; i++)
+		{
+			if (time - ACKBuffer[i]->timeSent >= ACK_RETRY)
+			{
+				sendPacket(ACKBuffer[i], true);
+			}
+			if (time - ACKBuffer[i]->timeSent >= ACK_TIMEOUT)
+			{
+				if (ACKBufferLength > 1)
+				{
+					Packet** newACKBuffer = (Packet**)malloc(((uint64_t)ACKBufferLength - 1) * sizeof(Packet*));	// if received ACK response packet containing NULL data bytes
+					if (newACKBuffer == nullptr) throw std::runtime_error("malloc failed");
+					uint32_t newACKBufferLength = 0;													// remove it from the awaitable buffer
+					uint32_t ACKBufferIndex = 0;
+					for (uint32_t j = 0; j < ACKBufferLength; j++) // go through the buffer
+					{
+						if (ACKBuffer[i]->getPacketNum() != ACKBuffer[j]->getPacketNum()) // add all packet that are not the one we just received
+						{
+							newACKBuffer[newACKBufferLength] = ACKBuffer[j];
+							newACKBufferLength++;
+						}
+						else // if it is the one we just got a reply to, mark as delivered and remove from the buffer
+						{
+							ACKBufferIndex = j;
+							ACKBuffer[j]->Deliver();
+						}
+					}
+					ACKBufferLength = newACKBufferLength;
+					ACKBuffer = newACKBuffer;
+				}
+				if (ACKBufferLength == 1 && ACKBuffer[i]->getPacketNum() == ACKBuffer[0]->getPacketNum())
+				{
+					delete ACKBuffer;
+				}
+			}
 		}
 	}
 }

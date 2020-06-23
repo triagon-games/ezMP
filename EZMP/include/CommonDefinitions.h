@@ -13,7 +13,11 @@
 #endif
 
 #ifndef ACK_TIMEOUT
-	#define ACK_TIMEOUT 1000
+	#define ACK_TIMEOUT 5000
+#endif
+
+#ifndef ACK_RETRY
+	#define ACK_RETRY 500
 #endif
 
 #define LATENCY_PACKET 0

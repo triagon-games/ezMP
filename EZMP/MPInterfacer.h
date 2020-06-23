@@ -34,7 +34,7 @@ public:
 	MPInterfacer(uint64_t ClientUUID, std::string password, uint16_t sendPort, uint8_t* address, uint16_t recvPort);
 	~MPInterfacer();
 
-	void sendPacket(Packet* pkt);
+	void sendPacket(Packet* pkt, bool retry = false);
 
 	Packet recvPacket();
 
@@ -59,4 +59,5 @@ private:
 protected: uint64_t sharedSecret = 0;
 
 	void ListenerThread();
+	void ACKManager();
 };
