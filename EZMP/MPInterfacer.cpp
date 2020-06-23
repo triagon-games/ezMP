@@ -76,6 +76,9 @@ MPInterfacer::MPInterfacer(uint64_t ClientUUID, std::string password, uint16_t s
 	}
 
 	sendSock = socket(AF_INET, SOCK_DGRAM, 0);
+	ACKBuffer = nullptr;
+	m_LatencyCallback = NULL;
+	m_ReceiveCallback = NULL;
 }
 
 MPInterfacer::~MPInterfacer()
@@ -89,46 +92,50 @@ Packet MPInterfacer::recvPacket()
 {
 	ZeroMemory(recvBuffer, RECEIVE_BUFFER_LEN);
 	uint32_t incomingBytes = recvfrom(recvSock, (char*)recvBuffer, RECEIVE_BUFFER_LEN, 0, (sockaddr*)&listenerSocket, &clientLength); // reading incoming packets
-	if (incomingBytes != 0)
+	if (incomingBytes == SOCKET_ERROR)
 	{
 		printf("Either an error has occured or there are no available packets: %d", WSAGetLastError());
 	}
-	//parsing the header
-	uint16_t headerLen = recvBuffer[7] << 8 | recvBuffer[8];
+	if (incomingBytes != 0 && incomingBytes != SOCKET_ERROR)
+	{
+		//parsing the header
+		uint16_t headerLen = recvBuffer[7] << 8 | recvBuffer[8];
 
-	uint32_t payloadStart = recvBuffer[10] << 24 | recvBuffer[11] << 16 | recvBuffer[12] << 8 | recvBuffer[13]; // parsing where the payload begins
-	uint32_t payloadLen = recvBuffer[14] << 24 | recvBuffer[15] << 16 | recvBuffer[16] << 8 | recvBuffer[17]; // parsing how long the payload is
+		uint32_t payloadStart = recvBuffer[10] << 24 | recvBuffer[11] << 16 | recvBuffer[12] << 8 | recvBuffer[13]; // parsing where the payload begins
+		uint32_t payloadLen = recvBuffer[14] << 24 | recvBuffer[15] << 16 | recvBuffer[16] << 8 | recvBuffer[17]; // parsing how long the payload is
 
-	uint32_t metaStart = recvBuffer[18] << 24 | recvBuffer[19] << 16 | recvBuffer[20] << 8 | recvBuffer[21]; // parsing the meta start
-	uint32_t metaLen = recvBuffer[22] << 24 | recvBuffer[23] << 16 | recvBuffer[24] << 8 | recvBuffer[25]; // parsing the meta length
+		uint32_t metaStart = recvBuffer[18] << 24 | recvBuffer[19] << 16 | recvBuffer[20] << 8 | recvBuffer[21]; // parsing the meta start
+		uint32_t metaLen = recvBuffer[22] << 24 | recvBuffer[23] << 16 | recvBuffer[24] << 8 | recvBuffer[25]; // parsing the meta length
 
-	bool ordered = (recvBuffer[4] >= 0 ? recvBuffer[4] : false);
-	bool encrypted = (recvBuffer[5] >= 0 ? recvBuffer[5] : false);
-	bool awaitACK = (recvBuffer[6] >= 0 ? recvBuffer[6] : false);
-	uint32_t packetNum = recvBuffer[0] << 24 | recvBuffer[1] << 16 | recvBuffer[2] << 8 | recvBuffer[3]; // parsing the index of the packet
+		bool ordered = (recvBuffer[4] >= 0 ? recvBuffer[4] : false);
+		bool encrypted = (recvBuffer[5] >= 0 ? recvBuffer[5] : false);
+		bool awaitACK = (recvBuffer[6] >= 0 ? recvBuffer[6] : false);
+		uint32_t packetNum = recvBuffer[0] << 24 | recvBuffer[1] << 16 | recvBuffer[2] << 8 | recvBuffer[3]; // parsing the index of the packet
 
-	Packet incoming = Packet(incomingBytes, ordered, encrypted, awaitACK, recvBuffer[7], packetNum); // basically mocking a packet that is received ... makes it easier to deserialize and interpret data
+		Packet incoming = Packet(incomingBytes, ordered, encrypted, awaitACK, recvBuffer[7], packetNum); // basically mocking a packet that is received ... makes it easier to deserialize and interpret data
 
-	uint8_t* header = (uint8_t*)malloc(headerLen); // creating and extracting the header from the incoming bytes
-	if (header == nullptr) throw std::runtime_error("incoming packet header initialization failed");
-	memcpy(header, recvBuffer, headerLen);
+		uint8_t* header = (uint8_t*)malloc(headerLen); // creating and extracting the header from the incoming bytes
+		if (header == nullptr) throw std::runtime_error("incoming packet header initialization failed");
+		memcpy(header, recvBuffer, headerLen);
 
-	uint8_t* payload = (uint8_t*)malloc(payloadLen); // creating and extracting the payload from the incoming bytes
-	if (payload == nullptr) throw std::runtime_error("incoming packet payload initialization failed");
-	memcpy(payload, recvBuffer+payloadStart, payloadLen);
+		uint8_t* payload = (uint8_t*)malloc(payloadLen); // creating and extracting the payload from the incoming bytes
+		if (payload == nullptr) throw std::runtime_error("incoming packet payload initialization failed");
+		memcpy(payload, recvBuffer + payloadStart, payloadLen);
 
-	uint8_t* meta = (uint8_t*)malloc(metaLen); // creating and extracting the payload from he incoming bytes
-	if (meta == nullptr) throw std::runtime_error("incoming packet meta initialization failed");
-	memcpy(meta, recvBuffer+metaStart, metaLen);
+		uint8_t* meta = (uint8_t*)malloc(metaLen); // creating and extracting the payload from he incoming bytes
+		if (meta == nullptr) throw std::runtime_error("incoming packet meta initialization failed");
+		memcpy(meta, recvBuffer + metaStart, metaLen);
 
-	incoming.setCompleteData(header, headerLen, payload, payloadLen, meta, metaLen); // shoving the data into the packet
+		incoming.setCompleteData(header, headerLen, payload, payloadLen, meta, metaLen); // shoving the data into the packet
 
-	incoming.sourceAddr[0] = listenerSocket.sin_addr.S_un.S_un_b.s_b1; // setting the ip address of the source that came in from the client object on receive function call
-	incoming.sourceAddr[1] = listenerSocket.sin_addr.S_un.S_un_b.s_b2; // seriously noit sure if this will work.
-	incoming.sourceAddr[2] = listenerSocket.sin_addr.S_un.S_un_b.s_b3;
-	incoming.sourceAddr[3] = listenerSocket.sin_addr.S_un.S_un_b.s_b4;
-	
-	return incoming;
+		incoming.sourceAddr[0] = listenerSocket.sin_addr.S_un.S_un_b.s_b1; // setting the ip address of the source that came in from the client object on receive function call
+		incoming.sourceAddr[1] = listenerSocket.sin_addr.S_un.S_un_b.s_b2; // seriously noit sure if this will work.
+		incoming.sourceAddr[2] = listenerSocket.sin_addr.S_un.S_un_b.s_b3;
+		incoming.sourceAddr[3] = listenerSocket.sin_addr.S_un.S_un_b.s_b4;
+
+		return incoming;
+	}
+	return Packet();
 }
 
 void MPInterfacer::attachReceiveCallback(ReceiveCallback func)
@@ -173,10 +180,11 @@ void MPInterfacer::sendPacket(Packet* pkt)
 		printf("%s function failed when sending a packet line: %d\n error: %d", __func__, __LINE__, iError);
 		throw std::runtime_error("unable to send packet over from SOCKET");
 	}
-	pkt->timeSent = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count; // packet time of sending
-	if (pkt->isAwaitACK) // if the packet is awaitable, add it to the buffer to be checked and reset if timed out
+	pkt->timeSent = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count(); // packet time of sending
+	if (pkt->isAwaitACK()) // if the packet is awaitable, add it to the buffer to be checked and reset if timed out
 	{
-		Packet** newACKBuffer = (Packet**)malloc(ACKBufferLength + 1);
+		Packet** newACKBuffer = (Packet**)malloc((uint64_t)ACKBufferLength + 1);
+		if (newACKBuffer == nullptr) throw std::runtime_error("malloc failed");
 		memcpy(newACKBuffer, ACKBuffer, sizeof(Packet*)*ACKBufferLength+1);
 		delete ACKBuffer;
 		ACKBuffer = newACKBuffer;
@@ -235,37 +243,52 @@ void MPInterfacer::ListenerThread() // will run continuously, invoking callbacks
 		switch (incoming.getPacketType())
 		{
 		case LATENCY_PACKET:
-			uint16_t ping = incoming.get16AtLocation(0); // callback the latency funciton
-			m_LatencyCallback(ping);
+		{
+			m_LatencyCallback(incoming.get16AtLocation(0));
 			break;
+		}
 		case HANDSHAKE_PACKET:
+		{
 			onHandshakeReceive(incoming.get64AtLocation(0)); // finishing the handshake 
 			break;
+		}
 		case ACK_RESPONSE:
-			Packet** newACKBuffer = (Packet**)malloc((ACKBufferLength - 1) * sizeof(Packet*));	// if received ACK response packet containing NULL data bytes
-			uint32_t newACKBufferLength = 0;													// remove it from the awaitable buffer
-			uint32_t ACKBufferIndex = 0;
-			for (int i = 0; i < ACKBufferLength; i++) // go through the buffer
+		{
+			if (ACKBufferLength > 1)
 			{
-				if (!incoming.getPacketNum) // add all packet that are not the one we just received
+				Packet** newACKBuffer = (Packet**)malloc(((uint64_t)ACKBufferLength - 1) * sizeof(Packet*));	// if received ACK response packet containing NULL data bytes
+				if (newACKBuffer == nullptr) throw std::runtime_error("malloc failed");
+				uint32_t newACKBufferLength = 0;													// remove it from the awaitable buffer
+				uint32_t ACKBufferIndex = 0;
+				for (uint32_t i = 0; i < ACKBufferLength; i++) // go through the buffer
 				{
-					newACKBuffer[newACKBufferLength] = ACKBuffer[i];
-					newACKBufferLength++;
-				}
-				else // if it is the one we just got a reply to, mark as delivered and remove from the buffer
-				{
-					ACKBufferIndex = i;
-					ACKBuffer[i]->Deliver();
+					if (!incoming.getPacketNum()) // add all packet that are not the one we just received
+					{
+						newACKBuffer[newACKBufferLength] = ACKBuffer[i];
+						newACKBufferLength++;
+					}
+					else // if it is the one we just got a reply to, mark as delivered and remove from the buffer
+					{
+						ACKBufferIndex = i;
+						ACKBuffer[i]->Deliver();
+					}
 				}
 			}
+			if (ACKBufferLength == 1 && incoming.getPacketNum() == ACKBuffer[0]->getPacketNum())
+			{
+				delete ACKBuffer;
+			}
 			break;
+		}
 		default:
+		{
 			if (incoming.isAwaitACK()) // if the incoming packet is awaiting an ACK reply, send one right away ... should contain NULL data bytes, only the header
 			{
 				Packet ACK_REPLY = Packet(0, false, false, false, ACK_RESPONSE, incoming.getPacketNum());
 				sendPacket(&ACK_REPLY);
 			}
 			break;
+		}
 		}
 	}
 }

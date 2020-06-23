@@ -7,6 +7,7 @@ class Packet
 {
 public:
     Packet(uint32_t packetSize, bool ordered, bool encrypted, bool awaitACK, uint8_t typeId, uint32_t packetNum);
+    Packet();
     ~Packet();
 
     void setCompleteData(uint8_t* hdr, uint16_t hdrLen, uint8_t* payload, uint32_t payloadLen, uint8_t* meta, uint16_t metaLen);
@@ -56,10 +57,10 @@ private:
     uint32_t appendedBytes = 0;
     uint32_t appendedMetaBytes = 0;
 
-    uint32_t packetNum;
-    uint8_t packetType;
-    bool ordered;
-    bool encrypted;
-    bool awaitACK;
-    bool delivered;
+    uint32_t packetNum = 0;
+    uint8_t packetType = 0;
+    bool ordered = false;
+    bool encrypted = false;
+    bool awaitACK = false;
+    bool delivered = false;
 };

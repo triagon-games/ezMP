@@ -9,17 +9,10 @@
 #include <ctime>
 #include "EZMP.h"
 
-int EZMP::Init()
-{
-	if (!Test()) throw std::runtime_error("SYSTEM TESTS FAILED");
-
-	return 0;
-}
-
 bool Test()
 {
 	int TEST_NUM = 4;
-	bool* TESTS = (bool*)malloc(TEST_NUM*sizeof(bool));
+	bool* TESTS = (bool*)malloc(TEST_NUM * sizeof(bool));
 
 	TESTS[0] = sizeof(float) * 2 == sizeof(double) && sizeof(double) == 8;
 	TESTS[1] = sizeof(char) == 1;
@@ -33,4 +26,11 @@ bool Test()
 		if (!TESTS[i]) pass = false;
 	}
 	return pass;
+}
+
+int EZMP::Init()
+{
+	if (!Test()) throw std::runtime_error("SYSTEM TESTS FAILED");
+
+	return 0;
 }

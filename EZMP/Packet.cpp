@@ -56,6 +56,16 @@ Packet::Packet(uint32_t packetSize, bool ordered, bool encrypted, bool awaitACK,
 	this->packetNum = packetNum;
 }
 
+Packet::Packet()
+{
+	awaitACK = false;
+	delivered = false;
+	encrypted = false;
+	ordered = false;
+	packetNum = 0;
+	packetType = UNSPECIFIED_PACKET;
+}
+
 Packet::~Packet()
 {
 	//delete data;
@@ -93,6 +103,7 @@ uint32_t Packet::appendData(uint8_t idata[], size_t size, uint8_t type)
 
 	appendedMetaBytes += metaDataChunkSize; // resize metadata no matter what
 	uint8_t* newMeta = (uint8_t*)malloc(appendedMetaBytes);
+	if (newMeta == nullptr) throw std::runtime_error("malloc failed");
 	memcpy(newMeta, meta, appendedMetaBytes - metaDataChunkSize);
 	delete meta;
 	meta = newMeta;

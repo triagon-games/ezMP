@@ -42,8 +42,8 @@ public:
 	void attachLatencyCallback(LatencyCallback func);
 
 private:
-	Packet** ACKBuffer;
-	uint32_t ACKBufferLength = 0;
+	Packet** ACKBuffer = nullptr;
+	int ACKBufferLength = 0;
 
 	bool awaitPacket();
 	Packet encryptPacket(Packet pkt);
@@ -54,9 +54,9 @@ private:
 	uint64_t generatePrivateSecret(std::string password);
 	void onHandshakeReceive(uint64_t secret);
 
-	uint64_t publicKey;
-	uint64_t privateKey;
-protected: uint64_t sharedSecret;
+	uint64_t publicKey = 0;
+	uint64_t privateKey = 0;
+protected: uint64_t sharedSecret = 0;
 
 	void ListenerThread();
 };
