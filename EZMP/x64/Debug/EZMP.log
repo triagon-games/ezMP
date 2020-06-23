@@ -3,7 +3,7 @@
      ROBOCOPY     ::     Robust File Copy for Windows                              
   -------------------------------------------------------------------------------
   
-    Started : Tuesday, June 23, 2020 3:22:13 PM
+    Started : Tuesday, June 23, 2020 3:49:27 PM
      Source : C:\Users\NIK\Source\Repos\ezMP\EZMP\
        Dest : C:\Users\NIK\Source\Repos\ezMP\EZMP\include\
   
@@ -46,19 +46,29 @@
                  Total    Copied   Skipped  Mismatch    FAILED    Extras
       Dirs :        25        23         2         0         0         0
      Files :         9         0         9         0         0         0
-     Bytes :     5.2 k         0     5.2 k         0         0         0
+     Bytes :     5.3 k         0     5.3 k         0         0         0
      Times :   0:00:00   0:00:00                       0:00:00   0:00:00
-     Ended : Tuesday, June 23, 2020 3:22:13 PM
+     Ended : Tuesday, June 23, 2020 3:49:27 PM
   
+  pch.cpp
+  Client.cpp
+  DataStructures.cpp
+  EZMP.cpp
   MPInterfacer.cpp
-C:\Users\NIK\Source\Repos\ezMP\EZMP\MPInterfacer.cpp(197,27): warning C4244: 'argument': conversion from 'uint64_t' to 'const _Kty', possible loss of data
+C:\Users\NIK\Source\Repos\ezMP\EZMP\MPInterfacer.cpp(198,27): warning C4244: 'argument': conversion from 'uint64_t' to 'const _Kty', possible loss of data
           with
           [
               _Kty=long
           ]
-C:\Users\NIK\Source\Repos\ezMP\EZMP\MPInterfacer.cpp(222,37): warning C4244: 'argument': conversion from 'uint64_t' to 'const _Kty', possible loss of data
+C:\Users\NIK\Source\Repos\ezMP\EZMP\MPInterfacer.cpp(223,37): warning C4244: 'argument': conversion from 'uint64_t' to 'const _Kty', possible loss of data
           with
           [
               _Kty=long
           ]
+  Packet.cpp
+C:\Users\NIK\Source\Repos\ezMP\EZMP\Packet.cpp(93,26): warning C4267: 'initializing': conversion from 'size_t' to 'uint16_t', possible loss of data
+C:\Users\NIK\Source\Repos\ezMP\EZMP\Packet.cpp(94,23): warning C4267: '+=': conversion from 'size_t' to 'uint32_t', possible loss of data
+C:\Users\NIK\Source\Repos\ezMP\EZMP\Packet.cpp(128,27): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  Server.cpp
+  Generating Code...
   EZMP.vcxproj -> C:\Users\NIK\Source\Repos\ezMP\EZMP\x64\Debug\EZMP.lib

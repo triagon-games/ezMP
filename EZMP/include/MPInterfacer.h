@@ -56,7 +56,7 @@ private:
 
 	uint64_t generatePublicSecret(uint64_t referenceMillis);
 	uint64_t generatePrivateSecret(std::string password);
-	void onHandshakeReceive(uint64_t secret, uint32_t exchangeNum);
+	void onHandshakeReceive(uint64_t secret, uint32_t exchangeNum, uint64_t referenceTime);
 
 	uint64_t publicKey = 0;
 	uint64_t privateKey = 0;

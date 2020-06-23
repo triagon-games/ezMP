@@ -165,6 +165,7 @@ Packet MPInterfacer::encryptPacket(Packet pkt)
 void MPInterfacer::startHandshake()
 {
 	Packet* init = new Packet(200, false, false, true, HANDSHAKE_PACKET, 0); // will initialize the key exchange sequence
+	publicKey = generatePublicSecret(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count());
 	init->appendData(power(publicKey, privateKey, SECURE_PRIME_NUMBER));
 	sendPacket(init); // send personal key
 }
@@ -224,10 +225,16 @@ uint64_t MPInterfacer::generatePrivateSecret(std::string password)
 	return keyHash ^ passHash;
 }
 
-void MPInterfacer::onHandshakeReceive(uint64_t secret, uint32_t exchangeNum)
+void MPInterfacer::onHandshakeReceive(uint64_t secret, uint32_t exchangeNum, uint64_t referenceTime)
 {
 	sharedSecret = power(secret, privateKey, publicKey); // calculate the shared secret ... SHOULD be the same as on other side
-
+	if (exchangeNum == 0)
+	{
+		publicKey = generatePublicSecret(referenceTime);
+		Packet* followUp = new Packet(200, false, false, true, HANDSHAKE_PACKET, 1); // will initialize the key exchange sequence
+		followUp->appendData(power(publicKey, privateKey, SECURE_PRIME_NUMBER));
+		sendPacket(followUp); // send personal key
+	}
 }
 
 
@@ -248,7 +255,7 @@ void MPInterfacer::ListenerFunction() // will run continuously, invoking callbac
 		}
 		case HANDSHAKE_PACKET:
 		{
-			onHandshakeReceive(incoming.get64AtLocation(0), incoming.getPacketNum()); // finishing the handshake 
+			onHandshakeReceive(incoming.get64AtLocation(0), incoming.getPacketNum(), incoming.get64AtLocation(4)); // finishing the handshake 
 			break;
 		}
 		case ACK_RESPONSE:
