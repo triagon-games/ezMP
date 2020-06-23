@@ -35,6 +35,5 @@
 *.app
 *.tlog
 *.log
-*.lib
 *.pdb
 *.idb

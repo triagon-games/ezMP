@@ -5,6 +5,11 @@
 #include <EZMP.h>
 #include <string>
 
+void onPacketReceive(Packet p)
+{
+	printf("Received %d bytes: %s", p.getDataLength(), (const char*)p.getData());
+}
+
 int main(int argc, char* argv[])
 {
 	char password[] = "im stuff";
@@ -16,13 +21,8 @@ int main(int argc, char* argv[])
 	if (strcmp(argv[1], "server") == 0)
 	{
 		MPInterfacer* interfacer = new MPInterfacer(123, std::string(password), (uint16_t)49950, addr, (uint16_t)49951);
+		interfacer->attachReceiveCallback(&onPacketReceive);
 		printf("server mode");
-
-		while (true)
-		{
-			Packet received = interfacer->recvPacket();
-			printf("Received Packet: %s", received.getData());
-		}
 	}
 	if (strcmp(argv[1], "client") == 0)
 	{
@@ -35,19 +35,7 @@ int main(int argc, char* argv[])
 			std::string toSend;
 			std::getline(std::cin, toSend);
 			send.appendData(const_cast<uint8_t*>(reinterpret_cast<const uint8_t*>(toSend.c_str())), toSend.length());
-			send.getFullPacket();
 			interfacer->sendPacket(&send);
 		}
 	}
 }
-
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
-
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file

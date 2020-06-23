@@ -142,12 +142,12 @@ Packet MPInterfacer::recvPacket()
 	return Packet();
 }
 
-void MPInterfacer::attachReceiveCallback(ReceiveCallback func)
+void MPInterfacer::attachReceiveCallback(void (*func)(Packet))
 {
 	m_ReceiveCallback = func; // attach receive callback
 }
 
-void MPInterfacer::attachLatencyCallback(LatencyCallback func)
+void MPInterfacer::attachLatencyCallback(void (*func)(uint16_t))
 {
 	m_LatencyCallback = func; // attach latency callback
 }

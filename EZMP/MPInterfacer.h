@@ -16,20 +16,17 @@
 class MPInterfacer
 {
 private: 
-		typedef void* (ReceiveCallback)(Packet);
-		typedef void* (LatencyCallback)(int);
+	void (*m_ReceiveCallback)(Packet);
+	void (*m_LatencyCallback)(uint16_t);
 
-		ReceiveCallback* m_ReceiveCallback;
-		LatencyCallback* m_LatencyCallback;
+	uint64_t power(uint64_t a, uint64_t b, uint64_t P)
+	{
+		if (b == 1)
+			return a;
 
-		uint64_t power(uint64_t a, uint64_t b, uint64_t P)
-		{
-			if (b == 1)
-				return a;
-
-			else
-				return (((uint64_t)std::pow(a, b)) % P);
-		}
+		else
+			return (((uint64_t)std::pow(a, b)) % P);
+	}
 
 public:
 	MPInterfacer(uint64_t ClientUUID, std::string password, uint16_t sendPort, uint8_t* address, uint16_t recvPort);
@@ -39,8 +36,8 @@ public:
 
 	Packet recvPacket();
 
-	void attachReceiveCallback(ReceiveCallback func);
-	void attachLatencyCallback(LatencyCallback func);
+	void attachReceiveCallback(void (*func)(Packet));
+	void attachLatencyCallback(void (*func)(uint16_t));
 
 private:
 	std::thread ListenerThread;
