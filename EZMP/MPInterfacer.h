@@ -7,6 +7,7 @@
 #include "CommonDefinitions.h"
 #include <ws2tcpip.h>
 #include <thread>
+#include <vector>
 
 #pragma comment (lib, "Ws2_32.lib")
 #pragma comment (lib, "Mswsock.lib")
@@ -27,7 +28,7 @@ private:
 				return a;
 
 			else
-				return (((uint64_t)pow(a, b)) % P);
+				return (((uint64_t)std::pow(a, b)) % P);
 		}
 
 public:
@@ -42,7 +43,10 @@ public:
 	void attachLatencyCallback(LatencyCallback func);
 
 private:
-	Packet** ACKBuffer = nullptr;
+	std::thread ListenerThread;
+	std::thread ACKManagerThread;
+
+	std::vector<Packet*> ACKBuffer;
 	int ACKBufferLength = 0;
 
 	bool awaitPacket();
@@ -52,12 +56,12 @@ private:
 
 	uint64_t generatePublicSecret(uint64_t referenceMillis);
 	uint64_t generatePrivateSecret(std::string password);
-	void onHandshakeReceive(uint64_t secret);
+	void onHandshakeReceive(uint64_t secret, uint32_t exchangeNum);
 
 	uint64_t publicKey = 0;
 	uint64_t privateKey = 0;
 protected: uint64_t sharedSecret = 0;
 
-	void ListenerThread();
+	void ListenerFunction();
 	void ACKManager();
 };

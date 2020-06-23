@@ -76,13 +76,17 @@ MPInterfacer::MPInterfacer(uint64_t ClientUUID, std::string password, uint16_t s
 	}
 
 	sendSock = socket(AF_INET, SOCK_DGRAM, 0);
-	ACKBuffer = nullptr;
 	m_LatencyCallback = NULL;
 	m_ReceiveCallback = NULL;
+
+	ListenerThread = std::thread(&MPInterfacer::ListenerFunction, this);
+	ACKManagerThread = std::thread(&MPInterfacer::ACKManager, this);
 }
 
 MPInterfacer::~MPInterfacer()
 {
+	ListenerThread.~thread();
+	ACKManagerThread.~thread();
 	closesocket(recvSock);
 	closesocket(sendSock);
 	WSACleanup();
@@ -101,16 +105,16 @@ Packet MPInterfacer::recvPacket()
 		//parsing the header
 		uint16_t headerLen = recvBuffer[7] << 8 | recvBuffer[8];
 
-		uint32_t payloadStart = recvBuffer[10] << 24 | recvBuffer[11] << 16 | recvBuffer[12] << 8 | recvBuffer[13]; // parsing where the payload begins
-		uint32_t payloadLen = recvBuffer[14] << 24 | recvBuffer[15] << 16 | recvBuffer[16] << 8 | recvBuffer[17]; // parsing how long the payload is
+		uint32_t payloadStart = ((uint32_t)recvBuffer[10] << 24) | ((uint32_t)recvBuffer[11] << 16) | ((uint32_t)recvBuffer[12] << 8 )| ((uint32_t)recvBuffer[13]); // p)arsing where the payload begins
+		uint32_t payloadLen = ((uint32_t)recvBuffer[14] << 24) | ((uint32_t)recvBuffer[15] << 16) | ((uint32_t)recvBuffer[16] << 8 )| ((uint32_t)recvBuffer[17]); // p)arsing how long the payload is
 
-		uint32_t metaStart = recvBuffer[18] << 24 | recvBuffer[19] << 16 | recvBuffer[20] << 8 | recvBuffer[21]; // parsing the meta start
-		uint32_t metaLen = recvBuffer[22] << 24 | recvBuffer[23] << 16 | recvBuffer[24] << 8 | recvBuffer[25]; // parsing the meta length
+		uint32_t metaStart = ((uint32_t)recvBuffer[18] << 24) | ((uint32_t)recvBuffer[19] << 16) | ((uint32_t)recvBuffer[20] << 8) | ((uint32_t)recvBuffer[21]); // parsing the meta start
+		uint32_t metaLen = ((uint32_t)recvBuffer[22] << 24) | ((uint32_t)recvBuffer[23] << 16) | ((uint32_t)recvBuffer[24] << 8 )| ((uint32_t)recvBuffer[25]); // p)arsing the meta length
 
 		bool ordered = (recvBuffer[4] >= 0 ? recvBuffer[4] : false);
 		bool encrypted = (recvBuffer[5] >= 0 ? recvBuffer[5] : false);
 		bool awaitACK = (recvBuffer[6] >= 0 ? recvBuffer[6] : false);
-		uint32_t packetNum = recvBuffer[0] << 24 | recvBuffer[1] << 16 | recvBuffer[2] << 8 | recvBuffer[3]; // parsing the index of the packet
+		uint32_t packetNum = ((uint32_t)recvBuffer[0] << 24) | ((uint32_t)recvBuffer[1] << 16) | ((uint32_t)recvBuffer[2] << 8) | ((uint32_t)recvBuffer[3]); // parsing the index of the packet
 
 		Packet incoming = Packet(incomingBytes, ordered, encrypted, awaitACK, recvBuffer[7], packetNum); // basically mocking a packet that is received ... makes it easier to deserialize and interpret data
 
@@ -183,12 +187,7 @@ void MPInterfacer::sendPacket(Packet* pkt, bool retry)
 	pkt->timeSent = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count(); // packet time of sending
 	if (pkt->isAwaitACK() && !retry) // if the packet is awaitable, add it to the buffer to be checked and reset if timed out
 	{
-		Packet** newACKBuffer = (Packet**)malloc((uint64_t)ACKBufferLength + 1);
-		if (newACKBuffer == nullptr) throw std::runtime_error("malloc failed");
-		memcpy(newACKBuffer, ACKBuffer, sizeof(Packet*)*ACKBufferLength+1);
-		delete ACKBuffer;
-		ACKBuffer = newACKBuffer;
-		ACKBuffer[ACKBufferLength] = pkt;
+		ACKBuffer.push_back(pkt);
 	}
 }
 
@@ -202,7 +201,6 @@ uint64_t MPInterfacer::generatePrivateSecret(std::string password)
 {
 	std::chrono::milliseconds ms = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());
 	uint64_t milliseconds = _byteswap_uint64(ms.count());
-	delete& ms, sizeof(std::chrono::milliseconds);
 
 	uint8_t* m_ms = (uint8_t*)&milliseconds;
 
@@ -223,16 +221,17 @@ uint64_t MPInterfacer::generatePrivateSecret(std::string password)
 	size_t passHash = std::hash<std::string>{}(password);
 	size_t keyHash = std::hash<long>{}(privateKey);
 
-	delete& milliseconds;
 	return keyHash ^ passHash;
 }
 
-void MPInterfacer::onHandshakeReceive(uint64_t secret)
+void MPInterfacer::onHandshakeReceive(uint64_t secret, uint32_t exchangeNum)
 {
 	sharedSecret = power(secret, privateKey, publicKey); // calculate the shared secret ... SHOULD be the same as on other side
+
 }
 
-void MPInterfacer::ListenerThread() // will run continuously, invoking callbacks and analyzing the incoming data
+
+void MPInterfacer::ListenerFunction() // will run continuously, invoking callbacks and analyzing the incoming data
 {
 	while (true)
 	{
@@ -249,35 +248,18 @@ void MPInterfacer::ListenerThread() // will run continuously, invoking callbacks
 		}
 		case HANDSHAKE_PACKET:
 		{
-			onHandshakeReceive(incoming.get64AtLocation(0)); // finishing the handshake 
+			onHandshakeReceive(incoming.get64AtLocation(0), incoming.getPacketNum()); // finishing the handshake 
 			break;
 		}
 		case ACK_RESPONSE:
 		{
-			if (ACKBufferLength > 1)
+			for (int i = 0; i < ACKBuffer.size(); i++)
 			{
-				Packet** newACKBuffer = (Packet**)malloc(((uint64_t)ACKBufferLength - 1) * sizeof(Packet*));	// if received ACK response packet containing NULL data bytes
-				if (newACKBuffer == nullptr) throw std::runtime_error("malloc failed");
-				uint32_t newACKBufferLength = 0;													// remove it from the awaitable buffer
-				uint32_t ACKBufferIndex = 0;
-				for (uint32_t i = 0; i < ACKBufferLength; i++) // go through the buffer
+				if (ACKBuffer[i]->getPacketNum() == incoming.getPacketNum())
 				{
-					if (incoming.getPacketNum() != ACKBuffer[i]->getPacketNum()) // add all packet that are not the one we just received
-					{
-						newACKBuffer[newACKBufferLength] = ACKBuffer[i];
-						newACKBufferLength++;
-					}
-					else // if it is the one we just got a reply to, mark as delivered and remove from the buffer
-					{
-						ACKBufferIndex = i;
-						ACKBuffer[i]->Deliver();
-					}
+					ACKBuffer.erase(ACKBuffer.begin() + i); // remove the packet from the buffer that we got a reply to
+					ACKBuffer[i]->Deliver();
 				}
-				ACKBuffer = newACKBuffer;
-			}
-			if (ACKBufferLength == 1 && incoming.getPacketNum() == ACKBuffer[0]->getPacketNum())
-			{
-				delete ACKBuffer;
 			}
 			break;
 		}
@@ -310,32 +292,7 @@ void MPInterfacer::ACKManager()
 			}
 			if (time - ACKBuffer[i]->timeSent >= ACK_TIMEOUT)
 			{
-				if (ACKBufferLength > 1)
-				{
-					Packet** newACKBuffer = (Packet**)malloc(((uint64_t)ACKBufferLength - 1) * sizeof(Packet*));	// if received ACK response packet containing NULL data bytes
-					if (newACKBuffer == nullptr) throw std::runtime_error("malloc failed");
-					uint32_t newACKBufferLength = 0;													// remove it from the awaitable buffer
-					uint32_t ACKBufferIndex = 0;
-					for (uint32_t j = 0; j < ACKBufferLength; j++) // go through the buffer
-					{
-						if (ACKBuffer[i]->getPacketNum() != ACKBuffer[j]->getPacketNum()) // add all packet that are not the one we just received
-						{
-							newACKBuffer[newACKBufferLength] = ACKBuffer[j];
-							newACKBufferLength++;
-						}
-						else // if it is the one we just got a reply to, mark as delivered and remove from the buffer
-						{
-							ACKBufferIndex = j;
-							ACKBuffer[j]->Deliver();
-						}
-					}
-					ACKBufferLength = newACKBufferLength;
-					ACKBuffer = newACKBuffer;
-				}
-				if (ACKBufferLength == 1 && ACKBuffer[i]->getPacketNum() == ACKBuffer[0]->getPacketNum())
-				{
-					delete ACKBuffer;
-				}
+				ACKBuffer.erase(ACKBuffer.begin() + i);
 			}
 		}
 	}

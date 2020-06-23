@@ -14,5 +14,6 @@
 #include <stdlib.h>
 #include <stdexcept>
 #include <string>
+#include <cmath>
 
 #endif //PCH_H

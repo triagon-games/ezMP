@@ -15,18 +15,18 @@ int main(int argc, char* argv[])
 
 	if (strcmp(argv[1], "server") == 0)
 	{
-		MPInterfacer interfacer = MPInterfacer(123, (char*)password, (uint16_t)49950, addr, (uint16_t)49951);
+		MPInterfacer* interfacer = new MPInterfacer(123, std::string(password), (uint16_t)49950, addr, (uint16_t)49951);
 		printf("server mode");
 
 		while (true)
 		{
-			Packet received = interfacer.recvPacket();
+			Packet received = interfacer->recvPacket();
 			printf("Received Packet: %s", received.getData());
 		}
 	}
 	if (strcmp(argv[1], "client") == 0)
 	{
-		MPInterfacer interfacer = MPInterfacer(123, (char*)password, (uint16_t)49951, addr, (uint16_t)4995);
+		MPInterfacer* interfacer = new MPInterfacer(123, std::string(password), (uint16_t)49951, addr, (uint16_t)4995);
 		printf("client mode");
 
 		while (true)
@@ -36,7 +36,7 @@ int main(int argc, char* argv[])
 			std::getline(std::cin, toSend);
 			send.appendData(const_cast<uint8_t*>(reinterpret_cast<const uint8_t*>(toSend.c_str())), toSend.length());
 			send.getFullPacket();
-			interfacer.sendPacket(&send);
+			interfacer->sendPacket(&send);
 		}
 	}
 }
