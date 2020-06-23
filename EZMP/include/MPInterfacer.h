@@ -28,6 +28,6 @@ private:
 	uint64_t generatePublicSecret(uint64_t referenceMillis);
 	uint64_t generatePrivateSecret(char* password);
 
-	uint64_t publicSecret;
-	uint64_t privateSecret;
+	uint64_t publicKey;
+	uint64_t privateKey;
 };

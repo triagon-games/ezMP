@@ -28,8 +28,25 @@ public:
     uint32_t getFullPacketLength();
     uint32_t trimPacket();
 
+    uint8_t getPacketType();
+    uint32_t getPacketNum();
+    bool isOrdered();
+    bool isEncrypted();
+    bool isAwaitACK();
+    bool isDelivered();
+    void Deliver();
+
+    uint64_t timeSent = 0;
+
     uint8_t* sourceAddr = new uint8_t[4];
     uint16_t sourcePort = NULL;
+
+    uint8_t get8AtLocation(uint32_t location);
+    uint16_t get16AtLocation(uint32_t location);
+    uint32_t get32AtLocation(uint32_t location);
+    uint64_t get64AtLocation(uint32_t location);
+    double getDoubleAtLocation(uint32_t location);
+    float getFloatAtLocation(uint32_t location);
 
 private:
     uint8_t* header = nullptr;
@@ -38,4 +55,11 @@ private:
     uint32_t dataBytes = 0;
     uint32_t appendedBytes = 0;
     uint32_t appendedMetaBytes = 0;
+
+    uint32_t packetNum;
+    uint8_t packetType;
+    bool ordered;
+    bool encrypted;
+    bool awaitACK;
+    bool delivered;
 };

@@ -49,6 +49,11 @@ Packet::Packet(uint32_t packetSize, bool ordered, bool encrypted, bool awaitACK,
 	header[12] = hdr32intuint[2];
 	header[13] = hdr32intuint[3];
 
+	packetType = typeId;
+	this->ordered = ordered;
+	this->encrypted = encrypted;
+	this->awaitACK = awaitACK;
+	this->packetNum = packetNum;
 }
 
 Packet::~Packet()
@@ -87,8 +92,8 @@ uint32_t Packet::appendData(uint8_t idata[], size_t size, uint8_t type)
 	}
 
 	appendedMetaBytes += metaDataChunkSize; // resize metadata no matter what
-	uint8_t* newMeta = new uint8_t[appendedMetaBytes];
-	memcpy(newMeta, meta, appendedMetaBytes - appendedMetaBytes);
+	uint8_t* newMeta = (uint8_t*)malloc(appendedMetaBytes);
+	memcpy(newMeta, meta, appendedMetaBytes - metaDataChunkSize);
 	delete meta;
 	meta = newMeta;
 
@@ -221,4 +226,69 @@ uint32_t Packet::trimPacket()
 	delete data;
 	data = finalData;
 	return appendedBytes;
+}
+
+uint8_t Packet::getPacketType()
+{
+	return packetType;
+}
+
+uint32_t Packet::getPacketNum()
+{
+	return packetNum;
+}
+
+bool Packet::isOrdered()
+{
+	return ordered;
+}
+
+bool Packet::isEncrypted()
+{
+	return encrypted;
+}
+
+bool Packet::isAwaitACK()
+{
+	return awaitACK;
+}
+
+bool Packet::isDelivered()
+{
+	return delivered;
+}
+
+void Packet::Deliver()
+{
+	delivered = true;
+}
+
+uint8_t Packet::get8AtLocation(uint32_t location)
+{
+	return data[location];
+}
+
+uint16_t Packet::get16AtLocation(uint32_t location)
+{
+	return (data[location] << 8 | data[location+1]);
+}
+
+uint32_t Packet::get32AtLocation(uint32_t location)
+{
+	return (data[location] << 24 | data[location + 1] << 16 | data[location + 2] << 8 | data[location + 3]);
+}
+
+uint64_t Packet::get64AtLocation(uint32_t location)
+{
+	return uint64_t();
+}
+
+double Packet::getDoubleAtLocation(uint32_t location)
+{
+	return 0.0;
+}
+
+float Packet::getFloatAtLocation(uint32_t location)
+{
+	return 0.0f;
 }

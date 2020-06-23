@@ -9,7 +9,7 @@ uint64_t count_digit(uint64_t number)
 int iError;
 WSADATA wsaData;
 SOCKET recvSock;
-sockaddr_in client;
+sockaddr_in listenerSocket;
 uint8_t recvBuffer[RECEIVE_BUFFER_LEN];
 int clientLength;
 
@@ -28,7 +28,6 @@ MPInterfacer::MPInterfacer(uint64_t ClientUUID, std::string password, uint16_t s
 	listenOnPort = recvPort;
 
 	uuid = ClientUUID;
-	publicSecret = generatePublicSecret(NULL);
 
 	iError = WSAStartup(MAKEWORD(2, 2), &wsaData);
 	if (iError != 0)
@@ -37,7 +36,6 @@ MPInterfacer::MPInterfacer(uint64_t ClientUUID, std::string password, uint16_t s
 		throw std::runtime_error("unable to create WSADATA");
 	}
 	recvSock = socket(AF_INET, SOCK_DGRAM, 0);
-	sockaddr_in listenerSocket; // just fill out necessary information // we are starting to LISTEN for packets
 	listenerSocket.sin_addr.S_un.S_addr = ADDR_ANY; // in this context, the server is the listenerm the client is the sender ... in multiplayer games the client must send and receive packets, so does the server
 	listenerSocket.sin_family = AF_INET; // for this reason both the winsock2 server (listener) and winsock2 client (sender) must be created and initialized
 	listenerSocket.sin_port = htons(recvPort); // little to big endian conversion
@@ -49,8 +47,8 @@ MPInterfacer::MPInterfacer(uint64_t ClientUUID, std::string password, uint16_t s
 		throw std::runtime_error("unable to bind SOCKET");
 	}
 
-	clientLength = sizeof(client);
-	ZeroMemory(&client, clientLength); // allocating space for the client information
+	clientLength = sizeof(listenerSocket);
+	ZeroMemory(&listenerSocket, clientLength); // allocating space for the client information
 
 	ZeroMemory(recvBuffer, RECEIVE_BUFFER_LEN); // allocating space for the receiving buffer
 
@@ -90,7 +88,7 @@ MPInterfacer::~MPInterfacer()
 Packet MPInterfacer::recvPacket()
 {
 	ZeroMemory(recvBuffer, RECEIVE_BUFFER_LEN);
-	uint32_t incomingBytes = recvfrom(recvSock, (char*)recvBuffer, RECEIVE_BUFFER_LEN, 0, (sockaddr*)&client, &clientLength); // reading incoming packets
+	uint32_t incomingBytes = recvfrom(recvSock, (char*)recvBuffer, RECEIVE_BUFFER_LEN, 0, (sockaddr*)&listenerSocket, &clientLength); // reading incoming packets
 	if (incomingBytes != 0)
 	{
 		printf("Either an error has occured or there are no available packets: %d", WSAGetLastError());
@@ -98,16 +96,16 @@ Packet MPInterfacer::recvPacket()
 	//parsing the header
 	uint16_t headerLen = recvBuffer[7] << 8 | recvBuffer[8];
 
-	uint32_t payloadStart = recvBuffer[10] << 24 | recvBuffer[11] << 16 | recvBuffer[12] << 8 | recvBuffer[13];
-	uint32_t payloadLen = recvBuffer[14] << 24 | recvBuffer[15] << 16 | recvBuffer[16] << 8 | recvBuffer[17];
+	uint32_t payloadStart = recvBuffer[10] << 24 | recvBuffer[11] << 16 | recvBuffer[12] << 8 | recvBuffer[13]; // parsing where the payload begins
+	uint32_t payloadLen = recvBuffer[14] << 24 | recvBuffer[15] << 16 | recvBuffer[16] << 8 | recvBuffer[17]; // parsing how long the payload is
 
-	uint32_t metaStart = recvBuffer[18] << 24 | recvBuffer[19] << 16 | recvBuffer[20] << 8 | recvBuffer[21];
-	uint32_t metaLen = recvBuffer[22] << 24 | recvBuffer[23] << 16 | recvBuffer[24] << 8 | recvBuffer[25];
+	uint32_t metaStart = recvBuffer[18] << 24 | recvBuffer[19] << 16 | recvBuffer[20] << 8 | recvBuffer[21]; // parsing the meta start
+	uint32_t metaLen = recvBuffer[22] << 24 | recvBuffer[23] << 16 | recvBuffer[24] << 8 | recvBuffer[25]; // parsing the meta length
 
 	bool ordered = (recvBuffer[4] >= 0 ? recvBuffer[4] : false);
 	bool encrypted = (recvBuffer[5] >= 0 ? recvBuffer[5] : false);
 	bool awaitACK = (recvBuffer[6] >= 0 ? recvBuffer[6] : false);
-	uint32_t packetNum = recvBuffer[0] << 24 | recvBuffer[1] << 16 | recvBuffer[2] << 8 | recvBuffer[3];
+	uint32_t packetNum = recvBuffer[0] << 24 | recvBuffer[1] << 16 | recvBuffer[2] << 8 | recvBuffer[3]; // parsing the index of the packet
 
 	Packet incoming = Packet(incomingBytes, ordered, encrypted, awaitACK, recvBuffer[7], packetNum); // basically mocking a packet that is received ... makes it easier to deserialize and interpret data
 
@@ -125,16 +123,22 @@ Packet MPInterfacer::recvPacket()
 
 	incoming.setCompleteData(header, headerLen, payload, payloadLen, meta, metaLen); // shoving the data into the packet
 
-	incoming.sourceAddr[0] = client.sin_addr.S_un.S_un_b.s_b1; // setting the ip address of the source that came in from the client object on receive function call
-	incoming.sourceAddr[1] = client.sin_addr.S_un.S_un_b.s_b2;
-	incoming.sourceAddr[2] = client.sin_addr.S_un.S_un_b.s_b3;
-	incoming.sourceAddr[3] = client.sin_addr.S_un.S_un_b.s_b4;
+	incoming.sourceAddr[0] = listenerSocket.sin_addr.S_un.S_un_b.s_b1; // setting the ip address of the source that came in from the client object on receive function call
+	incoming.sourceAddr[1] = listenerSocket.sin_addr.S_un.S_un_b.s_b2; // seriously noit sure if this will work.
+	incoming.sourceAddr[2] = listenerSocket.sin_addr.S_un.S_un_b.s_b3;
+	incoming.sourceAddr[3] = listenerSocket.sin_addr.S_un.S_un_b.s_b4;
 	
 	return incoming;
 }
 
-void MPInterfacer::attachReceiveCallback(void* func(Packet pkt))
+void MPInterfacer::attachReceiveCallback(ReceiveCallback func)
 {
+	m_ReceiveCallback = func; // attach receive callback
+}
+
+void MPInterfacer::attachLatencyCallback(LatencyCallback func)
+{
+	m_LatencyCallback = func; // attach latency callback
 }
 
 bool MPInterfacer::awaitPacket()
@@ -147,20 +151,36 @@ Packet MPInterfacer::encryptPacket(Packet pkt)
 	return pkt;
 }
 
-void MPInterfacer::sendPacket(Packet pkt)
+void MPInterfacer::startHandshake()
 {
-	memcpy(pkt.sourceAddr, sendFromAddr, 4); // paste the source data into the packet object
-	memcpy(&pkt.sourcePort, &sendToPort, sizeof(uint16_t)); // this data wont be sent anyways but who cares
+	Packet* init = new Packet(200, false, false, true, HANDSHAKE_PACKET, 0); // will initialize the key exchange sequence
+	init->appendData(power(publicKey, privateKey, SECURE_PRIME_NUMBER));
+	sendPacket(init); // send personal key
+}
 
-	char* fullPacket = (char*)pkt.getFullPacket();
+void MPInterfacer::sendPacket(Packet* pkt)
+{
+	memcpy(pkt->sourceAddr, sendFromAddr, 4); // paste the source data into the packet object
+	memcpy(&pkt->sourcePort, &sendToPort, sizeof(uint16_t)); // this data wont be sent anyways but who cares
 
-	unsigned int pktlen = pkt.getFullPacketLength();
+	char* fullPacket = (char*)pkt->getFullPacket();
+
+	unsigned int pktlen = pkt->getFullPacketLength();
 	
 	iError = sendto(sendSock, fullPacket, pktlen, 0, (sockaddr*)&senderSocket, sizeof(senderSocket)); // sending the packet and getting a result code to see if it failed
 	if (iError == 0 || iError == -1)
 	{
 		printf("%s function failed when sending a packet line: %d\n error: %d", __func__, __LINE__, iError);
 		throw std::runtime_error("unable to send packet over from SOCKET");
+	}
+	pkt->timeSent = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count; // packet time of sending
+	if (pkt->isAwaitACK) // if the packet is awaitable, add it to the buffer to be checked and reset if timed out
+	{
+		Packet** newACKBuffer = (Packet**)malloc(ACKBufferLength + 1);
+		memcpy(newACKBuffer, ACKBuffer, sizeof(Packet*)*ACKBufferLength+1);
+		delete ACKBuffer;
+		ACKBuffer = newACKBuffer;
+		ACKBuffer[ACKBufferLength] = pkt;
 	}
 }
 
@@ -170,7 +190,7 @@ uint64_t MPInterfacer::generatePublicSecret(uint64_t referenceMillis)
 	return std::hash<long>{}(referenceMillis);
 }
 
-uint64_t MPInterfacer::generatePrivateSecret(char* password, size_t pwdLen)
+uint64_t MPInterfacer::generatePrivateSecret(std::string password)
 {
 	std::chrono::milliseconds ms = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());
 	uint64_t milliseconds = _byteswap_uint64(ms.count());
@@ -192,20 +212,60 @@ uint64_t MPInterfacer::generatePrivateSecret(char* password, size_t pwdLen)
 
 	privateKey = (((uint64_t)(((uint32_t*)&privateKey)[0] ^ salt)) << 32) | (((uint32_t*)&privateKey)[1] ^ salt);
 
-	std::string pwd;
-	for (int i = 0; i < pwdLen; i++)
-	{
-		pwd += password[i];
-	}
-
-	size_t passHash = std::hash<std::string>{}(pwd);
+	size_t passHash = std::hash<std::string>{}(password);
 	size_t keyHash = std::hash<long>{}(privateKey);
 
 	delete& milliseconds;
 	return keyHash ^ passHash;
 }
 
-void MPInterfacer::ListenerThread()
+void MPInterfacer::onHandshakeReceive(uint64_t secret)
 {
+	sharedSecret = power(secret, privateKey, publicKey); // calculate the shared secret ... SHOULD be the same as on other side
+}
 
+void MPInterfacer::ListenerThread() // will run continuously, invoking callbacks and analyzing the incoming data
+{
+	while (true)
+	{
+#ifdef LISTEN_INTERVAL
+		std::this_thread::sleep_for(std::chrono::milliseconds(LISTEN_INTERVAL));
+#endif
+		Packet incoming = recvPacket();
+		switch (incoming.getPacketType())
+		{
+		case LATENCY_PACKET:
+			uint16_t ping = incoming.get16AtLocation(0); // callback the latency funciton
+			m_LatencyCallback(ping);
+			break;
+		case HANDSHAKE_PACKET:
+			onHandshakeReceive(incoming.get64AtLocation(0)); // finishing the handshake 
+			break;
+		case ACK_RESPONSE:
+			Packet** newACKBuffer = (Packet**)malloc((ACKBufferLength - 1) * sizeof(Packet*));	// if received ACK response packet containing NULL data bytes
+			uint32_t newACKBufferLength = 0;													// remove it from the awaitable buffer
+			uint32_t ACKBufferIndex = 0;
+			for (int i = 0; i < ACKBufferLength; i++) // go through the buffer
+			{
+				if (!incoming.getPacketNum) // add all packet that are not the one we just received
+				{
+					newACKBuffer[newACKBufferLength] = ACKBuffer[i];
+					newACKBufferLength++;
+				}
+				else // if it is the one we just got a reply to, mark as delivered and remove from the buffer
+				{
+					ACKBufferIndex = i;
+					ACKBuffer[i]->Deliver();
+				}
+			}
+			break;
+		default:
+			if (incoming.isAwaitACK()) // if the incoming packet is awaiting an ACK reply, send one right away ... should contain NULL data bytes, only the header
+			{
+				Packet ACK_REPLY = Packet(0, false, false, false, ACK_RESPONSE, incoming.getPacketNum());
+				sendPacket(&ACK_REPLY);
+			}
+			break;
+		}
+	}
 }

@@ -6,6 +6,7 @@
 #include <WinSock2.h>
 #include "CommonDefinitions.h"
 #include <ws2tcpip.h>
+#include <thread>
 
 #pragma comment (lib, "Ws2_32.lib")
 #pragma comment (lib, "Mswsock.lib")
@@ -13,26 +14,49 @@
 
 class MPInterfacer
 {
+private: 
+		typedef void* (ReceiveCallback)(Packet);
+		typedef void* (LatencyCallback)(int);
+
+		ReceiveCallback* m_ReceiveCallback;
+		LatencyCallback* m_LatencyCallback;
+
+		uint64_t power(uint64_t a, uint64_t b, uint64_t P)
+		{
+			if (b == 1)
+				return a;
+
+			else
+				return (((uint64_t)pow(a, b)) % P);
+		}
+
 public:
 	MPInterfacer(uint64_t ClientUUID, std::string password, uint16_t sendPort, uint8_t* address, uint16_t recvPort);
 	~MPInterfacer();
 
-	void sendPacket(Packet pkt);
+	void sendPacket(Packet* pkt);
 
 	Packet recvPacket();
 
-	void attachReceiveCallback(void* func(Packet pkt));
+	void attachReceiveCallback(ReceiveCallback func);
+	void attachLatencyCallback(LatencyCallback func);
 
 private:
+	Packet** ACKBuffer;
+	uint32_t ACKBufferLength = 0;
+
 	bool awaitPacket();
 	Packet encryptPacket(Packet pkt);
 
+	void startHandshake();
+
 	uint64_t generatePublicSecret(uint64_t referenceMillis);
-	uint64_t generatePrivateSecret(char* password, size_t pwdLen);
+	uint64_t generatePrivateSecret(std::string password);
+	void onHandshakeReceive(uint64_t secret);
 
-	uint64_t publicSecret;
-	uint64_t privateSecret;
+	uint64_t publicKey;
+	uint64_t privateKey;
+protected: uint64_t sharedSecret;
 
-	void* ReceiveCallback();
 	void ListenerThread();
 };

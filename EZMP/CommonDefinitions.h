@@ -2,13 +2,22 @@
 
 #define RECEIVE_BUFFER_LEN 1024
 
-#define LIB_VER 0.0.0
+#define __LIB_VER__ 0.0.0
 
-#ifndef GAME_VER
-#define GAME_VER
+#ifndef __GAME_VER__
+	#define __GAME_VER__ 0
+#endif
+
+#ifndef SECURE_PRIME_NUMBER
+	#define SECURE_PRIME_NUMBER 0
+#endif
+
+#ifndef ACK_TIMEOUT
+	#define ACK_TIMEOUT 1000
 #endif
 
 #define LATENCY_PACKET 0
+#define ACK_RESPONSE 255
 #define HANDSHAKE_PACKET 100
 #define HIDDEN_PACKET 101
 #define SERVICE_PACKET 102
