@@ -25,10 +25,10 @@ Packet::Packet(uint32_t packetSize, bool ordered, bool encrypted, bool awaitACK,
 	appendedBytes = 0;
 
 	uint8_t* pktNumuint = Convert32(packetNum); // convert to byte array
-	header[0] = pktNumuint[0]; // PACKET NUMBER
-	header[1] = pktNumuint[1];
-	header[2] = pktNumuint[2];
-	header[3] = pktNumuint[3];
+	header[0] = pktNumuint[3]; // PACKET NUMBER
+	header[1] = pktNumuint[2];
+	header[2] = pktNumuint[1];
+	header[3] = pktNumuint[0];
 
 	header[4] = ordered; // ORDERED?
 
@@ -39,15 +39,15 @@ Packet::Packet(uint32_t packetSize, bool ordered, bool encrypted, bool awaitACK,
 	header[7] = typeId; // PACKET TYPE
 
 	uint8_t* headerDataSizeuint = Convert16(headerDataSize); // convert to byte array
-	header[8] = headerDataSizeuint[0]; // HEADER LENGTH
-	header[9] = headerDataSizeuint[1];
+	header[8] = headerDataSizeuint[1]; // HEADER LENGTH
+	header[9] = headerDataSizeuint[0];
 
 	uint32_t hdr32int = headerDataSize; // DATA 0TH INDEX
 	uint8_t* hdr32intuint = Convert32(hdr32int); // convert to byte array
-	header[10] = hdr32intuint[0];
-	header[11] = hdr32intuint[1];
-	header[12] = hdr32intuint[2];
-	header[13] = hdr32intuint[3];
+	header[10] = hdr32intuint[3];
+	header[11] = hdr32intuint[2];
+	header[12] = hdr32intuint[1];
+	header[13] = hdr32intuint[0];
 
 	packetType = typeId;
 	this->ordered = ordered;
@@ -109,14 +109,14 @@ uint32_t Packet::appendData(uint8_t idata[], size_t size, uint8_t type)
 	meta = newMeta;
 
 	uint8_t* appendIndexuint = Convert32(appendIndex);
-	meta[appendedMetaBytes - metaDataChunkSize + 0] = appendIndexuint[0]; // make metadata and put it in an array semantically
-	meta[appendedMetaBytes - metaDataChunkSize + 1] = appendIndexuint[1];
-	meta[appendedMetaBytes - metaDataChunkSize + 2] = appendIndexuint[2];
-	meta[appendedMetaBytes - metaDataChunkSize + 3] = appendIndexuint[3];
+	meta[appendedMetaBytes - metaDataChunkSize + 0] = appendIndexuint[3]; // make metadata and put it in an array semantically
+	meta[appendedMetaBytes - metaDataChunkSize + 1] = appendIndexuint[2];
+	meta[appendedMetaBytes - metaDataChunkSize + 2] = appendIndexuint[1];
+	meta[appendedMetaBytes - metaDataChunkSize + 3] = appendIndexuint[0];
 	
 	uint8_t* dataSizeuint = Convert16(dataSize);
-	meta[appendedMetaBytes - metaDataChunkSize + 4] = dataSizeuint[0];
-	meta[appendedMetaBytes - metaDataChunkSize + 5] = dataSizeuint[1];
+	meta[appendedMetaBytes - metaDataChunkSize + 4] = dataSizeuint[1];
+	meta[appendedMetaBytes - metaDataChunkSize + 5] = dataSizeuint[0];
 
 	meta[appendedMetaBytes - metaDataChunkSize + 6] = type;
 
@@ -193,21 +193,21 @@ uint8_t* Packet::getFullPacket()
 	trimPacket();
 	uint8_t* completePacket = new uint8_t[((uint64_t)headerDataSize) + appendedBytes + appendedMetaBytes];
 
-	header[14] = ((uint8_t*)&(appendedBytes))[0]; // DATA LENGTH
-	header[15] = ((uint8_t*)&(appendedBytes))[1];
-	header[16] = ((uint8_t*)&(appendedBytes))[2];
-	header[17] = ((uint8_t*)&(appendedBytes))[3];
+	header[14] = ((uint8_t*)&(appendedBytes))[3]; // DATA LENGTH
+	header[15] = ((uint8_t*)&(appendedBytes))[2];
+	header[16] = ((uint8_t*)&(appendedBytes))[1];
+	header[17] = ((uint8_t*)&(appendedBytes))[0];
 
 	uint32_t metaDataint = appendedBytes + headerDataSize; // INDEX 0TH METADATA
-	header[18] = ((uint8_t*)&(metaDataint))[0];
-	header[19] = ((uint8_t*)&(metaDataint))[1];
-	header[20] = ((uint8_t*)&(metaDataint))[2];
-	header[21] = ((uint8_t*)&(metaDataint))[3];
+	header[18] = ((uint8_t*)&(metaDataint))[3];
+	header[19] = ((uint8_t*)&(metaDataint))[2];
+	header[20] = ((uint8_t*)&(metaDataint))[1];
+	header[21] = ((uint8_t*)&(metaDataint))[0];
 
-	header[22] = ((uint8_t*)&(appendedMetaBytes))[0]; // METADATA LENGTH
-	header[23] = ((uint8_t*)&(appendedMetaBytes))[1];
-	header[24] = ((uint8_t*)&(appendedMetaBytes))[2];
-	header[25] = ((uint8_t*)&(appendedMetaBytes))[3];
+	header[22] = ((uint8_t*)&(appendedMetaBytes))[3]; // METADATA LENGTH
+	header[23] = ((uint8_t*)&(appendedMetaBytes))[2];
+	header[24] = ((uint8_t*)&(appendedMetaBytes))[1];
+	header[25] = ((uint8_t*)&(appendedMetaBytes))[0];
 
 	for (unsigned int i = 0; i < headerDataSize; i++) // laying all the header bytes
 	{
