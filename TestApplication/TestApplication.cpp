@@ -29,7 +29,7 @@ int main(int argc, char* argv[])
 	}
 	if (strcmp(argv[1], "client") == 0)
 	{
-		MPInterfacer* interfacer = new MPInterfacer(123, std::string(password), (uint16_t)49951, addr, (uint16_t)4995);
+		MPInterfacer* interfacer = new MPInterfacer(123, std::string(password), (uint16_t)49951, addr, (uint16_t)49950);
 		printf("client mode");
 		interfacer->attachReceiveCallback(&onPacketReceive);
 
