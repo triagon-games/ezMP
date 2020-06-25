@@ -4,6 +4,7 @@
 #include <chrono>
 #include "Packet.h"
 #include <WinSock2.h>
+#include <winerror.h>
 #include "CommonDefinitions.h"
 #include <ws2tcpip.h>
 #include <thread>

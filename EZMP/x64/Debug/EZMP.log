@@ -1,45 +1,7 @@
-﻿  
-  -------------------------------------------------------------------------------
-     ROBOCOPY     ::     Robust File Copy for Windows                              
-  -------------------------------------------------------------------------------
-  
-    Started : Tuesday, June 23, 2020 7:31:24 PM
-     Source : C:\Users\ninja\source\repos\ezMP\EZMP\
-       Dest : C:\Users\ninja\source\repos\ezMP\EZMP\include\
-  
-      Files : *.h
-  	    
-   Exc Dirs : C:\Users\ninja\source\repos\ezMP\EZMP\include
-  	    C:\Users\ninja\source\repos\ezMP\EZMP\packages
-  	    
-    Options : /S /DCOPY:DA /COPY:DAT /R:1000000 /W:30 
-  
-  ------------------------------------------------------------------------------
-  
-  	                   9	C:\Users\ninja\source\repos\ezMP\EZMP\
-  	  New Dir          0	C:\Users\ninja\source\repos\ezMP\EZMP\.vs\
-  	  New Dir          0	C:\Users\ninja\source\repos\ezMP\EZMP\.vs\EZMP\
-  	  New Dir          0	C:\Users\ninja\source\repos\ezMP\EZMP\.vs\EZMP\v15\
-  	  New Dir          0	C:\Users\ninja\source\repos\ezMP\EZMP\.vs\EZMP\v15\ipch\
-  	  New Dir          0	C:\Users\ninja\source\repos\ezMP\EZMP\.vs\EZMP\v15\ipch\AutoPCH\
-  	  New Dir          0	C:\Users\ninja\source\repos\ezMP\EZMP\.vs\EZMP\v15\ipch\AutoPCH\32fd83b0f52afecb\
-  	  New Dir          0	C:\Users\ninja\source\repos\ezMP\EZMP\.vs\EZMP\v16\
-  	  New Dir          0	C:\Users\ninja\source\repos\ezMP\EZMP\.vs\EZMP\v16\ipch\
-  	  New Dir          0	C:\Users\ninja\source\repos\ezMP\EZMP\.vs\EZMP\v16\ipch\AutoPCH\
-  	  New Dir          0	C:\Users\ninja\source\repos\ezMP\EZMP\.vs\EZMP\v16\ipch\AutoPCH\37c8892e346a7e37\
-  	  New Dir          0	C:\Users\ninja\source\repos\ezMP\EZMP\.vs\EZMP\v16\ipch\AutoPCH\98ff4e8928dbacb2\
-  	  New Dir          0	C:\Users\ninja\source\repos\ezMP\EZMP\scripts\
-  	  New Dir          0	C:\Users\ninja\source\repos\ezMP\EZMP\x64\
-  	  New Dir          0	C:\Users\ninja\source\repos\ezMP\EZMP\x64\Debug\
-  	  New Dir          0	C:\Users\ninja\source\repos\ezMP\EZMP\x64\Debug\EZMP.tlog\
-  
-  ------------------------------------------------------------------------------
-  
-                 Total    Copied   Skipped  Mismatch    FAILED    Extras
-      Dirs :        17        15         2         0         0         0
-     Files :         9         0         9         0         0         0
-     Bytes :     5.2 k         0     5.2 k         0         0         0
-     Times :   0:00:00   0:00:00                       0:00:00   0:00:00
-     Ended : Tuesday, June 23, 2020 7:31:24 PM
-  
-  EZMP.vcxproj -> C:\Users\ninja\source\repos\ezMP\EZMP\x64\Debug\EZMP.lib
+﻿  Packet.cpp
+C:\Users\NIK\Source\Repos\ezMP\EZMP\Packet.cpp(64,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\NIK\Source\Repos\ezMP\EZMP\Packet.cpp(86,26): warning C4267: 'initializing': conversion from 'size_t' to 'uint16_t', possible loss of data
+C:\Users\NIK\Source\Repos\ezMP\EZMP\Packet.cpp(87,23): warning C4267: '+=': conversion from 'size_t' to 'uint32_t', possible loss of data
+C:\Users\NIK\Source\Repos\ezMP\EZMP\Packet.cpp(104,27): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+C:\Users\NIK\Source\Repos\ezMP\EZMP\Packet.cpp(171,32): warning C4267: 'initializing': conversion from 'size_t' to 'uint32_t', possible loss of data
+  EZMP.vcxproj -> C:\Users\NIK\Source\Repos\ezMP\EZMP\x64\Debug\EZMP.lib

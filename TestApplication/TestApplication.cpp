@@ -7,7 +7,9 @@
 
 void onPacketReceive(Packet p)
 {
-	printf("Received %d bytes: %s", p.getDataLength(), (const char*)p.getData());
+	std::string message;
+	for (int i = 0; i < p.getDataLength(); i++) message += p.getData()[i];
+	printf("\n\nReceived %d bytes: %s", p.getDataLength(), message.c_str());
 }
 
 int main(int argc, char* argv[])
@@ -23,6 +25,7 @@ int main(int argc, char* argv[])
 		MPInterfacer* interfacer = new MPInterfacer(123, std::string(password), (uint16_t)49950, addr, (uint16_t)49951);
 		interfacer->attachReceiveCallback(&onPacketReceive);
 		printf("server mode");
+		std::getchar();
 	}
 	if (strcmp(argv[1], "client") == 0)
 	{
@@ -31,7 +34,7 @@ int main(int argc, char* argv[])
 
 		while (true)
 		{
-			Packet send = Packet(1000, false, false, false, 1, 1);
+			Packet send = Packet(false, false, false, 1, 1);
 			std::string toSend;
 			std::getline(std::cin, toSend);
 			send.appendData(const_cast<uint8_t*>(reinterpret_cast<const uint8_t*>(toSend.c_str())), toSend.length());

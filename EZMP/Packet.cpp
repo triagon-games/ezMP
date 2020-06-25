@@ -5,49 +5,33 @@ uint16_t metaDataChunkSize = sizeof(uint32_t) + sizeof(uint16_t) + sizeof(uint8_
 uint16_t headerDataSize;
 // header semantics ::: PACKET NUMBER | ORDERED? | ENCRYPTED? | AWAIT ACK? | PACKET TYPE | HEADER LENGTH | DATA 0TH INDEX | DATA LENGTH | METADATA 0TH INDEX | METADATA LENGTH
 
-Packet::Packet(uint32_t packetSize, bool ordered, bool encrypted, bool awaitACK, uint8_t typeId, uint32_t packetNum)
+Packet::Packet(bool ordered, bool encrypted, bool awaitACK, uint8_t typeId, uint32_t packetNum)
 {
 	headerDataSize = sizeof(uint32_t) + sizeof(bool) + sizeof(bool) + sizeof(bool) + sizeof(uint8_t) + sizeof(uint16_t) + sizeof(uint32_t) + sizeof(uint32_t) + sizeof(uint32_t) + sizeof(uint32_t);
 
-	data = (uint8_t*)malloc(packetSize); // allocate space for the data
-	if (data == nullptr) throw std::runtime_error("packet data/payload initialization failed");
-	memset(data, 0, packetSize);
-
-	meta = (uint8_t*)malloc(1);
-	if (meta == nullptr) throw std::runtime_error("packet meta initialization failed");
-	memset(meta, 0, 1);
-
-	header = (uint8_t*)malloc(headerDataSize); // ALLOCATING HEADER
-	if (header == nullptr) throw std::runtime_error("packet header initialization failed");
-	memset(header, 0, headerDataSize);
-
-	dataBytes = packetSize;
 	appendedBytes = 0;
 
-	uint8_t* pktNumuint = Convert32(packetNum); // convert to byte array
-	header[0] = pktNumuint[3]; // PACKET NUMBER
-	header[1] = pktNumuint[2];
-	header[2] = pktNumuint[1];
-	header[3] = pktNumuint[0];
+	header.push_back(((uint8_t*)&packetNum)[3]); // PACKET NUMBER
+	header.push_back(((uint8_t*)&packetNum)[2]);
+	header.push_back(((uint8_t*)&packetNum)[1]);
+	header.push_back(((uint8_t*)&packetNum)[0]);
 
-	header[4] = ordered; // ORDERED?
+	header.push_back(ordered); // ORDERED?
 
-	header[5] = encrypted; // ENCRYPTED?
+	header.push_back(encrypted); // ENCRYPTED?
 
-	header[6] = awaitACK; // AWAIT ACK?
+	header.push_back(awaitACK); // AWAIT ACK?
 
-	header[7] = typeId; // PACKET TYPE
+	header.push_back(typeId); // PACKET TYPE
 
-	uint8_t* headerDataSizeuint = Convert16(headerDataSize); // convert to byte array
-	header[8] = headerDataSizeuint[1]; // HEADER LENGTH
-	header[9] = headerDataSizeuint[0];
+	header.push_back(((uint8_t*)&headerDataSize)[1]);
+	header.push_back(((uint8_t*)&headerDataSize)[0]);
 
 	uint32_t hdr32int = headerDataSize; // DATA 0TH INDEX
-	uint8_t* hdr32intuint = Convert32(hdr32int); // convert to byte array
-	header[10] = hdr32intuint[3];
-	header[11] = hdr32intuint[2];
-	header[12] = hdr32intuint[1];
-	header[13] = hdr32intuint[0];
+	header.push_back(((uint8_t*)&hdr32int)[3]);
+	header.push_back(((uint8_t*)&hdr32int)[2]);
+	header.push_back(((uint8_t*)&hdr32int)[1]);
+	header.push_back(((uint8_t*)&hdr32int)[0]);
 
 	packetType = typeId;
 	this->ordered = ordered;
@@ -73,9 +57,18 @@ Packet::~Packet()
 
 void Packet::setCompleteData(uint8_t* hdr, uint16_t hdrLen, uint8_t* payload, uint32_t payloadLen, uint8_t* meta, uint16_t metaLen)
 {
-	memcpy(header, hdr, hdrLen);
-	memcpy(data, payload, payloadLen);
-	memcpy(this->meta, meta, metaLen);
+	for (int i = 0; i < headerDataSize; i++)
+	{
+		header.push_back(hdr[i]);
+	}
+	for (int i = 0; i < payloadLen; i++)
+	{
+		data.push_back(payload[i]);
+	}
+	for (int i = 0; i < metaLen; i++)
+	{
+		this->meta.push_back(meta[i]);
+	}
 
 	appendedBytes = payloadLen;
 	appendedMetaBytes = metaLen;
@@ -93,37 +86,20 @@ uint32_t Packet::appendData(uint8_t idata[], size_t size, uint8_t type)
 	uint16_t dataSize = size;
 	appendedBytes += size;
 
-	if (dataBytes <= appendIndex) //if the data array is too small, allocate more space
+	for (int i = 0; i < size; i++)
 	{
-		uint8_t* newData = new uint8_t[appendedBytes];
-		memcpy(newData, data, appendIndex);
-		delete data;
-		data = newData;
+		data.push_back(idata[i]);
 	}
 
-	appendedMetaBytes += metaDataChunkSize; // resize metadata no matter what
-	uint8_t* newMeta = (uint8_t*)malloc(appendedMetaBytes);
-	if (newMeta == nullptr) throw std::runtime_error("malloc failed");
-	memcpy(newMeta, meta, appendedMetaBytes - metaDataChunkSize);
-	delete meta;
-	meta = newMeta;
-
-	uint8_t* appendIndexuint = Convert32(appendIndex);
-	meta[appendedMetaBytes - metaDataChunkSize + 0] = appendIndexuint[3]; // make metadata and put it in an array semantically
-	meta[appendedMetaBytes - metaDataChunkSize + 1] = appendIndexuint[2];
-	meta[appendedMetaBytes - metaDataChunkSize + 2] = appendIndexuint[1];
-	meta[appendedMetaBytes - metaDataChunkSize + 3] = appendIndexuint[0];
+	meta.push_back(((uint8_t*)&appendIndex)[3]);
+	meta.push_back(((uint8_t*)&appendIndex)[2]);
+	meta.push_back(((uint8_t*)&appendIndex)[1]);
+	meta.push_back(((uint8_t*)&appendIndex)[0]);
 	
-	uint8_t* dataSizeuint = Convert16(dataSize);
-	meta[appendedMetaBytes - metaDataChunkSize + 4] = dataSizeuint[1];
-	meta[appendedMetaBytes - metaDataChunkSize + 5] = dataSizeuint[0];
+	meta.push_back(((uint8_t*)&size)[1]);
+	meta.push_back(((uint8_t*)&size)[0]);
 
-	meta[appendedMetaBytes - metaDataChunkSize + 6] = type;
-
-	for (int i = 0; i < size; i++) // place the input data into the array at the next possible location
-	{
-		data[appendedBytes - size + i] = idata[i];
-	}
+	meta.push_back(type);
 
 	return appendedBytes-size; // returns the index of the first byte of the variable in the data array
 }
@@ -158,7 +134,7 @@ uint32_t Packet::appendData(uint64_t idata)
 	return appendData(Convert64(idata), sizeof(uint64_t), 6);
 }
 
-uint8_t* Packet::getMetaData()
+std::vector<uint8_t> Packet::getMetaData()
 {
 	return meta;
 }
@@ -168,7 +144,7 @@ uint32_t Packet::getMetaLength()
 	return appendedMetaBytes;
 }
 
-uint8_t* Packet::getHeaderData()
+std::vector<uint8_t> Packet::getHeaderData()
 {
 	return header;
 }
@@ -178,7 +154,7 @@ uint32_t Packet::getHeaderLength()
 	return headerDataSize;
 }
 
-uint8_t* Packet::getData()
+std::vector<uint8_t> Packet::getData()
 {
 	return data;
 }
@@ -188,39 +164,31 @@ uint32_t Packet::getDataLength()
 	return appendedBytes;
 }
 
-uint8_t* Packet::getFullPacket()
+std::vector<uint8_t> Packet::getFullPacket()
 {
-	trimPacket();
-	uint8_t* completePacket = new uint8_t[((uint64_t)headerDataSize) + appendedBytes + appendedMetaBytes];
+	std::vector<uint8_t> completePacket;
 
-	header[14] = ((uint8_t*)&(appendedBytes))[3]; // DATA LENGTH
-	header[15] = ((uint8_t*)&(appendedBytes))[2];
-	header[16] = ((uint8_t*)&(appendedBytes))[1];
-	header[17] = ((uint8_t*)&(appendedBytes))[0];
+	uint32_t dataLen = data.size();
+	header.push_back(((uint8_t*)&(dataLen))[3]); // how much data do we have?
+	header.push_back(((uint8_t*)&(dataLen))[2]);
+	header.push_back(((uint8_t*)&(dataLen))[1]);
+	header.push_back(((uint8_t*)&(dataLen))[0]);
 
 	uint32_t metaDataint = appendedBytes + headerDataSize; // INDEX 0TH METADATA
-	header[18] = ((uint8_t*)&(metaDataint))[3];
-	header[19] = ((uint8_t*)&(metaDataint))[2];
-	header[20] = ((uint8_t*)&(metaDataint))[1];
-	header[21] = ((uint8_t*)&(metaDataint))[0];
+	header.push_back(((uint8_t*)&(metaDataint))[3]);
+	header.push_back(((uint8_t*)&(metaDataint))[2]);
+	header.push_back(((uint8_t*)&(metaDataint))[1]);
+	header.push_back(((uint8_t*)&(metaDataint))[0]);
 
-	header[22] = ((uint8_t*)&(appendedMetaBytes))[3]; // METADATA LENGTH
-	header[23] = ((uint8_t*)&(appendedMetaBytes))[2];
-	header[24] = ((uint8_t*)&(appendedMetaBytes))[1];
-	header[25] = ((uint8_t*)&(appendedMetaBytes))[0];
+	header.push_back(((uint8_t*)&(appendedMetaBytes))[3]); // METADATA LENGTH
+	header.push_back(((uint8_t*)&(appendedMetaBytes))[2]);
+	header.push_back(((uint8_t*)&(appendedMetaBytes))[1]);
+	header.push_back(((uint8_t*)&(appendedMetaBytes))[0]);
 
-	for (unsigned int i = 0; i < headerDataSize; i++) // laying all the header bytes
-	{
-		completePacket[i] = header[i];
-	}
-	for (unsigned int i = 0; i < appendedBytes; i++) // laying all the data bytes
-	{
-		completePacket[headerDataSize + i] = data[i];
-	}
-	for (unsigned int i = 0; i < appendedMetaBytes; i++) // laying all the metadata bytes
-	{
-		completePacket[headerDataSize + appendedMetaBytes + i] = meta[i];
-	}
+	completePacket.reserve(header.size() + data.size() + meta.size());
+	completePacket.insert(completePacket.end(), header.begin(), header.end());
+	completePacket.insert(completePacket.end(), data.begin(), data.end());
+	completePacket.insert(completePacket.end(), meta.begin(), meta.end());
 
 	return completePacket;
 }
@@ -228,15 +196,6 @@ uint8_t* Packet::getFullPacket()
 uint32_t Packet::getFullPacketLength()
 {
 	return headerDataSize + appendedBytes + appendedMetaBytes;
-}
-
-uint32_t Packet::trimPacket()
-{
-	uint8_t* finalData = new uint8_t[appendedBytes]; // trim and truncate the data
-	memcpy(finalData, data, appendedBytes);
-	delete data;
-	data = finalData;
-	return appendedBytes;
 }
 
 uint8_t Packet::getPacketType()
@@ -274,32 +233,32 @@ void Packet::Deliver()
 	delivered = true;
 }
 
-uint8_t Packet::get8AtLocation(uint32_t location)
+uint8_t Packet::get8AtLocation(int location)
 {
 	return data[location];
 }
 
-uint16_t Packet::get16AtLocation(uint32_t location)
+uint16_t Packet::get16AtLocation(int location)
 {
-	return (data[location] << 8 | data[location+1]);
+	return (data[location] << 8 | data[(long)location+1]);
 }
 
-uint32_t Packet::get32AtLocation(uint32_t location)
+uint32_t Packet::get32AtLocation(int location)
 {
-	return (data[location] << 24 | data[location + 1] << 16 | data[location + 2] << 8 | data[location + 3]);
+	return ((uint32_t)(data[location] << 24) | (uint32_t)(data[(long)location] << 16) | (uint32_t)(data[(long)location] << 8) | (uint32_t)(data[(long)location]));
 }
 
-uint64_t Packet::get64AtLocation(uint32_t location)
+uint64_t Packet::get64AtLocation(int location)
 {
 	return uint64_t();
 }
 
-double Packet::getDoubleAtLocation(uint32_t location)
+double Packet::getDoubleAtLocation(int location)
 {
 	return 0.0;
 }
 
-float Packet::getFloatAtLocation(uint32_t location)
+float Packet::getFloatAtLocation(int location)
 {
 	return 0.0f;
 }

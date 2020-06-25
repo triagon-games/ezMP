@@ -10,10 +10,10 @@ int iError;
 WSADATA wsaData;
 SOCKET recvSock;
 sockaddr_in listenerSocket;
+sockaddr_in incomingSocket;
 uint8_t recvBuffer[RECEIVE_BUFFER_LEN];
 int clientLength;
 
-WSADATA sendWsaData;
 SOCKET sendSock;
 sockaddr_in senderSocket;
 
@@ -47,27 +47,16 @@ MPInterfacer::MPInterfacer(uint64_t ClientUUID, std::string password, uint16_t s
 		throw std::runtime_error("unable to bind SOCKET");
 	}
 
-	clientLength = sizeof(listenerSocket);
-	ZeroMemory(&listenerSocket, clientLength); // allocating space for the client information
+	clientLength = sizeof(incomingSocket);
+	ZeroMemory(&incomingSocket, clientLength); // allocating space for the client information
 
 	ZeroMemory(recvBuffer, RECEIVE_BUFFER_LEN); // allocating space for the receiving buffer
 
-
-	iError = WSAStartup(MAKEWORD(2, 2), &sendWsaData);
-	if (iError != 0)
-	{
-		printf("%s function failed when creating sender WSADATA line: %d\n error: %d", __func__, __LINE__, iError);
-		throw std::runtime_error("unable to create sender WSADATA");
-	}
-
 	std::string ip;
-	senderSocket; // creating a socket that will SEND packets
 	senderSocket.sin_family = AF_INET; // ipv4
 	senderSocket.sin_port = htons(sendPort); // little to big endian conversion
 	for (int i = 0; i < 3; i++) ip += std::to_string(address[i]) + '.';
 	ip += std::to_string(address[3]);
-	
-	IN_ADDR dstAddr = IN_ADDR();
 	iError = inet_pton(AF_INET, (PSTR)ip.c_str(), &senderSocket.sin_addr);
 	if (!iError)
 	{
@@ -85,17 +74,19 @@ MPInterfacer::MPInterfacer(uint64_t ClientUUID, std::string password, uint16_t s
 
 MPInterfacer::~MPInterfacer()
 {
+	/*
 	ListenerThread.~thread();
 	ACKManagerThread.~thread();
 	closesocket(recvSock);
 	closesocket(sendSock);
 	WSACleanup();
+	*/
 }
 
 Packet MPInterfacer::recvPacket()
 {
 	ZeroMemory(recvBuffer, RECEIVE_BUFFER_LEN);
-	uint32_t incomingBytes = recvfrom(recvSock, (char*)recvBuffer, RECEIVE_BUFFER_LEN, 0, (sockaddr*)&listenerSocket, &clientLength); // reading incoming packets
+	int incomingBytes = recvfrom(recvSock, (char*)recvBuffer, RECEIVE_BUFFER_LEN, 0, (sockaddr*)&incomingSocket, & clientLength); // reading incoming packets
 	if (incomingBytes == SOCKET_ERROR)
 	{
 		printf("Either an error has occured or there are no available packets: %d", WSAGetLastError());
@@ -116,7 +107,7 @@ Packet MPInterfacer::recvPacket()
 		bool awaitACK = (recvBuffer[6] >= 0 ? recvBuffer[6] : false);
 		uint32_t packetNum = ((uint32_t)recvBuffer[0] << 24) | ((uint32_t)recvBuffer[1] << 16) | ((uint32_t)recvBuffer[2] << 8) | ((uint32_t)recvBuffer[3]); // parsing the index of the packet
 
-		Packet incoming = Packet(incomingBytes, ordered, encrypted, awaitACK, recvBuffer[7], packetNum); // basically mocking a packet that is received ... makes it easier to deserialize and interpret data
+		Packet incoming = Packet(ordered, encrypted, awaitACK, recvBuffer[7], packetNum); // basically mocking a packet that is received ... makes it easier to deserialize and interpret data
 
 		uint8_t* header = (uint8_t*)malloc(headerLen); // creating and extracting the header from the incoming bytes
 		if (header == nullptr) throw std::runtime_error("incoming packet header initialization failed");
@@ -164,7 +155,7 @@ Packet MPInterfacer::encryptPacket(Packet pkt)
 
 void MPInterfacer::startHandshake()
 {
-	Packet* init = new Packet(200, false, false, true, HANDSHAKE_PACKET, 0); // will initialize the key exchange sequence
+	Packet* init = new Packet(false, false, true, HANDSHAKE_PACKET, 0); // will initialize the key exchange sequence
 	publicKey = generatePublicSecret(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count());
 	init->appendData(power(publicKey, privateKey, SECURE_PRIME_NUMBER));
 	sendPacket(init); // send personal key
@@ -175,7 +166,7 @@ void MPInterfacer::sendPacket(Packet* pkt, bool retry)
 	memcpy(pkt->sourceAddr, sendFromAddr, 4); // paste the source data into the packet object
 	memcpy(&pkt->sourcePort, &sendToPort, sizeof(uint16_t)); // this data wont be sent anyways but who cares
 
-	char* fullPacket = (char*)pkt->getFullPacket();
+	char* fullPacket = (char*)&(pkt->getFullPacket()[0]);
 
 	unsigned int pktlen = pkt->getFullPacketLength();
 	
@@ -231,7 +222,7 @@ void MPInterfacer::onHandshakeReceive(uint64_t secret, uint32_t exchangeNum, uin
 	if (exchangeNum == 0)
 	{
 		publicKey = generatePublicSecret(referenceTime);
-		Packet* followUp = new Packet(200, false, false, true, HANDSHAKE_PACKET, 1); // will initialize the key exchange sequence
+		Packet* followUp = new Packet(false, false, true, HANDSHAKE_PACKET, 1); // will initialize the key exchange sequence
 		followUp->appendData(power(publicKey, privateKey, SECURE_PRIME_NUMBER));
 		sendPacket(followUp); // send personal key
 	}
@@ -274,9 +265,10 @@ void MPInterfacer::ListenerFunction() // will run continuously, invoking callbac
 		{
 			if (incoming.isAwaitACK()) // if the incoming packet is awaiting an ACK reply, send one right away ... should contain NULL data bytes, only the header
 			{
-				Packet ACK_REPLY = Packet(0, false, false, false, ACK_RESPONSE, incoming.getPacketNum());
+				Packet ACK_REPLY = Packet(false, false, false, ACK_RESPONSE, incoming.getPacketNum());
 				sendPacket(&ACK_REPLY);
 			}
+			m_ReceiveCallback(incoming);
 			break;
 		}
 		}

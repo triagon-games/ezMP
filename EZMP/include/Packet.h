@@ -2,11 +2,12 @@
 #include "pch.h"
 #include <cstddef>
 #include "DataStructures.h"
+#include <vector>
 
 class Packet
 {
 public:
-    Packet(uint32_t packetSize, bool ordered, bool encrypted, bool awaitACK, uint8_t typeId, uint32_t packetNum);
+    Packet(bool ordered, bool encrypted, bool awaitACK, uint8_t typeId, uint32_t packetNum);
     Packet();
     ~Packet();
 
@@ -19,15 +20,14 @@ public:
     uint32_t appendData(uint32_t idata);
     uint32_t appendData(uint64_t idata);
 
-    uint8_t* getMetaData();
+    std::vector<uint8_t> getMetaData();
     uint32_t getMetaLength();
-    uint8_t* getHeaderData();
+    std::vector<uint8_t> getHeaderData();
     uint32_t getHeaderLength();
-    uint8_t* getData();
+    std::vector<uint8_t> getData();
     uint32_t getDataLength();
-    uint8_t* getFullPacket();
+    std::vector<uint8_t> getFullPacket();
     uint32_t getFullPacketLength();
-    uint32_t trimPacket();
 
     uint8_t getPacketType();
     uint32_t getPacketNum();
@@ -42,17 +42,17 @@ public:
     uint8_t* sourceAddr = new uint8_t[4];
     uint16_t sourcePort = NULL;
 
-    uint8_t get8AtLocation(uint32_t location);
-    uint16_t get16AtLocation(uint32_t location);
-    uint32_t get32AtLocation(uint32_t location);
-    uint64_t get64AtLocation(uint32_t location);
-    double getDoubleAtLocation(uint32_t location);
-    float getFloatAtLocation(uint32_t location);
+    uint8_t get8AtLocation(int location);
+    uint16_t get16AtLocation(int location);
+    uint32_t get32AtLocation(int location);
+    uint64_t get64AtLocation(int location);
+    double getDoubleAtLocation(int location);
+    float getFloatAtLocation(int location);
 
 private:
-    uint8_t* header = nullptr;
-    uint8_t* data = nullptr;
-    uint8_t* meta = nullptr;
+    std::vector<uint8_t> header;
+    std::vector<uint8_t> data;
+    std::vector<uint8_t> meta;
     uint32_t dataBytes = 0;
     uint32_t appendedBytes = 0;
     uint32_t appendedMetaBytes = 0;
