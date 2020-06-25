@@ -1,1 +1,3 @@
-﻿  TestApplication.vcxproj -> C:\Users\NIK\Source\Repos\ezMP\EZMP\x64\Debug\TestApplication.exe
+﻿  TestApplication.cpp
+C:\Users\NIK\Source\Repos\ezMP\TestApplication\TestApplication.cpp(11,20): warning C4018: '<': signed/unsigned mismatch
+  TestApplication.vcxproj -> C:\Users\NIK\Source\Repos\ezMP\EZMP\x64\Debug\TestApplication.exe

@@ -15,7 +15,7 @@ void onPacketReceive(Packet p)
 int main(int argc, char* argv[])
 {
 	char password[] = "im stuff";
-	uint8_t addr[] = {127, 0, 0, 1};
+	uint8_t addr[] = {192, 168, 11, 19};
 
 	for (int i = 0; i < argc; ++i)
 		std::cout << argv[i] << "\n";
@@ -31,6 +31,7 @@ int main(int argc, char* argv[])
 	{
 		MPInterfacer* interfacer = new MPInterfacer(123, std::string(password), (uint16_t)49951, addr, (uint16_t)4995);
 		printf("client mode");
+		interfacer->attachReceiveCallback(&onPacketReceive);
 
 		while (true)
 		{

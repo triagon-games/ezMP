@@ -166,7 +166,8 @@ void MPInterfacer::sendPacket(Packet* pkt, bool retry)
 	memcpy(pkt->sourceAddr, sendFromAddr, 4); // paste the source data into the packet object
 	memcpy(&pkt->sourcePort, &sendToPort, sizeof(uint16_t)); // this data wont be sent anyways but who cares
 
-	char* fullPacket = (char*)&(pkt->getFullPacket()[0]);
+	std::vector<uint8_t> packet = pkt->getFullPacket();
+	char* fullPacket = (char*)&packet[0];
 
 	unsigned int pktlen = pkt->getFullPacketLength();
 	

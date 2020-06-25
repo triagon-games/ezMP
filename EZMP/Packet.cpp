@@ -90,7 +90,7 @@ uint32_t Packet::appendData(uint8_t idata[], size_t size, uint8_t type)
 	{
 		data.push_back(idata[i]);
 	}
-
+	appendedMetaBytes += metaDataChunkSize;
 	meta.push_back(((uint8_t*)&appendIndex)[3]);
 	meta.push_back(((uint8_t*)&appendIndex)[2]);
 	meta.push_back(((uint8_t*)&appendIndex)[1]);
@@ -195,7 +195,7 @@ std::vector<uint8_t> Packet::getFullPacket()
 
 uint32_t Packet::getFullPacketLength()
 {
-	return headerDataSize + appendedBytes + appendedMetaBytes;
+	return header.size() + data.size() + meta.size();
 }
 
 uint8_t Packet::getPacketType()
