@@ -1,2 +1,14 @@
-﻿  PortForwardEngine.cpp
+﻿  MPInterfacer.cpp
+C:\Users\NIK\Source\Repos\ezMP\EZMP\MPInterfacer.cpp(124,33): warning C4018: '<': signed/unsigned mismatch
+C:\Users\NIK\Source\Repos\ezMP\EZMP\MPInterfacer.cpp(131,30): warning C4018: '<': signed/unsigned mismatch
+C:\Users\NIK\Source\Repos\ezMP\EZMP\MPInterfacer.cpp(203,27): warning C4244: 'argument': conversion from 'uint64_t' to 'const _Kty', possible loss of data
+          with
+          [
+              _Kty=long
+          ]
+C:\Users\NIK\Source\Repos\ezMP\EZMP\MPInterfacer.cpp(228,37): warning C4244: 'argument': conversion from 'uint64_t' to 'const _Kty', possible loss of data
+          with
+          [
+              _Kty=long
+          ]
   EZMP.vcxproj -> C:\Users\NIK\Source\Repos\ezMP\EZMP\x64\Debug\EZMP.lib

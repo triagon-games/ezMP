@@ -55,20 +55,11 @@ Packet::~Packet()
 	//delete data;
 }
 
-void Packet::setCompleteData(uint8_t* hdr, uint16_t hdrLen, uint8_t* payload, uint32_t payloadLen, uint8_t* meta, uint16_t metaLen)
+void Packet::setCompleteData(std::vector<uint8_t> hdr, uint16_t hdrLen, std::vector<uint8_t> payload, uint32_t payloadLen, std::vector<uint8_t> meta, uint16_t metaLen)
 {
-	for (int i = 0; i < headerDataSize; i++)
-	{
-		header.push_back(hdr[i]);
-	}
-	for (int i = 0; i < payloadLen; i++)
-	{
-		data.push_back(payload[i]);
-	}
-	for (int i = 0; i < metaLen; i++)
-	{
-		this->meta.push_back(meta[i]);
-	}
+	header = hdr;
+	data = payload;
+	this->meta = meta;
 
 	appendedBytes = payloadLen;
 	appendedMetaBytes = metaLen;

@@ -94,7 +94,7 @@ Packet MPInterfacer::recvPacket()
 	if (incomingBytes != 0 && incomingBytes != SOCKET_ERROR)
 	{
 		//parsing the header
-		uint16_t headerLen = recvBuffer[7] << 8 | recvBuffer[8];
+		uint16_t headerLen = recvBuffer[8] << 8 | recvBuffer[7];
 
 		uint32_t payloadStart = ((uint32_t)recvBuffer[10] << 24) | ((uint32_t)recvBuffer[11] << 16) | ((uint32_t)recvBuffer[12] << 8 )| ((uint32_t)recvBuffer[13]); // p)arsing where the payload begins
 		uint32_t payloadLen = ((uint32_t)recvBuffer[14] << 24) | ((uint32_t)recvBuffer[15] << 16) | ((uint32_t)recvBuffer[16] << 8 )| ((uint32_t)recvBuffer[17]); // p)arsing how long the payload is
@@ -109,17 +109,30 @@ Packet MPInterfacer::recvPacket()
 
 		Packet incoming = Packet(ordered, encrypted, awaitACK, recvBuffer[7], packetNum); // basically mocking a packet that is received ... makes it easier to deserialize and interpret data
 
-		uint8_t* header = (uint8_t*)malloc(headerLen); // creating and extracting the header from the incoming bytes
-		if (header == nullptr) throw std::runtime_error("incoming packet header initialization failed");
-		memcpy(header, recvBuffer, headerLen);
+		std::vector<uint8_t> header;
 
-		uint8_t* payload = (uint8_t*)malloc(payloadLen); // creating and extracting the payload from the incoming bytes
-		if (payload == nullptr) throw std::runtime_error("incoming packet payload initialization failed");
-		memcpy(payload, recvBuffer + payloadStart, payloadLen);
+		std::vector<uint8_t> payload;
 
-		uint8_t* meta = (uint8_t*)malloc(metaLen); // creating and extracting the payload from he incoming bytes
-		if (meta == nullptr) throw std::runtime_error("incoming packet meta initialization failed");
-		memcpy(meta, recvBuffer + metaStart, metaLen);
+		std::vector<uint8_t> meta;
+
+		for (int i = 0; i < headerLen; i++)
+		{
+			header.push_back(recvBuffer[i]);
+		}
+		if (payloadLen != 0)
+		{
+			for (int i = payloadStart; i < payloadStart + payloadLen; i++)
+			{
+				payload.push_back(recvBuffer[i]);
+			}
+		}
+		if (metaLen != 0)
+		{
+			for (int i = metaStart; i < metaStart + metaLen; i++)
+			{
+				meta.push_back(recvBuffer[i]);
+			}
+		}
 
 		incoming.setCompleteData(header, headerLen, payload, payloadLen, meta, metaLen); // shoving the data into the packet
 
@@ -255,9 +268,9 @@ void MPInterfacer::ListenerFunction() // will run continuously, invoking callbac
 			{
 				if (ACKBuffer[i]->getPacketNum() == incoming.getPacketNum())
 				{
-					ACKBuffer.erase(ACKBuffer.begin() + i); // remove the packet from the buffer that we got a reply to
 					ACKBuffer[i]->Deliver();
-					printf("ACK Received");
+					ACKBuffer.erase(ACKBuffer.begin() + i); // remove the packet from the buffer that we got a reply to
+					printf("ACK Received\n");
 				}
 			}
 			break;
@@ -268,7 +281,7 @@ void MPInterfacer::ListenerFunction() // will run continuously, invoking callbac
 			{
 				Packet ACK_REPLY = Packet(false, false, false, ACK_RESPONSE, incoming.getPacketNum());
 				sendPacket(&ACK_REPLY);
-				printf("ACK Sent");
+				printf("ACK Sent\n");
 			}
 			m_ReceiveCallback(incoming);
 			break;

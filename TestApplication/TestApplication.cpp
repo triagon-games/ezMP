@@ -9,13 +9,13 @@ void onPacketReceive(Packet p)
 {
 	std::string message;
 	for (int i = 0; i < p.getDataLength(); i++) message += p.getData()[i];
-	printf("\n\nReceived %d bytes: %s", p.getDataLength(), message.c_str());
+	printf("\n\nReceived %d bytes: %s\n", p.getDataLength(), message.c_str());
 }
 
 int main(int argc, char* argv[])
 {
 	char password[] = "im stuff";
-	uint8_t addr[] = {73, 162, 31, 175};
+	uint8_t addr[] = {127, 0, 0, 1};
 
 	for (int i = 0; i < argc; ++i)
 		std::cout << argv[i] << "\n";
@@ -30,12 +30,12 @@ int main(int argc, char* argv[])
 	if (strcmp(argv[1], "client") == 0)
 	{
 		MPInterfacer* interfacer = new MPInterfacer(123, std::string(password), (uint16_t)20001, addr, (uint16_t)20001);
-		printf("client mode");
+		printf("client mode\n");
 		interfacer->attachReceiveCallback(&onPacketReceive);
 
 		while (true)
 		{
-			Packet send = Packet(false, false, false, 1, 1);
+			Packet send = Packet(false, false, true, 1, 1);
 			std::string toSend;
 			std::getline(std::cin, toSend);
 			send.appendData(const_cast<uint8_t*>(reinterpret_cast<const uint8_t*>(toSend.c_str())), toSend.length());
