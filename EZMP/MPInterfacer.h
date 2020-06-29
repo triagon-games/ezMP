@@ -9,6 +9,7 @@
 #include <ws2tcpip.h>
 #include <thread>
 #include <vector>
+#include "PortForwardEngine.h"
 
 #pragma comment (lib, "Ws2_32.lib")
 #pragma comment (lib, "Mswsock.lib")

@@ -35,6 +35,9 @@ MPInterfacer::MPInterfacer(uint64_t ClientUUID, std::string password, uint16_t s
 		printf("%s function failed when creating WSADATA line: %d\n error: %d", __func__, __LINE__, iError);
 		throw std::runtime_error("unable to create WSADATA");
 	}
+
+	//PortForwardEngine::portForward(recvPort, recvPort);
+
 	recvSock = socket(AF_INET, SOCK_DGRAM, 0);
 	listenerSocket.sin_addr.S_un.S_addr = ADDR_ANY; // in this context, the server is the listenerm the client is the sender ... in multiplayer games the client must send and receive packets, so does the server
 	listenerSocket.sin_family = AF_INET; // for this reason both the winsock2 server (listener) and winsock2 client (sender) must be created and initialized
