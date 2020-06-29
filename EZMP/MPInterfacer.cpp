@@ -229,7 +229,6 @@ void MPInterfacer::onHandshakeReceive(uint64_t secret, uint32_t exchangeNum, uin
 	}
 }
 
-
 void MPInterfacer::ListenerFunction() // will run continuously, invoking callbacks and analyzing the incoming data
 {
 	while (true)
@@ -258,6 +257,7 @@ void MPInterfacer::ListenerFunction() // will run continuously, invoking callbac
 				{
 					ACKBuffer.erase(ACKBuffer.begin() + i); // remove the packet from the buffer that we got a reply to
 					ACKBuffer[i]->Deliver();
+					printf("ACK Received");
 				}
 			}
 			break;
@@ -268,6 +268,7 @@ void MPInterfacer::ListenerFunction() // will run continuously, invoking callbac
 			{
 				Packet ACK_REPLY = Packet(false, false, false, ACK_RESPONSE, incoming.getPacketNum());
 				sendPacket(&ACK_REPLY);
+				printf("ACK Sent");
 			}
 			m_ReceiveCallback(incoming);
 			break;

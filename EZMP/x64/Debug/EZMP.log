@@ -1,8 +1,2 @@
-﻿  Packet.cpp
-C:\Users\NIK\Source\Repos\ezMP\EZMP\Packet.cpp(64,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\NIK\Source\Repos\ezMP\EZMP\Packet.cpp(86,26): warning C4267: 'initializing': conversion from 'size_t' to 'uint16_t', possible loss of data
-C:\Users\NIK\Source\Repos\ezMP\EZMP\Packet.cpp(87,23): warning C4267: '+=': conversion from 'size_t' to 'uint32_t', possible loss of data
-C:\Users\NIK\Source\Repos\ezMP\EZMP\Packet.cpp(104,27): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
-C:\Users\NIK\Source\Repos\ezMP\EZMP\Packet.cpp(171,32): warning C4267: 'initializing': conversion from 'size_t' to 'uint32_t', possible loss of data
-C:\Users\NIK\Source\Repos\ezMP\EZMP\Packet.cpp(198,50): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+﻿  PortForwardEngine.cpp
   EZMP.vcxproj -> C:\Users\NIK\Source\Repos\ezMP\EZMP\x64\Debug\EZMP.lib
