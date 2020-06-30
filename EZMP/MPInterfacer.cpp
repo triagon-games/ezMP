@@ -10,6 +10,7 @@ int iError;
 WSADATA wsaData;
 SOCKET m_Socket;
 sockaddr_in m_SocketAddress;
+sockaddr_in m_ListenSocketAddress;
 sockaddr_in incomingSocket;
 uint8_t recvBuffer[RECEIVE_BUFFER_LEN];
 int clientLength;
@@ -34,45 +35,35 @@ MPInterfacer::MPInterfacer(uint64_t ClientUUID, uint16_t Port, uint8_t* address,
 	}
 
 	m_Socket = socket(AF_INET, SOCK_DGRAM, 0);
-	if (!isServer)
-	{
-		std::string ip;
-		for (int i = 0; i < 3; i++) ip += std::to_string(address[i]) + '.';
-		ip += std::to_string(address[3]);
-		iError = inet_pton(AF_INET, (PSTR)ip.c_str(), &m_SocketAddress.sin_addr);
-	}
-	else
-	{
-		m_SocketAddress.sin_addr.S_un.S_addr = ADDR_ANY;
-	}
+	std::string ip;
+	for (int i = 0; i < 3; i++) ip += std::to_string(address[i]) + '.';
+	ip += std::to_string(address[3]);
+	iError = inet_pton(AF_INET, (PSTR)ip.c_str(), &m_SocketAddress.sin_addr);
 	m_SocketAddress.sin_family = AF_INET; // for this reason both the winsock2 server (listener) and winsock2 client (sender) must be created and initialized
 	m_SocketAddress.sin_port = htons(Port); // little to big endian conversion
+
+	m_ListenSocketAddress.sin_addr.S_un.S_addr = ADDR_ANY;
+	m_ListenSocketAddress.sin_family = AF_INET;
+	m_ListenSocketAddress.sin_port = htons(Port);
 
 	if (!isServer)
 	{
 		HolePunch();
 	}
-
-	if (isServer)
+	else
 	{
 		iError = bind(m_Socket, (sockaddr*)&m_SocketAddress, sizeof(m_SocketAddress));
-	}
-	if (iError != 0)
-	{
-		printf("%s function failed binding SOCKET line: %d\n error: %d", __func__, __LINE__, iError);
-		throw std::runtime_error("unable to bind SOCKET");
+		if (iError != 0)
+		{
+			printf("%s function failed binding SOCKET line: %d\n error: %d", __func__, __LINE__, iError);
+			throw std::runtime_error("unable to bind SOCKET");
+		}
 	}
 
 	clientLength = sizeof(incomingSocket);
 	ZeroMemory(&incomingSocket, clientLength); // allocating space for the client information
 
 	ZeroMemory(recvBuffer, RECEIVE_BUFFER_LEN); // allocating space for the receiving buffer
-
-	if (!iError)
-	{
-		printf("%s function failed parsing IP: %d\n error: %d", __func__, __LINE__, iError);
-		throw std::runtime_error("unable to parse IP");
-	}
 
 	m_LatencyCallback = NULL;
 	m_ReceiveCallback = NULL;
