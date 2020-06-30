@@ -1,6 +1,6 @@
 #include "PortForwardEngine.h"
 
-void PortForwardEngine::portForward(long internalPort, long externalPort)
+void PortForwardEngine::UPnPportForward(long internalPort, long externalPort)
 {
 	CoInitialize(NULL);
 

@@ -11,7 +11,7 @@ public:
     Packet();
     ~Packet();
 
-    void setCompleteData(uint8_t* hdr, uint16_t hdrLen, uint8_t* payload, uint32_t payloadLen, uint8_t* meta, uint16_t metaLen);
+    void setCompleteData(std::vector<uint8_t> hdr, uint16_t hdrLen, std::vector<uint8_t> payload, uint32_t payloadLen, std::vector<uint8_t> meta, uint16_t metaLen);
     uint32_t appendData(uint8_t idata[], size_t size, uint8_t type = 0);
     uint32_t appendData(float diata);
     uint32_t appendData(double idata);

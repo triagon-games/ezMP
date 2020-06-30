@@ -22,14 +22,14 @@ int main(int argc, char* argv[])
 
 	if (strcmp(argv[1], "server") == 0)
 	{
-		MPInterfacer* interfacer = new MPInterfacer(123, std::string(password), (uint16_t)49950, addr, (uint16_t)49951);
+		MPInterfacer* interfacer = new MPInterfacer(123, (uint16_t)5351, addr, true);
 		interfacer->attachReceiveCallback(&onPacketReceive);
 		printf("server mode");
 		std::getchar();
 	}
 	if (strcmp(argv[1], "client") == 0)
 	{
-		MPInterfacer* interfacer = new MPInterfacer(123, std::string(password), (uint16_t)5351, addr, (uint16_t)5351);
+		MPInterfacer* interfacer = new MPInterfacer(123, (uint16_t)5351, addr, false);
 		printf("client mode\n");
 		interfacer->attachReceiveCallback(&onPacketReceive);
 

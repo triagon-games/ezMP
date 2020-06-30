@@ -9,6 +9,7 @@
 #include <ws2tcpip.h>
 #include <thread>
 #include <vector>
+#include "PortForwardEngine.h"
 
 #pragma comment (lib, "Ws2_32.lib")
 #pragma comment (lib, "Mswsock.lib")
@@ -30,7 +31,7 @@ private:
 	}
 
 public:
-	MPInterfacer(uint64_t ClientUUID, std::string password, uint16_t sendPort, uint8_t* address, uint16_t recvPort);
+	MPInterfacer(uint64_t ClientUUID, uint16_t Port, uint8_t* address, bool isServer);
 	~MPInterfacer();
 
 	void sendPacket(Packet* pkt, bool retry = false);
@@ -43,6 +44,8 @@ public:
 private:
 	std::thread ListenerThread;
 	std::thread ACKManagerThread;
+
+	void HolePunch();
 
 	std::vector<Packet*> ACKBuffer;
 	int ACKBufferLength = 0;

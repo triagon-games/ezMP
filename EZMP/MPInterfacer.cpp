@@ -8,24 +8,21 @@ uint64_t count_digit(uint64_t number)
 
 int iError;
 WSADATA wsaData;
-SOCKET recvSock;
-sockaddr_in listenerSocket;
+SOCKET m_Socket;
+sockaddr_in m_SocketAddress;
 sockaddr_in incomingSocket;
 uint8_t recvBuffer[RECEIVE_BUFFER_LEN];
 int clientLength;
-
-SOCKET sendSock;
-sockaddr_in senderSocket;
 
 uint8_t* sendFromAddr;
 uint16_t sendToPort;
 uint16_t listenOnPort;
 
-MPInterfacer::MPInterfacer(uint64_t ClientUUID, std::string password, uint16_t sendPort, uint8_t* address, uint16_t recvPort)
+MPInterfacer::MPInterfacer(uint64_t ClientUUID, uint16_t Port, uint8_t* address, bool isServer)
 {
 	sendFromAddr = address;
-	sendToPort = sendPort;
-	listenOnPort = recvPort;
+	sendToPort = Port;
+	listenOnPort = Port;
 
 	uuid = ClientUUID;
 
@@ -36,14 +33,20 @@ MPInterfacer::MPInterfacer(uint64_t ClientUUID, std::string password, uint16_t s
 		throw std::runtime_error("unable to create WSADATA");
 	}
 
-	//PortForwardEngine::portForward(recvPort, recvPort);
+	HolePunch();
 
-	recvSock = socket(AF_INET, SOCK_DGRAM, 0);
-	listenerSocket.sin_addr.S_un.S_addr = ADDR_ANY; // in this context, the server is the listenerm the client is the sender ... in multiplayer games the client must send and receive packets, so does the server
-	listenerSocket.sin_family = AF_INET; // for this reason both the winsock2 server (listener) and winsock2 client (sender) must be created and initialized
-	listenerSocket.sin_port = htons(recvPort); // little to big endian conversion
+	m_Socket = socket(AF_INET, SOCK_DGRAM, 0);
+	std::string ip;
+	for (int i = 0; i < 3; i++) ip += std::to_string(address[i]) + '.';
+	ip += std::to_string(address[3]);
+	iError = inet_pton(AF_INET, (PSTR)ip.c_str(), &m_SocketAddress.sin_addr);
+	m_SocketAddress.sin_family = AF_INET; // for this reason both the winsock2 server (listener) and winsock2 client (sender) must be created and initialized
+	m_SocketAddress.sin_port = htons(Port); // little to big endian conversion
 
-	iError = bind(recvSock, (sockaddr*)&listenerSocket, sizeof(listenerSocket));
+	if (isServer)
+	{
+		iError = bind(m_Socket, (sockaddr*)&m_SocketAddress, sizeof(m_SocketAddress));
+	}
 	if (iError != 0)
 	{
 		printf("%s function failed binding SOCKET line: %d\n error: %d", __func__, __LINE__, iError);
@@ -55,19 +58,12 @@ MPInterfacer::MPInterfacer(uint64_t ClientUUID, std::string password, uint16_t s
 
 	ZeroMemory(recvBuffer, RECEIVE_BUFFER_LEN); // allocating space for the receiving buffer
 
-	std::string ip;
-	senderSocket.sin_family = AF_INET; // ipv4
-	senderSocket.sin_port = htons(sendPort); // little to big endian conversion
-	for (int i = 0; i < 3; i++) ip += std::to_string(address[i]) + '.';
-	ip += std::to_string(address[3]);
-	iError = inet_pton(AF_INET, (PSTR)ip.c_str(), &senderSocket.sin_addr);
 	if (!iError)
 	{
 		printf("%s function failed parsing IP: %d\n error: %d", __func__, __LINE__, iError);
 		throw std::runtime_error("unable to parse IP");
 	}
 
-	sendSock = socket(AF_INET, SOCK_DGRAM, 0);
 	m_LatencyCallback = NULL;
 	m_ReceiveCallback = NULL;
 
@@ -89,7 +85,7 @@ MPInterfacer::~MPInterfacer()
 Packet MPInterfacer::recvPacket()
 {
 	ZeroMemory(recvBuffer, RECEIVE_BUFFER_LEN);
-	int incomingBytes = recvfrom(recvSock, (char*)recvBuffer, RECEIVE_BUFFER_LEN, 0, (sockaddr*)&incomingSocket, & clientLength); // reading incoming packets
+	int incomingBytes = recvfrom(m_Socket, (char*)recvBuffer, RECEIVE_BUFFER_LEN, 0, (sockaddr*)&incomingSocket, & clientLength); // reading incoming packets
 	if (incomingBytes == SOCKET_ERROR)
 	{
 		printf("Either an error has occured or there are no available packets: %d", WSAGetLastError());
@@ -139,10 +135,10 @@ Packet MPInterfacer::recvPacket()
 
 		incoming.setCompleteData(header, headerLen, payload, payloadLen, meta, metaLen); // shoving the data into the packet
 
-		incoming.sourceAddr[0] = listenerSocket.sin_addr.S_un.S_un_b.s_b1; // setting the ip address of the source that came in from the client object on receive function call
-		incoming.sourceAddr[1] = listenerSocket.sin_addr.S_un.S_un_b.s_b2; // seriously noit sure if this will work.
-		incoming.sourceAddr[2] = listenerSocket.sin_addr.S_un.S_un_b.s_b3;
-		incoming.sourceAddr[3] = listenerSocket.sin_addr.S_un.S_un_b.s_b4;
+		incoming.sourceAddr[0] = m_SocketAddress.sin_addr.S_un.S_un_b.s_b1; // setting the ip address of the source that came in from the client object on receive function call
+		incoming.sourceAddr[1] = m_SocketAddress.sin_addr.S_un.S_un_b.s_b2; // seriously noit sure if this will work.
+		incoming.sourceAddr[2] = m_SocketAddress.sin_addr.S_un.S_un_b.s_b3;
+		incoming.sourceAddr[3] = m_SocketAddress.sin_addr.S_un.S_un_b.s_b4;
 
 		return incoming;
 	}
@@ -157,6 +153,12 @@ void MPInterfacer::attachReceiveCallback(void (*func)(Packet))
 void MPInterfacer::attachLatencyCallback(void (*func)(uint16_t))
 {
 	m_LatencyCallback = func; // attach latency callback
+}
+
+void MPInterfacer::HolePunch()
+{
+	Packet* ack = new Packet(false, false, true, 1, 0);
+	sendPacket(ack);
 }
 
 bool MPInterfacer::awaitPacket()
@@ -187,7 +189,7 @@ void MPInterfacer::sendPacket(Packet* pkt, bool retry)
 
 	unsigned int pktlen = pkt->getFullPacketLength();
 	
-	iError = sendto(sendSock, fullPacket, pktlen, 0, (sockaddr*)&senderSocket, sizeof(senderSocket)); // sending the packet and getting a result code to see if it failed
+	iError = sendto(m_Socket, fullPacket, pktlen, 0, (sockaddr*)&m_SocketAddress, sizeof(m_SocketAddress)); // sending the packet and getting a result code to see if it failed
 	if (iError == 0 || iError == -1)
 	{
 		printf("%s function failed when sending a packet line: %d\n error: %d", __func__, __LINE__, iError);
