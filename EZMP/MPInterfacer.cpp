@@ -33,15 +33,25 @@ MPInterfacer::MPInterfacer(uint64_t ClientUUID, uint16_t Port, uint8_t* address,
 		throw std::runtime_error("unable to create WSADATA");
 	}
 
-	HolePunch();
-
 	m_Socket = socket(AF_INET, SOCK_DGRAM, 0);
-	std::string ip;
-	for (int i = 0; i < 3; i++) ip += std::to_string(address[i]) + '.';
-	ip += std::to_string(address[3]);
-	iError = inet_pton(AF_INET, (PSTR)ip.c_str(), &m_SocketAddress.sin_addr);
+	if (!isServer)
+	{
+		std::string ip;
+		for (int i = 0; i < 3; i++) ip += std::to_string(address[i]) + '.';
+		ip += std::to_string(address[3]);
+		iError = inet_pton(AF_INET, (PSTR)ip.c_str(), &m_SocketAddress.sin_addr);
+	}
+	else
+	{
+		m_SocketAddress.sin_addr.S_un.S_addr = ADDR_ANY;
+	}
 	m_SocketAddress.sin_family = AF_INET; // for this reason both the winsock2 server (listener) and winsock2 client (sender) must be created and initialized
 	m_SocketAddress.sin_port = htons(Port); // little to big endian conversion
+
+	if (!isServer)
+	{
+		HolePunch();
+	}
 
 	if (isServer)
 	{
