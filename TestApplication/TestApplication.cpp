@@ -15,21 +15,21 @@ void onPacketReceive(Packet p)
 int main(int argc, char* argv[])
 {
 	char password[] = "im stuff";
-	uint8_t addr[] = { 192,168,20,20 };
+	uint8_t addr[] = { 73,162,31,175 };
 
 	for (int i = 0; i < argc; ++i)
 		std::cout << argv[i] << "\n";
 
 	if (strcmp(argv[1], "server") == 0)
 	{
-		MPInterfacer* interfacer = new MPInterfacer(123, (uint16_t)5351, addr, true);
+		MPInterfacer* interfacer = new MPInterfacer(123, (uint16_t)40004, addr, true);
 		interfacer->attachReceiveCallback(&onPacketReceive);
 		printf("server mode");
 		std::getchar();
 	}
 	if (strcmp(argv[1], "client") == 0)
 	{
-		MPInterfacer* interfacer = new MPInterfacer(123, (uint16_t)20002, addr, false);
+		MPInterfacer* interfacer = new MPInterfacer(123, (uint16_t)40004, addr, false);
 		printf("client mode\n");
 		interfacer->attachReceiveCallback(&onPacketReceive);
 

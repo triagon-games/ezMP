@@ -3,7 +3,7 @@
      ROBOCOPY     ::     Robust File Copy for Windows                              
   -------------------------------------------------------------------------------
   
-    Started : Thursday, July 2, 2020 12:25:47 PM
+    Started : Thursday, July 2, 2020 1:29:47 PM
      Source : C:\Users\NIK\Source\Repos\ezMP\EZMP\
        Dest : C:\Users\NIK\Source\Repos\ezMP\EZMP\include\
   
@@ -56,17 +56,17 @@
      Files :        10         0        10         0         0         0
      Bytes :     5.5 k         0     5.5 k         0         0         0
      Times :   0:00:00   0:00:00                       0:00:00   0:00:00
-     Ended : Thursday, July 2, 2020 12:25:47 PM
+     Ended : Thursday, July 2, 2020 1:29:47 PM
   
   MPInterfacer.cpp
-C:\Users\NIK\Source\Repos\ezMP\EZMP\MPInterfacer.cpp(125,33): warning C4018: '<': signed/unsigned mismatch
-C:\Users\NIK\Source\Repos\ezMP\EZMP\MPInterfacer.cpp(132,30): warning C4018: '<': signed/unsigned mismatch
-C:\Users\NIK\Source\Repos\ezMP\EZMP\MPInterfacer.cpp(210,27): warning C4244: 'argument': conversion from 'uint64_t' to 'const _Kty', possible loss of data
+C:\Users\NIK\Source\Repos\ezMP\EZMP\MPInterfacer.cpp(130,33): warning C4018: '<': signed/unsigned mismatch
+C:\Users\NIK\Source\Repos\ezMP\EZMP\MPInterfacer.cpp(137,30): warning C4018: '<': signed/unsigned mismatch
+C:\Users\NIK\Source\Repos\ezMP\EZMP\MPInterfacer.cpp(215,27): warning C4244: 'argument': conversion from 'uint64_t' to 'const _Kty', possible loss of data
           with
           [
               _Kty=long
           ]
-C:\Users\NIK\Source\Repos\ezMP\EZMP\MPInterfacer.cpp(235,37): warning C4244: 'argument': conversion from 'uint64_t' to 'const _Kty', possible loss of data
+C:\Users\NIK\Source\Repos\ezMP\EZMP\MPInterfacer.cpp(240,37): warning C4244: 'argument': conversion from 'uint64_t' to 'const _Kty', possible loss of data
           with
           [
               _Kty=long

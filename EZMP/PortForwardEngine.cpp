@@ -16,7 +16,7 @@ void PortForwardEngine::UPnPportForward(long internalPort, long externalPort)
 
 	printf("%lu\n", HRESULT_CODE(nat->get_StaticPortMappingCollection(&mappingCollection)));
 
-	printf("%lu\n", HRESULT_CODE(mappingCollection->Add(10001, protocol, 10001, clientName, VARIANT_TRUE, serviceName, &staticMapping)));
+	printf("%lu\n", HRESULT_CODE(mappingCollection->Add(internalPort , protocol, externalPort, clientName, VARIANT_TRUE, serviceName, &staticMapping)));
 
 	staticMapping->Release();
 	staticMapping = NULL;

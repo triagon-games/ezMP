@@ -58,6 +58,11 @@ MPInterfacer::MPInterfacer(uint64_t ClientUUID, uint16_t Port, uint8_t* address,
 	}
 	else
 	{
+		try
+		{
+			PortForwardEngine::UPnPportForward(Port, Port);
+		}
+		catch (std::exception ex) {}
 		iError = bind(m_Socket, (sockaddr*)&m_ListenSocketAddress, sizeof(m_ListenSocketAddress)); // setting the inbound port
 		if (iError != 0)
 		{
