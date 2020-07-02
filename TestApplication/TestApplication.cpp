@@ -15,7 +15,7 @@ void onPacketReceive(Packet p)
 int main(int argc, char* argv[])
 {
 	char password[] = "im stuff";
-	uint8_t addr[] = { 73,162,31,175 };
+	uint8_t addr[] = { 192,168,20,20 };
 
 	for (int i = 0; i < argc; ++i)
 		std::cout << argv[i] << "\n";

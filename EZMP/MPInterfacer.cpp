@@ -48,11 +48,17 @@ MPInterfacer::MPInterfacer(uint64_t ClientUUID, uint16_t Port, uint8_t* address,
 
 	if (!isServer)
 	{
+		iError = bind(m_Socket, (sockaddr*)&m_ListenSocketAddress, sizeof(m_ListenSocketAddress)); // setting the outbound port
+		if (iError != 0)
+		{
+			printf("%s function failed binding SOCKET line: %d\n error: %d", __func__, __LINE__, iError);
+			throw std::runtime_error("unable to bind SOCKET");
+		}
 		HolePunch();
 	}
 	else
 	{
-		iError = bind(m_Socket, (sockaddr*)&m_ListenSocketAddress, sizeof(m_ListenSocketAddress));
+		iError = bind(m_Socket, (sockaddr*)&m_ListenSocketAddress, sizeof(m_ListenSocketAddress)); // setting the inbound port
 		if (iError != 0)
 		{
 			printf("%s function failed binding SOCKET line: %d\n error: %d", __func__, __LINE__, iError);
