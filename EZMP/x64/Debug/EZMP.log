@@ -3,7 +3,7 @@
      ROBOCOPY     ::     Robust File Copy for Windows                              
   -------------------------------------------------------------------------------
   
-    Started : Monday, June 29, 2020 8:40:06 PM
+    Started : Wednesday, July 1, 2020 6:14:44 PM
      Source : C:\Users\NIK\Source\Repos\ezMP\EZMP\
        Dest : C:\Users\NIK\Source\Repos\ezMP\EZMP\include\
   
@@ -56,7 +56,7 @@
      Files :        10         0        10         0         0         0
      Bytes :     5.5 k         0     5.5 k         0         0         0
      Times :   0:00:00   0:00:00                       0:00:00   0:00:00
-     Ended : Monday, June 29, 2020 8:40:06 PM
+     Ended : Wednesday, July 1, 2020 6:14:44 PM
   
   MPInterfacer.cpp
 C:\Users\NIK\Source\Repos\ezMP\EZMP\MPInterfacer.cpp(124,33): warning C4018: '<': signed/unsigned mismatch

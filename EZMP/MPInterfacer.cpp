@@ -52,7 +52,7 @@ MPInterfacer::MPInterfacer(uint64_t ClientUUID, uint16_t Port, uint8_t* address,
 	}
 	else
 	{
-		iError = bind(m_Socket, (sockaddr*)&m_SocketAddress, sizeof(m_SocketAddress));
+		iError = bind(m_Socket, (sockaddr*)&m_ListenSocketAddress, sizeof(m_ListenSocketAddress));
 		if (iError != 0)
 		{
 			printf("%s function failed binding SOCKET line: %d\n error: %d", __func__, __LINE__, iError);
