@@ -19,8 +19,10 @@ uint8_t* sendFromAddr;
 uint16_t sendToPort;
 uint16_t listenOnPort;
 
-MPInterfacer::MPInterfacer(uint64_t ClientUUID, uint16_t Port, uint8_t* address, bool isServer)
+MPInterfacer::MPInterfacer(uint64_t ClientUUID, uint16_t Port, uint8_t* address, bool isServer, std::string Pass)
 {
+	Utils::PortTranslation pt = Utils::getPortTranslation(Port);
+
 	sendFromAddr = address;
 	sendToPort = Port;
 	listenOnPort = Port;
@@ -58,11 +60,14 @@ MPInterfacer::MPInterfacer(uint64_t ClientUUID, uint16_t Port, uint8_t* address,
 	}
 	else
 	{
+#ifndef NO_UPNP
 		try
 		{
 			PortForwardEngine::UPnPportForward(Port, Port);
 		}
 		catch (std::exception ex) {}
+#endif
+
 		iError = bind(m_Socket, (sockaddr*)&m_ListenSocketAddress, sizeof(m_ListenSocketAddress)); // setting the inbound port
 		if (iError != 0)
 		{
@@ -81,6 +86,10 @@ MPInterfacer::MPInterfacer(uint64_t ClientUUID, uint16_t Port, uint8_t* address,
 
 	ListenerThread = std::thread(&MPInterfacer::ListenerFunction, this);
 	ACKManagerThread = std::thread(&MPInterfacer::ACKManager, this);
+
+	generatePrivateSecret(Pass);
+
+	startHandshake();
 }
 
 MPInterfacer::~MPInterfacer()
@@ -186,8 +195,10 @@ Packet MPInterfacer::encryptPacket(Packet pkt)
 void MPInterfacer::startHandshake()
 {
 	Packet* init = new Packet(false, false, true, HANDSHAKE_PACKET, 0); // will initialize the key exchange sequence
-	publicKey = generatePublicSecret(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count());
+	uint64_t time = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+	publicKey = generatePublicSecret(time);
 	init->appendData(power(publicKey, privateKey, SECURE_PRIME_NUMBER));
+	init->appendData(time);
 	sendPacket(init); // send personal key
 }
 
@@ -257,6 +268,7 @@ void MPInterfacer::onHandshakeReceive(uint64_t secret, uint32_t exchangeNum, uin
 		followUp->appendData(power(publicKey, privateKey, SECURE_PRIME_NUMBER));
 		sendPacket(followUp); // send personal key
 	}
+	printf("Shared secret: %i", sharedSecret);
 }
 
 void MPInterfacer::ListenerFunction() // will run continuously, invoking callbacks and analyzing the incoming data
@@ -269,40 +281,45 @@ void MPInterfacer::ListenerFunction() // will run continuously, invoking callbac
 		Packet incoming = recvPacket();
 		switch (incoming.getPacketType())
 		{
-		case LATENCY_PACKET:
-		{
-			m_LatencyCallback(incoming.get16AtLocation(0));
-			break;
-		}
-		case HANDSHAKE_PACKET:
-		{
-			onHandshakeReceive(incoming.get64AtLocation(0), incoming.getPacketNum(), incoming.get64AtLocation(4)); // finishing the handshake 
-			break;
-		}
-		case ACK_RESPONSE:
-		{
-			for (int i = 0; i < ACKBuffer.size(); i++)
+			case LATENCY_PACKET:
 			{
-				if (ACKBuffer[i]->getPacketNum() == incoming.getPacketNum())
+				m_LatencyCallback(incoming.get16AtLocation(0));
+				break;
+			}
+			case HANDSHAKE_PACKET:
+			{
+				onHandshakeReceive(incoming.get64AtLocation(0), incoming.getPacketNum(), incoming.get64AtLocation(8)); // finishing the handshake 
+				break;
+			}
+			case ACK_RESPONSE:
+			{
+				for (int i = 0; i < ACKBuffer.size(); i++)
 				{
-					ACKBuffer[i]->Deliver();
-					ACKBuffer.erase(ACKBuffer.begin() + i); // remove the packet from the buffer that we got a reply to
-					printf("ACK Received\n");
+					if (ACKBuffer[i]->getPacketNum() == incoming.getPacketNum())
+					{
+						ACKBuffer[i]->Deliver();
+						ACKBuffer.erase(ACKBuffer.begin() + i); // remove the packet from the buffer that we got a reply to
+						printf("ACK Received\n");
+					}
 				}
+				break;
 			}
-			break;
-		}
-		default:
-		{
-			if (incoming.isAwaitACK()) // if the incoming packet is awaiting an ACK reply, send one right away ... should contain NULL data bytes, only the header
+			case LOGIN_PACKET:
 			{
-				Packet ACK_REPLY = Packet(false, false, false, ACK_RESPONSE, incoming.getPacketNum());
-				sendPacket(&ACK_REPLY);
-				printf("ACK Sent\n");
+
+				break;
 			}
-			m_ReceiveCallback(incoming);
-			break;
-		}
+			default:
+			{
+				if (incoming.isAwaitACK()) // if the incoming packet is awaiting an ACK reply, send one right away ... should contain NULL data bytes, only the header
+				{
+					Packet ACK_REPLY = Packet(false, false, false, ACK_RESPONSE, incoming.getPacketNum());
+					sendPacket(&ACK_REPLY);
+					printf("ACK Sent\n");
+				}
+				m_ReceiveCallback(incoming);
+				break;
+			}
 		}
 	}
 }

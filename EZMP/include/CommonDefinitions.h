@@ -22,7 +22,12 @@
 	#define ACK_RETRY 500
 #endif
 
+#ifndef PUBLIC_STUN_SERVER
+	#define PUBLIC_STUN_SERVER "stun.callwithus.com"
+#endif
+
 #define LATENCY_PACKET 0
+#define LOGIN_PACKET 1
 #define ACK_RESPONSE 255
 #define HANDSHAKE_PACKET 100
 #define HIDDEN_PACKET 101

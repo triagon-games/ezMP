@@ -5,6 +5,8 @@
 #include <EZMP.h>
 #include <string>
 
+#define SECURE_PRIME_NUMBER 13
+
 void onPacketReceive(Packet p)
 {
 	std::string message;
@@ -22,14 +24,20 @@ int main(int argc, char* argv[])
 
 	if (strcmp(argv[1], "server") == 0)
 	{
-		MPInterfacer* interfacer = new MPInterfacer(123, (uint16_t)40004, addr, true);
+		std::string pass;
+		std::getline(std::cin, pass);
+
+		MPInterfacer* interfacer = new MPInterfacer(123, (uint16_t)40005, addr, true, pass);
 		interfacer->attachReceiveCallback(&onPacketReceive);
 		printf("server mode");
 		std::getchar();
 	}
 	if (strcmp(argv[1], "client") == 0)
 	{
-		MPInterfacer* interfacer = new MPInterfacer(123, (uint16_t)40004, addr, false);
+		std::string pass;
+		std::getline(std::cin, pass);
+
+		MPInterfacer* interfacer = new MPInterfacer(123, (uint16_t)40005, addr, false, pass);
 		printf("client mode\n");
 		interfacer->attachReceiveCallback(&onPacketReceive);
 

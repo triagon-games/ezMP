@@ -3,6 +3,7 @@
 #include <time.h>
 #include <chrono>
 #include "Packet.h"
+#include "Utils.h"
 #include <WinSock2.h>
 #include <winerror.h>
 #include "CommonDefinitions.h"
@@ -31,7 +32,7 @@ private:
 	}
 
 public:
-	MPInterfacer(uint64_t ClientUUID, uint16_t Port, uint8_t* address, bool isServer);
+	MPInterfacer(uint64_t ClientUUID, uint16_t Port, uint8_t* address, bool isServer, std::string Pass);
 	~MPInterfacer();
 
 	void sendPacket(Packet* pkt, bool retry = false);
@@ -48,6 +49,7 @@ private:
 	void HolePunch();
 
 	std::vector<Packet*> ACKBuffer;
+	std::vector<Utils::Endpoint> ServersideEndpoints;
 	int ACKBufferLength = 0;
 
 	bool awaitPacket();

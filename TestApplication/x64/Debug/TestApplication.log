@@ -1,3 +1,5 @@
 ﻿  TestApplication.cpp
-C:\Users\NIK\Source\Repos\ezMP\TestApplication\TestApplication.cpp(11,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\NIK\Source\Repos\ezMP\TestApplication\TestApplication.cpp(8,1): warning C4005: 'SECURE_PRIME_NUMBER': macro redefinition
+C:\Users\NIK\Source\Repos\ezMP\EZMP\include\CommonDefinitions.h(14): message : see previous definition of 'SECURE_PRIME_NUMBER'
+C:\Users\NIK\Source\Repos\ezMP\TestApplication\TestApplication.cpp(13,20): warning C4018: '<': signed/unsigned mismatch
   TestApplication.vcxproj -> C:\Users\NIK\Source\Repos\ezMP\EZMP\x64\Debug\TestApplication.exe

@@ -3,6 +3,7 @@
 #include <cstddef>
 #include "DataStructures.h"
 #include <vector>
+#include "Utils.h"
 
 class Packet
 {
@@ -48,6 +49,8 @@ public:
     uint64_t get64AtLocation(int location);
     double getDoubleAtLocation(int location);
     float getFloatAtLocation(int location);
+
+    Utils::Endpoint source;
 
 private:
     std::vector<uint8_t> header;
