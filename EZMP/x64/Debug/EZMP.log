@@ -3,7 +3,7 @@
      ROBOCOPY     ::     Robust File Copy for Windows                              
   -------------------------------------------------------------------------------
   
-    Started : Monday, July 6, 2020 4:50:15 PM
+    Started : Monday, July 6, 2020 5:07:43 PM
      Source : C:\Users\NIK\Source\Repos\ezMP\EZMP\
        Dest : C:\Users\NIK\Source\Repos\ezMP\EZMP\include\
   
@@ -60,75 +60,23 @@
      Files :        11         0        11         0         0         0
      Bytes :     6.9 k         0     6.9 k         0         0         0
      Times :   0:00:00   0:00:00                       0:00:00   0:00:00
-     Ended : Monday, July 6, 2020 4:50:15 PM
+     Ended : Monday, July 6, 2020 5:07:43 PM
   
-  Client.cpp
-  EZMP.cpp
   MPInterfacer.cpp
-C:\Users\NIK\Source\Repos\ezMP\EZMP\MPInterfacer.cpp(144,33): warning C4018: '<': signed/unsigned mismatch
-C:\Users\NIK\Source\Repos\ezMP\EZMP\MPInterfacer.cpp(151,30): warning C4018: '<': signed/unsigned mismatch
-C:\Users\NIK\Source\Repos\ezMP\EZMP\MPInterfacer.cpp(231,27): warning C4244: 'argument': conversion from 'uint64_t' to 'const _Kty', possible loss of data
+C:\Users\NIK\Source\Repos\ezMP\EZMP\MPInterfacer.cpp(147,33): warning C4018: '<': signed/unsigned mismatch
+C:\Users\NIK\Source\Repos\ezMP\EZMP\MPInterfacer.cpp(154,30): warning C4018: '<': signed/unsigned mismatch
+C:\Users\NIK\Source\Repos\ezMP\EZMP\MPInterfacer.cpp(234,27): warning C4244: 'argument': conversion from 'uint64_t' to 'const _Kty', possible loss of data
           with
           [
               _Kty=long
           ]
-C:\Users\NIK\Source\Repos\ezMP\EZMP\MPInterfacer.cpp(256,37): warning C4244: 'argument': conversion from 'uint64_t' to 'const _Kty', possible loss of data
+C:\Users\NIK\Source\Repos\ezMP\EZMP\MPInterfacer.cpp(259,37): warning C4244: 'argument': conversion from 'uint64_t' to 'const _Kty', possible loss of data
           with
           [
               _Kty=long
           ]
-C:\Users\NIK\Source\Repos\ezMP\EZMP\MPInterfacer.cpp(271,9): warning C4477: 'printf' : format string '%i' requires an argument of type 'int', but variadic argument 1 has type 'uint64_t'
-C:\Users\NIK\Source\Repos\ezMP\EZMP\MPInterfacer.cpp(271,9): message : consider using '%lli' in the format string
-C:\Users\NIK\Source\Repos\ezMP\EZMP\MPInterfacer.cpp(271,9): message : consider using '%Ii' in the format string
-C:\Users\NIK\Source\Repos\ezMP\EZMP\MPInterfacer.cpp(271,9): message : consider using '%I64i' in the format string
-  Packet.cpp
-C:\Users\NIK\Source\Repos\ezMP\EZMP\Packet.cpp(77,26): warning C4267: 'initializing': conversion from 'size_t' to 'uint16_t', possible loss of data
-C:\Users\NIK\Source\Repos\ezMP\EZMP\Packet.cpp(78,23): warning C4267: '+=': conversion from 'size_t' to 'uint32_t', possible loss of data
-C:\Users\NIK\Source\Repos\ezMP\EZMP\Packet.cpp(95,27): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
-C:\Users\NIK\Source\Repos\ezMP\EZMP\Packet.cpp(162,32): warning C4267: 'initializing': conversion from 'size_t' to 'uint32_t', possible loss of data
-C:\Users\NIK\Source\Repos\ezMP\EZMP\Packet.cpp(189,50): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
-  PortForwardEngine.cpp
-  Server.cpp
-  Utils.cpp
-C:\Users\NIK\Source\Repos\ezMP\EZMP\Utils.cpp(12,55): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.24.28314\include\xstring(2388,23): warning C4244: 'argument': conversion from 'wchar_t' to 'const _Elem', possible loss of data
-          with
-          [
-              _Elem=char
-          ]
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.24.28314\include\xstring(2399): message : see reference to function template instantiation 'void std::basic_string<char,std::char_traits<char>,std::allocator<char>>::_Construct<wchar_t*>(_Iter,const _Iter,std::input_iterator_tag)' being compiled
-          with
-          [
-              _Iter=wchar_t *
-          ]
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.24.28314\include\xstring(2399): message : see reference to function template instantiation 'void std::basic_string<char,std::char_traits<char>,std::allocator<char>>::_Construct<wchar_t*>(_Iter,const _Iter,std::input_iterator_tag)' being compiled
-          with
-          [
-              _Iter=wchar_t *
-          ]
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.24.28314\include\xstring(2379): message : see reference to function template instantiation 'void std::basic_string<char,std::char_traits<char>,std::allocator<char>>::_Construct<wchar_t*>(const _Iter,const _Iter,std::forward_iterator_tag)' being compiled
-          with
-          [
-              _Iter=wchar_t *
-          ]
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.24.28314\include\xstring(2379): message : see reference to function template instantiation 'void std::basic_string<char,std::char_traits<char>,std::allocator<char>>::_Construct<wchar_t*>(const _Iter,const _Iter,std::forward_iterator_tag)' being compiled
-          with
-          [
-              _Iter=wchar_t *
-          ]
-C:\Users\NIK\Source\Repos\ezMP\EZMP\Utils.cpp(25): message : see reference to function template instantiation 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>::basic_string<std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>,void>(_Iter,_Iter,const _Alloc &)' being compiled
-          with
-          [
-              _Elem=wchar_t,
-              _Iter=std::_String_iterator<std::_String_val<std::_Simple_types<wchar_t>>>,
-              _Alloc=std::allocator<char>
-          ]
-C:\Users\NIK\Source\Repos\ezMP\EZMP\Utils.cpp(25): message : see reference to function template instantiation 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>::basic_string<std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>,void>(_Iter,_Iter,const _Alloc &)' being compiled
-          with
-          [
-              _Elem=wchar_t,
-              _Iter=std::_String_iterator<std::_String_val<std::_Simple_types<wchar_t>>>,
-              _Alloc=std::allocator<char>
-          ]
-  Generating Code...
+C:\Users\NIK\Source\Repos\ezMP\EZMP\MPInterfacer.cpp(274,9): warning C4477: 'printf' : format string '%i' requires an argument of type 'int', but variadic argument 1 has type 'uint64_t'
+C:\Users\NIK\Source\Repos\ezMP\EZMP\MPInterfacer.cpp(274,9): message : consider using '%lli' in the format string
+C:\Users\NIK\Source\Repos\ezMP\EZMP\MPInterfacer.cpp(274,9): message : consider using '%Ii' in the format string
+C:\Users\NIK\Source\Repos\ezMP\EZMP\MPInterfacer.cpp(274,9): message : consider using '%I64i' in the format string
   EZMP.vcxproj -> C:\Users\NIK\Source\Repos\ezMP\EZMP\x64\Debug\EZMP.lib

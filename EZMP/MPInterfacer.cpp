@@ -89,7 +89,10 @@ MPInterfacer::MPInterfacer(uint64_t ClientUUID, uint16_t Port, uint8_t* address,
 
 	generatePrivateSecret(Pass);
 
-	startHandshake();
+	if (!isServer)
+	{
+		startHandshake();
+	}
 }
 
 MPInterfacer::~MPInterfacer()
