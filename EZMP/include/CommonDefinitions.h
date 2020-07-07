@@ -11,7 +11,7 @@
 #endif
 
 #ifndef SECURE_PRIME_NUMBER
-	#define SECURE_PRIME_NUMBER 0
+	#define SECURE_PRIME_NUMBER 13
 #endif
 
 #ifndef ACK_TIMEOUT

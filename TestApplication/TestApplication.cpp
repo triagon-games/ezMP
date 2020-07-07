@@ -5,8 +5,6 @@
 #include <EZMP.h>
 #include <string>
 
-#define SECURE_PRIME_NUMBER 13
-
 void onPacketReceive(Packet p)
 {
 	std::string message;
