@@ -71,7 +71,7 @@ Utils::PortTranslation Utils::getPortTranslation(uint16_t Port)
 		}
 		if (stunReturn.c_str()[i+1] == '\n')
 		{
-			printf("Found \\n");
+			//printf("Found \\n");
 			found = false;
 		}
 		if (found) 

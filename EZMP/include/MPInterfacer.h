@@ -22,13 +22,9 @@ private:
 	void (*m_ReceiveCallback)(Packet);
 	void (*m_LatencyCallback)(uint16_t);
 
-	uint64_t power(uint64_t a, uint64_t b, uint64_t P)
+	uint64_t generateRuledKey(uint32_t a, uint32_t b, uint32_t P)
 	{
-		if (b == 1)
-			return a;
-
-		else
-			return (((uint64_t)std::pow(a, b)) % P);
+		return (a * b) % P;
 	}
 
 public:
@@ -57,13 +53,13 @@ private:
 
 	void startHandshake();
 
-	uint64_t generatePublicSecret(uint64_t referenceMillis);
-	uint64_t generatePrivateSecret(std::string password);
-	void onHandshakeReceive(uint64_t secret, uint32_t exchangeNum, uint64_t referenceTime);
+	uint32_t generatePublicKey(uint64_t referenceMillis);
+	uint32_t generatePrivateKey(std::string password);
+	void onHandshakeReceive(uint32_t secret, uint32_t exchangeNum, uint64_t referenceTime);
 
-	uint64_t publicKey = 0;
-	uint64_t privateKey = 0;
-protected: uint64_t sharedSecret = 0;
+	uint32_t publicKey = 0;
+	uint32_t privateKey = 0;
+protected: uint32_t sharedSecret = 0;
 
 	void ListenerFunction();
 	void ACKManager();

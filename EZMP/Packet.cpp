@@ -122,7 +122,7 @@ uint32_t Packet::appendData(uint32_t idata)
 
 uint32_t Packet::appendData(uint64_t idata)
 {
-	return appendData(Convert64(idata), sizeof(uint64_t), 6);
+	return appendData((uint8_t*)&idata, sizeof(uint64_t), 6);
 }
 
 std::vector<uint8_t> Packet::getMetaData()

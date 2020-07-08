@@ -25,7 +25,7 @@ int main(int argc, char* argv[])
 		std::string pass;
 		std::getline(std::cin, pass);
 
-		MPInterfacer* interfacer = new MPInterfacer(123, (uint16_t)40005, addr, true, pass);
+		MPInterfacer* interfacer = new MPInterfacer(123, (uint16_t)40007, addr, true, pass);
 		interfacer->attachReceiveCallback(&onPacketReceive);
 		printf("server mode");
 		std::getchar();
@@ -35,13 +35,13 @@ int main(int argc, char* argv[])
 		std::string pass;
 		std::getline(std::cin, pass);
 
-		MPInterfacer* interfacer = new MPInterfacer(123, (uint16_t)40005, addr, false, pass);
+		MPInterfacer* interfacer = new MPInterfacer(123, (uint16_t)40007, addr, false, pass);
 		printf("client mode\n");
 		interfacer->attachReceiveCallback(&onPacketReceive);
 
 		while (true)
 		{
-			Packet send = Packet(false, false, true, 1, 1);
+			Packet send = Packet(false, false, true, 4, 1);
 			std::string toSend;
 			std::getline(std::cin, toSend);
 			send.appendData(const_cast<uint8_t*>(reinterpret_cast<const uint8_t*>(toSend.c_str())), toSend.length());

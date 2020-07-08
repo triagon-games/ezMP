@@ -87,7 +87,7 @@ MPInterfacer::MPInterfacer(uint64_t ClientUUID, uint16_t Port, uint8_t* address,
 	ListenerThread = std::thread(&MPInterfacer::ListenerFunction, this);
 	ACKManagerThread = std::thread(&MPInterfacer::ACKManager, this);
 
-	generatePrivateSecret(Pass);
+	privateKey = generatePrivateKey(Pass);
 
 	if (!isServer)
 	{
@@ -181,7 +181,7 @@ void MPInterfacer::attachLatencyCallback(void (*func)(uint16_t))
 
 void MPInterfacer::HolePunch()
 {
-	Packet* ack = new Packet(false, false, true, 1, 0);
+	Packet* ack = new Packet(false, false, true, SERVICE_PACKET, 0);
 	sendPacket(ack);
 }
 
@@ -199,8 +199,10 @@ void MPInterfacer::startHandshake()
 {
 	Packet* init = new Packet(false, false, true, HANDSHAKE_PACKET, 0); // will initialize the key exchange sequence
 	uint64_t time = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-	publicKey = generatePublicSecret(time);
-	init->appendData(power(publicKey, privateKey, SECURE_PRIME_NUMBER));
+	publicKey = generatePublicKey(time);
+	uint64_t pwr = generateRuledKey(publicKey, privateKey, SECURE_PRIME_NUMBER)%UINT64_MAX;
+	bool test = pwr < UINT64_MAX;
+	init->appendData(pwr);
 	init->appendData(time);
 	sendPacket(init); // send personal key
 }
@@ -228,13 +230,13 @@ void MPInterfacer::sendPacket(Packet* pkt, bool retry)
 	}
 }
 
-uint64_t MPInterfacer::generatePublicSecret(uint64_t referenceMillis)
+uint32_t MPInterfacer::generatePublicKey(uint64_t referenceMillis)
 {
 	srand((uint32_t)(referenceMillis % UINT32_MAX));
 	return std::hash<long>{}(referenceMillis);
 }
 
-uint64_t MPInterfacer::generatePrivateSecret(std::string password)
+uint32_t MPInterfacer::generatePrivateKey(std::string password)
 {
 	std::chrono::milliseconds ms = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());
 	uint64_t milliseconds = _byteswap_uint64(ms.count());
@@ -258,19 +260,21 @@ uint64_t MPInterfacer::generatePrivateSecret(std::string password)
 	size_t passHash = std::hash<std::string>{}(password);
 	size_t keyHash = std::hash<long>{}(privateKey);
 
-	return keyHash ^ passHash;
+	uint64_t tmp = keyHash ^ passHash;
+
+	return ((uint32_t*)&tmp)[0] ^ ((uint32_t*)&tmp)[1];
 }
 
-void MPInterfacer::onHandshakeReceive(uint64_t secret, uint32_t exchangeNum, uint64_t referenceTime)
+void MPInterfacer::onHandshakeReceive(uint32_t secret, uint32_t exchangeNum, uint64_t referenceTime)
 {
-	sharedSecret = power(secret, privateKey, publicKey); // calculate the shared secret ... SHOULD be the same as on other side
 	if (exchangeNum == 0)
 	{
-		publicKey = generatePublicSecret(referenceTime);
+		publicKey = generatePublicKey(referenceTime);
 		Packet* followUp = new Packet(false, false, true, HANDSHAKE_PACKET, 1); // will initialize the key exchange sequence
-		followUp->appendData(power(publicKey, privateKey, SECURE_PRIME_NUMBER));
+		followUp->appendData(generateRuledKey(publicKey, privateKey, SECURE_PRIME_NUMBER));
 		sendPacket(followUp); // send personal key
 	}
+	sharedSecret = generateRuledKey(secret, privateKey, SECURE_PRIME_NUMBER); // calculate the shared secret ... SHOULD be the same as on other side
 	printf("Shared secret: %i", sharedSecret);
 }
 
