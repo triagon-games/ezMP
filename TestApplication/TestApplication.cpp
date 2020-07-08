@@ -8,7 +8,7 @@
 void onPacketReceive(Packet p)
 {
 	std::string message;
-	for (int i = 0; i < p.getDataLength(); i++) message += p.getData()[i];
+	for (unsigned int i = 0; i < p.getDataLength(); i++) message += p.getData()[i];
 	printf("\n\nReceived %d bytes: %s\n", p.getDataLength(), message.c_str());
 }
 

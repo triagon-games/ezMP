@@ -236,12 +236,13 @@ uint16_t Packet::get16AtLocation(int location)
 
 uint32_t Packet::get32AtLocation(int location)
 {
-	return ((uint32_t)(data[location] << 24) | (uint32_t)(data[(long)location] << 16) | (uint32_t)(data[(long)location] << 8) | (uint32_t)(data[(long)location]));
+	return ((uint32_t)(data[location] << 24) | (uint32_t)(data[(long)location + 1] << 16) | (uint32_t)(data[(long)location + 2] << 8) | (uint32_t)(data[(long)location + 3]));
 }
 
 uint64_t Packet::get64AtLocation(int location)
 {
-	return uint64_t();
+	return (((uint64_t)(data[(long)location])) << 56) | (((uint64_t)(data[(long)location + 1])) << 48) | (((uint64_t)(data[(long)location + 2])) << 40) | (((uint64_t)(data[(long)location + 3])) << 32) |
+		(((uint64_t)(data[(long)location + 4])) << 24) | (((uint64_t)(data[(long)location + 5])) << 16) | (((uint64_t)(data[(long)location + 6])) << 8) | ((uint64_t)(data[(long)location + 7]));
 }
 
 double Packet::getDoubleAtLocation(int location)

@@ -59,7 +59,7 @@ private:
 
 	uint32_t publicKey = 0;
 	uint32_t privateKey = 0;
-protected: uint32_t sharedSecret = 0;
+protected: uint64_t sharedSecret = 0;
 
 	void ListenerFunction();
 	void ACKManager();

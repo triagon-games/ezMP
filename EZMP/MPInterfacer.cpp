@@ -138,20 +138,20 @@ Packet MPInterfacer::recvPacket()
 
 		std::vector<uint8_t> meta;
 
-		for (int i = 0; i < headerLen; i++)
+		for (unsigned int i = 0; i < headerLen; i++)
 		{
 			header.push_back(recvBuffer[i]);
 		}
 		if (payloadLen != 0)
 		{
-			for (int i = payloadStart; i < payloadStart + payloadLen; i++)
+			for (unsigned int i = payloadStart; i < payloadStart + payloadLen; i++)
 			{
 				payload.push_back(recvBuffer[i]);
 			}
 		}
 		if (metaLen != 0)
 		{
-			for (int i = metaStart; i < metaStart + metaLen; i++)
+			for (unsigned int i = metaStart; i < metaStart + metaLen; i++)
 			{
 				meta.push_back(recvBuffer[i]);
 			}
