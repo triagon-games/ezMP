@@ -231,18 +231,18 @@ uint8_t Packet::get8AtLocation(int location)
 
 uint16_t Packet::get16AtLocation(int location)
 {
-	return (data[location] << 8 | data[(long)location+1]);
+	return (data[location] << 8 | data[location+1]);
 }
 
 uint32_t Packet::get32AtLocation(int location)
 {
-	return ((uint32_t)(data[location] << 24) | (uint32_t)(data[(long)location + 1] << 16) | (uint32_t)(data[(long)location + 2] << 8) | (uint32_t)(data[(long)location + 3]));
+	return ((uint32_t)(data[location + 3] << 24) | (uint32_t)(data[location + 2] << 16) | (uint32_t)(data[location + 1] << 8) | (uint32_t)(data[location]));
 }
 
 uint64_t Packet::get64AtLocation(int location)
 {
-	return (((uint64_t)(data[(long)location])) << 56) | (((uint64_t)(data[(long)location + 1])) << 48) | (((uint64_t)(data[(long)location + 2])) << 40) | (((uint64_t)(data[(long)location + 3])) << 32) |
-		(((uint64_t)(data[(long)location + 4])) << 24) | (((uint64_t)(data[(long)location + 5])) << 16) | (((uint64_t)(data[(long)location + 6])) << 8) | ((uint64_t)(data[(long)location + 7]));
+	return (((uint64_t)(data[(long)location + 7])) << 56) | (((uint64_t)(data[(long)location + 6])) << 48) | (((uint64_t)(data[(long)location + 5])) << 40) | (((uint64_t)(data[(long)location + 4])) << 32) |
+		(((uint64_t)(data[(long)location + 3])) << 24) | (((uint64_t)(data[(long)location + 2])) << 16) | (((uint64_t)(data[(long)location + 1])) << 8) | ((uint64_t)(data[(long)location]));
 }
 
 double Packet::getDoubleAtLocation(int location)
