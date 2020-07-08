@@ -197,10 +197,10 @@ Packet MPInterfacer::encryptPacket(Packet pkt)
 
 void MPInterfacer::startHandshake()
 {
-	Packet* init = new Packet(false, false, true, HANDSHAKE_PACKET, 0); // will initialize the key exchange sequence
+	Packet* init = new Packet(false, false, true, HANDSHAKE_PACKET, 100); // will initialize the key exchange sequence
 	uint64_t time = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 	publicKey = generatePublicKey(time);
-	uint64_t pwr = generateRuledKey(publicKey, privateKey, SECURE_PRIME_NUMBER)%UINT64_MAX;
+	uint32_t pwr = generateRuledKey(publicKey, privateKey, SECURE_PRIME_NUMBER)%UINT64_MAX;
 	bool test = pwr < UINT64_MAX;
 	init->appendData(pwr);
 	init->appendData(time);
@@ -295,7 +295,7 @@ void MPInterfacer::ListenerFunction() // will run continuously, invoking callbac
 			}
 			case HANDSHAKE_PACKET:
 			{
-				onHandshakeReceive(incoming.get64AtLocation(0), incoming.getPacketNum(), incoming.get64AtLocation(8)); // finishing the handshake 
+				onHandshakeReceive(incoming.get32AtLocation(0), incoming.getPacketNum(), incoming.get64AtLocation(3)); // finishing the handshake 
 				break;
 			}
 			case ACK_RESPONSE:
