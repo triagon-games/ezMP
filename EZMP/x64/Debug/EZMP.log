@@ -3,7 +3,7 @@
      ROBOCOPY     ::     Robust File Copy for Windows                              
   -------------------------------------------------------------------------------
   
-    Started : Wednesday, July 8, 2020 4:07:45 PM
+    Started : Wednesday, July 8, 2020 4:14:50 PM
      Source : C:\Users\NIK\Source\Repos\ezMP\EZMP\
        Dest : C:\Users\NIK\Source\Repos\ezMP\EZMP\include\
   
@@ -60,12 +60,22 @@
      Files :        11         0        11         0         0         0
      Bytes :     6.9 k         0     6.9 k         0         0         0
      Times :   0:00:00   0:00:00                       0:00:00   0:00:00
-     Ended : Wednesday, July 8, 2020 4:07:45 PM
+     Ended : Wednesday, July 8, 2020 4:14:50 PM
   
-  Packet.cpp
-C:\Users\NIK\Source\Repos\ezMP\EZMP\Packet.cpp(77,26): warning C4267: 'initializing': conversion from 'size_t' to 'uint16_t', possible loss of data
-C:\Users\NIK\Source\Repos\ezMP\EZMP\Packet.cpp(78,23): warning C4267: '+=': conversion from 'size_t' to 'uint32_t', possible loss of data
-C:\Users\NIK\Source\Repos\ezMP\EZMP\Packet.cpp(95,27): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
-C:\Users\NIK\Source\Repos\ezMP\EZMP\Packet.cpp(162,32): warning C4267: 'initializing': conversion from 'size_t' to 'uint32_t', possible loss of data
-C:\Users\NIK\Source\Repos\ezMP\EZMP\Packet.cpp(189,50): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  MPInterfacer.cpp
+C:\Users\NIK\Source\Repos\ezMP\EZMP\MPInterfacer.cpp(236,27): warning C4244: 'argument': conversion from 'uint64_t' to 'const _Kty', possible loss of data
+          with
+          [
+              _Kty=long
+          ]
+C:\Users\NIK\Source\Repos\ezMP\EZMP\MPInterfacer.cpp(236,43): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+C:\Users\NIK\Source\Repos\ezMP\EZMP\MPInterfacer.cpp(261,37): warning C4244: 'argument': conversion from 'uint64_t' to 'const _Kty', possible loss of data
+          with
+          [
+              _Kty=long
+          ]
+C:\Users\NIK\Source\Repos\ezMP\EZMP\MPInterfacer.cpp(278,9): warning C4477: 'printf' : format string '%i' requires an argument of type 'int', but variadic argument 1 has type 'uint64_t'
+C:\Users\NIK\Source\Repos\ezMP\EZMP\MPInterfacer.cpp(278,9): message : consider using '%lli' in the format string
+C:\Users\NIK\Source\Repos\ezMP\EZMP\MPInterfacer.cpp(278,9): message : consider using '%Ii' in the format string
+C:\Users\NIK\Source\Repos\ezMP\EZMP\MPInterfacer.cpp(278,9): message : consider using '%I64i' in the format string
   EZMP.vcxproj -> C:\Users\NIK\Source\Repos\ezMP\EZMP\x64\Debug\EZMP.lib
