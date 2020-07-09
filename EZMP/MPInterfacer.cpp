@@ -200,7 +200,7 @@ void MPInterfacer::startHandshake()
 	Packet* init = new Packet(false, false, true, HANDSHAKE_PACKET, 0); // will initialize the key exchange sequence
 	uint64_t time = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 	publicKey = generatePublicKey(time);
-	uint32_t pwr = generateRuledKey(publicKey, privateKey, SECURE_PRIME_NUMBER);
+	uint64_t pwr = generateRuledKey(publicKey, privateKey, SECURE_PRIME_NUMBER);
 
 	init->appendData(pwr);
 	init->appendData(time);
