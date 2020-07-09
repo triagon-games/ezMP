@@ -3,7 +3,7 @@
      ROBOCOPY     ::     Robust File Copy for Windows                              
   -------------------------------------------------------------------------------
   
-    Started : Thursday, July 9, 2020 12:56:54 PM
+    Started : Thursday, July 9, 2020 1:44:25 PM
      Source : C:\Users\ninja\source\repos\ezMP\EZMP\
        Dest : C:\Users\ninja\source\repos\ezMP\EZMP\include\
   
@@ -45,7 +45,7 @@
      Files :        11         0        11         0         0         0
      Bytes :     6.9 k         0     6.9 k         0         0         0
      Times :   0:00:00   0:00:00                       0:00:00   0:00:00
-     Ended : Thursday, July 9, 2020 12:56:54 PM
+     Ended : Thursday, July 9, 2020 1:44:25 PM
   
   MPInterfacer.cpp
 C:\Users\ninja\source\repos\ezMP\EZMP\MPInterfacer.cpp(203,15): warning C4244: 'initializing': conversion from 'uint64_t' to 'uint32_t', possible loss of data
@@ -64,4 +64,5 @@ C:\Users\ninja\source\repos\ezMP\EZMP\MPInterfacer.cpp(279,9): warning C4477: 'p
 C:\Users\ninja\source\repos\ezMP\EZMP\MPInterfacer.cpp(279,9): message : consider using '%lli' in the format string
 C:\Users\ninja\source\repos\ezMP\EZMP\MPInterfacer.cpp(279,9): message : consider using '%Ii' in the format string
 C:\Users\ninja\source\repos\ezMP\EZMP\MPInterfacer.cpp(279,9): message : consider using '%I64i' in the format string
+C:\Users\ninja\source\repos\ezMP\EZMP\MPInterfacer.cpp(301,48): warning C4244: 'argument': conversion from 'uint64_t' to 'uint32_t', possible loss of data
   EZMP.vcxproj -> C:\Users\ninja\source\repos\ezMP\EZMP\x64\Debug\EZMP.lib

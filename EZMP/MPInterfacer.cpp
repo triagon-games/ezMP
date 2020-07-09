@@ -271,12 +271,12 @@ void MPInterfacer::onHandshakeReceive(uint32_t secret, uint32_t exchangeNum, uin
 	{
 		publicKey = generatePublicKey(referenceTime);
 		Packet* followUp = new Packet(false, false, true, HANDSHAKE_PACKET, 1); // will initialize the key exchange sequence
-		uint64_t pwr = generateRuledKey(publicKey, privateKey, SECURE_PRIME_NUMBER);
+		uint64_t pwr = generateRuledKey(privateKey, publicKey, SECURE_PRIME_NUMBER);
 		followUp->appendData(pwr);
 		sendPacket(followUp); // send personal key
 	}
 	sharedSecret = generateRuledKey(secret, privateKey, SECURE_PRIME_NUMBER); // calculate the shared secret ... SHOULD be the same as on other side
-	printf("Shared secret: %i", sharedSecret);
+	printf("\nShared secret: %i", sharedSecret);
 }
 
 void MPInterfacer::ListenerFunction() // will run continuously, invoking callbacks and analyzing the incoming data
@@ -297,8 +297,8 @@ void MPInterfacer::ListenerFunction() // will run continuously, invoking callbac
 			case HANDSHAKE_PACKET:
 			{
 				uint64_t incomingTime = 0;
-				if (!incoming.getPacketNum()) incomingTime = incoming.get64AtLocation(3);
-				onHandshakeReceive(incoming.get32AtLocation(0), incoming.getPacketNum(), incomingTime); // finishing the handshake 
+				if (!incoming.getPacketNum()) incomingTime = incoming.get64AtLocation(8);
+				onHandshakeReceive(incoming.get64AtLocation(0), incoming.getPacketNum(), incomingTime); // finishing the handshake 
 				break;
 			}
 			case ACK_RESPONSE:
