@@ -63,7 +63,7 @@ MPInterfacer::MPInterfacer(uint64_t ClientUUID, uint16_t Port, uint8_t* address,
 #ifndef NO_UPNP
 		try
 		{
-			PortForwardEngine::UPnPportForward(Port, Port);
+			//PortForwardEngine::UPnPportForward(Port, Port);
 		}
 		catch (std::exception ex) {}
 #endif
@@ -271,7 +271,8 @@ void MPInterfacer::onHandshakeReceive(uint32_t secret, uint32_t exchangeNum, uin
 	{
 		publicKey = generatePublicKey(referenceTime);
 		Packet* followUp = new Packet(false, false, true, HANDSHAKE_PACKET, 1); // will initialize the key exchange sequence
-		followUp->appendData(generateRuledKey(publicKey, privateKey, SECURE_PRIME_NUMBER));
+		uint64_t pwr = generateRuledKey(publicKey, privateKey, SECURE_PRIME_NUMBER);
+		followUp->appendData(pwr);
 		sendPacket(followUp); // send personal key
 	}
 	sharedSecret = generateRuledKey(secret, privateKey, SECURE_PRIME_NUMBER); // calculate the shared secret ... SHOULD be the same as on other side

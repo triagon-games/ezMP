@@ -15,7 +15,7 @@ void onPacketReceive(Packet p)
 int main(int argc, char* argv[])
 {
 	char password[] = "im stuff";
-	uint8_t addr[] = { 192,168,11,19 };
+	uint8_t addr[] = { 192,168,11,8 };
 	//uint8_t addr[] = { 73,162,31,175 };
 	//uint8_t addr[] = { 67,164,120,12 };
 

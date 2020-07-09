@@ -3,84 +3,65 @@
      ROBOCOPY     ::     Robust File Copy for Windows                              
   -------------------------------------------------------------------------------
   
-    Started : Wednesday, July 8, 2020 8:30:47 PM
-     Source : C:\Users\NIK\Source\Repos\ezMP\EZMP\
-       Dest : C:\Users\NIK\Source\Repos\ezMP\EZMP\include\
+    Started : Thursday, July 9, 2020 12:56:54 PM
+     Source : C:\Users\ninja\source\repos\ezMP\EZMP\
+       Dest : C:\Users\ninja\source\repos\ezMP\EZMP\include\
   
       Files : *.h
   	    
-   Exc Dirs : C:\Users\NIK\Source\Repos\ezMP\EZMP\include
-  	    C:\Users\NIK\Source\Repos\ezMP\EZMP\packages
+   Exc Dirs : C:\Users\ninja\source\repos\ezMP\EZMP\include
+  	    C:\Users\ninja\source\repos\ezMP\EZMP\packages
   	    
     Options : /S /DCOPY:DA /COPY:DAT /R:1000000 /W:30 
   
   ------------------------------------------------------------------------------
   
-  	                  11	C:\Users\NIK\Source\Repos\ezMP\EZMP\
-  	  New Dir          0	C:\Users\NIK\Source\Repos\ezMP\EZMP\.vs\
-  	  New Dir          0	C:\Users\NIK\Source\Repos\ezMP\EZMP\.vs\EZMP\
-  	  New Dir          0	C:\Users\NIK\Source\Repos\ezMP\EZMP\.vs\EZMP\DesignTimeBuild\
-  	  New Dir          0	C:\Users\NIK\Source\Repos\ezMP\EZMP\.vs\EZMP\v16\
-  	  New Dir          0	C:\Users\NIK\Source\Repos\ezMP\EZMP\.vs\EZMP\v16\ipch\
-  	  New Dir          0	C:\Users\NIK\Source\Repos\ezMP\EZMP\.vs\EZMP\v16\ipch\AutoPCH\
-  	  New Dir          0	C:\Users\NIK\Source\Repos\ezMP\EZMP\.vs\EZMP\v16\ipch\AutoPCH\1087ef0baba497db\
-  	  New Dir          0	C:\Users\NIK\Source\Repos\ezMP\EZMP\.vs\EZMP\v16\ipch\AutoPCH\2024c52217d50ee3\
-  	  New Dir          0	C:\Users\NIK\Source\Repos\ezMP\EZMP\.vs\EZMP\v16\ipch\AutoPCH\2edee2af34eeb83b\
-  	  New Dir          0	C:\Users\NIK\Source\Repos\ezMP\EZMP\.vs\EZMP\v16\ipch\AutoPCH\69983ed2c66fc630\
-  	  New Dir          0	C:\Users\NIK\Source\Repos\ezMP\EZMP\.vs\EZMP\v16\ipch\AutoPCH\6ad719482b2c12a4\
-  	  New Dir          0	C:\Users\NIK\Source\Repos\ezMP\EZMP\.vs\EZMP\v16\ipch\AutoPCH\76d9951b3294f9f0\
-  	  New Dir          0	C:\Users\NIK\Source\Repos\ezMP\EZMP\.vs\EZMP\v16\ipch\AutoPCH\7b40a68f1f79b6bf\
-  	  New Dir          0	C:\Users\NIK\Source\Repos\ezMP\EZMP\.vs\EZMP\v16\ipch\AutoPCH\7b64e18b68cea2dd\
-  	  New Dir          0	C:\Users\NIK\Source\Repos\ezMP\EZMP\.vs\EZMP\v16\ipch\AutoPCH\91f51de9ebedb003\
-  	  New Dir          0	C:\Users\NIK\Source\Repos\ezMP\EZMP\.vs\EZMP\v16\ipch\AutoPCH\968882ef2ac688de\
-  	  New Dir          0	C:\Users\NIK\Source\Repos\ezMP\EZMP\.vs\EZMP\v16\ipch\AutoPCH\bf15139ce9256527\
-  	  New Dir          0	C:\Users\NIK\Source\Repos\ezMP\EZMP\.vs\EZMP\v16\ipch\AutoPCH\c38d6b4671e66e1c\
-  	  New Dir          0	C:\Users\NIK\Source\Repos\ezMP\EZMP\.vs\EZMP\v16\ipch\AutoPCH\c504aef30338b081\
-  	  New Dir          0	C:\Users\NIK\Source\Repos\ezMP\EZMP\.vs\EZMP\v16\ipch\AutoPCH\d510fcba6f185e85\
-  	  New Dir          0	C:\Users\NIK\Source\Repos\ezMP\EZMP\.vs\EZMP\v16\ipch\AutoPCH\d73c702e66f76b66\
-  	  New Dir          0	C:\Users\NIK\Source\Repos\ezMP\EZMP\.vs\EZMP\v16\ipch\AutoPCH\e3774b11f05dae78\
-  	  New Dir          0	C:\Users\NIK\Source\Repos\ezMP\EZMP\.vs\EZMP\v16\ipch\AutoPCH\e76f56cb0c6c21e0\
-  	  New Dir          0	C:\Users\NIK\Source\Repos\ezMP\EZMP\.vs\EZMP\v16\ipch\AutoPCH\ec8974ddd7c71188\
-  	  New Dir          0	C:\Users\NIK\Source\Repos\ezMP\EZMP\.vs\EZMP\v16\ipch\AutoPCH\ed4a3f21543c72fb\
-  	  New Dir          0	C:\Users\NIK\Source\Repos\ezMP\EZMP\.vs\EZMP\v16\Server\
-  	  New Dir          0	C:\Users\NIK\Source\Repos\ezMP\EZMP\.vs\EZMP\v16\Server\sqlite3\
-  	  New Dir          0	C:\Users\NIK\Source\Repos\ezMP\EZMP\scripts\
-  	  New Dir          0	C:\Users\NIK\Source\Repos\ezMP\EZMP\Stun\
-  	  New Dir          0	C:\Users\NIK\Source\Repos\ezMP\EZMP\x64\
-  	  New Dir          0	C:\Users\NIK\Source\Repos\ezMP\EZMP\x64\Debug\
-  	  New Dir          0	C:\Users\NIK\Source\Repos\ezMP\EZMP\x64\Debug\EZMP.tlog\
-  	  New Dir          0	C:\Users\NIK\Source\Repos\ezMP\EZMP\x64\Debug\Stun\
-  	  New Dir          0	C:\Users\NIK\Source\Repos\ezMP\EZMP\x64\Release\
-  	  New Dir          0	C:\Users\NIK\Source\Repos\ezMP\EZMP\x64\Release\EZMP.tlog\
+  	                  11	C:\Users\ninja\source\repos\ezMP\EZMP\
+  	  New Dir          0	C:\Users\ninja\source\repos\ezMP\EZMP\.vs\
+  	  New Dir          0	C:\Users\ninja\source\repos\ezMP\EZMP\.vs\EZMP\
+  	  New Dir          0	C:\Users\ninja\source\repos\ezMP\EZMP\.vs\EZMP\v15\
+  	  New Dir          0	C:\Users\ninja\source\repos\ezMP\EZMP\.vs\EZMP\v15\ipch\
+  	  New Dir          0	C:\Users\ninja\source\repos\ezMP\EZMP\.vs\EZMP\v15\ipch\AutoPCH\
+  	  New Dir          0	C:\Users\ninja\source\repos\ezMP\EZMP\.vs\EZMP\v15\ipch\AutoPCH\32fd83b0f52afecb\
+  	  New Dir          0	C:\Users\ninja\source\repos\ezMP\EZMP\.vs\EZMP\v16\
+  	  New Dir          0	C:\Users\ninja\source\repos\ezMP\EZMP\.vs\EZMP\v16\ipch\
+  	  New Dir          0	C:\Users\ninja\source\repos\ezMP\EZMP\.vs\EZMP\v16\ipch\AutoPCH\
+  	  New Dir          0	C:\Users\ninja\source\repos\ezMP\EZMP\.vs\EZMP\v16\ipch\AutoPCH\37c8892e346a7e37\
+  	  New Dir          0	C:\Users\ninja\source\repos\ezMP\EZMP\.vs\EZMP\v16\ipch\AutoPCH\672794a8fd9ea827\
+  	  New Dir          0	C:\Users\ninja\source\repos\ezMP\EZMP\.vs\EZMP\v16\ipch\AutoPCH\7a864ec462126b8b\
+  	  New Dir          0	C:\Users\ninja\source\repos\ezMP\EZMP\.vs\EZMP\v16\ipch\AutoPCH\98ff4e8928dbacb2\
+  	  New Dir          0	C:\Users\ninja\source\repos\ezMP\EZMP\.vs\EZMP\v16\ipch\AutoPCH\bf9bc31982856e2f\
+  	  New Dir          0	C:\Users\ninja\source\repos\ezMP\EZMP\scripts\
+  	  New Dir          0	C:\Users\ninja\source\repos\ezMP\EZMP\Stun\
+  	  New Dir          0	C:\Users\ninja\source\repos\ezMP\EZMP\x64\
+  	  New Dir          0	C:\Users\ninja\source\repos\ezMP\EZMP\x64\Debug\
+  	  New Dir          0	C:\Users\ninja\source\repos\ezMP\EZMP\x64\Debug\EZMP.tlog\
+  	  New Dir          0	C:\Users\ninja\source\repos\ezMP\EZMP\x64\Debug\Stun\
   
   ------------------------------------------------------------------------------
   
                  Total    Copied   Skipped  Mismatch    FAILED    Extras
-      Dirs :        38        35         3         0         0         0
+      Dirs :        22        20         2         0         0         0
      Files :        11         0        11         0         0         0
      Bytes :     6.9 k         0     6.9 k         0         0         0
      Times :   0:00:00   0:00:00                       0:00:00   0:00:00
-     Ended : Wednesday, July 8, 2020 8:30:47 PM
+     Ended : Thursday, July 9, 2020 12:56:54 PM
   
-  Client.cpp
-  EZMP.cpp
   MPInterfacer.cpp
-C:\Users\NIK\Source\Repos\ezMP\EZMP\MPInterfacer.cpp(203,15): warning C4244: 'initializing': conversion from 'uint64_t' to 'uint32_t', possible loss of data
-C:\Users\NIK\Source\Repos\ezMP\EZMP\MPInterfacer.cpp(236,27): warning C4244: 'argument': conversion from 'uint64_t' to 'const _Kty', possible loss of data
+C:\Users\ninja\source\repos\ezMP\EZMP\MPInterfacer.cpp(203,15): warning C4244: 'initializing': conversion from 'uint64_t' to 'uint32_t', possible loss of data
+C:\Users\ninja\source\repos\ezMP\EZMP\MPInterfacer.cpp(236,27): warning C4244: 'argument': conversion from 'uint64_t' to 'const _Kty', possible loss of data
           with
           [
               _Kty=long
           ]
-C:\Users\NIK\Source\Repos\ezMP\EZMP\MPInterfacer.cpp(236,43): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
-C:\Users\NIK\Source\Repos\ezMP\EZMP\MPInterfacer.cpp(261,37): warning C4244: 'argument': conversion from 'uint64_t' to 'const _Kty', possible loss of data
+C:\Users\ninja\source\repos\ezMP\EZMP\MPInterfacer.cpp(236,43): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+C:\Users\ninja\source\repos\ezMP\EZMP\MPInterfacer.cpp(261,37): warning C4244: 'argument': conversion from 'uint64_t' to 'const _Kty', possible loss of data
           with
           [
               _Kty=long
           ]
-C:\Users\NIK\Source\Repos\ezMP\EZMP\MPInterfacer.cpp(278,9): warning C4477: 'printf' : format string '%i' requires an argument of type 'int', but variadic argument 1 has type 'uint64_t'
-C:\Users\NIK\Source\Repos\ezMP\EZMP\MPInterfacer.cpp(278,9): message : consider using '%lli' in the format string
-C:\Users\NIK\Source\Repos\ezMP\EZMP\MPInterfacer.cpp(278,9): message : consider using '%Ii' in the format string
-C:\Users\NIK\Source\Repos\ezMP\EZMP\MPInterfacer.cpp(278,9): message : consider using '%I64i' in the format string
-  Server.cpp
-  Generating Code...
-  EZMP.vcxproj -> C:\Users\NIK\Source\Repos\ezMP\EZMP\x64\Debug\EZMP.lib
+C:\Users\ninja\source\repos\ezMP\EZMP\MPInterfacer.cpp(279,9): warning C4477: 'printf' : format string '%i' requires an argument of type 'int', but variadic argument 1 has type 'uint64_t'
+C:\Users\ninja\source\repos\ezMP\EZMP\MPInterfacer.cpp(279,9): message : consider using '%lli' in the format string
+C:\Users\ninja\source\repos\ezMP\EZMP\MPInterfacer.cpp(279,9): message : consider using '%Ii' in the format string
+C:\Users\ninja\source\repos\ezMP\EZMP\MPInterfacer.cpp(279,9): message : consider using '%I64i' in the format string
+  EZMP.vcxproj -> C:\Users\ninja\source\repos\ezMP\EZMP\x64\Debug\EZMP.lib
