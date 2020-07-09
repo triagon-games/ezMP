@@ -11,7 +11,7 @@
 
 bool Test()
 {
-	int TEST_NUM = 4;
+	int TEST_NUM = 5;
 	bool* TESTS = (bool*)malloc(TEST_NUM * sizeof(bool));
 	if (TESTS == nullptr) throw std::runtime_error("malloc failed");
 
@@ -20,6 +20,8 @@ bool Test()
 
 	TESTS[2] = __GAME_VER__ != 0;
 	TESTS[3] = SECURE_PRIME_NUMBER != 0;
+
+	TESTS[4] = MPInterfacer::generateRuledKey(3001615222, 2813591304, SECURE_PRIME_NUMBER) == 227;
 
 	bool pass;
 	for (int i = 0; i < TEST_NUM; i++)

@@ -200,8 +200,8 @@ void MPInterfacer::startHandshake()
 	Packet* init = new Packet(false, false, true, HANDSHAKE_PACKET, 0); // will initialize the key exchange sequence
 	uint64_t time = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 	publicKey = generatePublicKey(time);
-	uint32_t pwr = generateRuledKey(publicKey, privateKey, SECURE_PRIME_NUMBER)%UINT64_MAX;
-	bool test = pwr < UINT64_MAX;
+	uint32_t pwr = generateRuledKey(publicKey, privateKey, SECURE_PRIME_NUMBER);
+
 	init->appendData(pwr);
 	init->appendData(time);
 	sendPacket(init); // send personal key
@@ -296,7 +296,7 @@ void MPInterfacer::ListenerFunction() // will run continuously, invoking callbac
 			case HANDSHAKE_PACKET:
 			{
 				uint64_t incomingTime = 0;
-				if (!incoming.getPacketNum()) incomingTime = incoming.get64AtLocation(3);
+				if (!incoming.getPacketNum()) incomingTime = incoming.get64AtLocation(4);
 				onHandshakeReceive(incoming.get32AtLocation(0), incoming.getPacketNum(), incomingTime); // finishing the handshake 
 				break;
 			}

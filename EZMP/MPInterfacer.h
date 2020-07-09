@@ -22,11 +22,6 @@ private:
 	void (*m_ReceiveCallback)(Packet);
 	void (*m_LatencyCallback)(uint16_t);
 
-	uint64_t generateRuledKey(uint32_t a, uint32_t b, uint32_t P)
-	{
-		return (a * b) % P;
-	}
-
 public:
 	MPInterfacer(uint64_t ClientUUID, uint16_t Port, uint8_t* address, bool isServer, std::string Pass);
 	~MPInterfacer();
@@ -37,6 +32,11 @@ public:
 
 	void attachReceiveCallback(void (*func)(Packet));
 	void attachLatencyCallback(void (*func)(uint16_t));
+
+	static uint64_t generateRuledKey(uint32_t a, uint32_t b, uint32_t P)
+	{
+		return ((uint64_t)a * (uint64_t)b) % P;
+	}
 
 private:
 	std::thread ListenerThread;

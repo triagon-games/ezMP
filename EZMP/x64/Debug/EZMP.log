@@ -3,7 +3,7 @@
      ROBOCOPY     ::     Robust File Copy for Windows                              
   -------------------------------------------------------------------------------
   
-    Started : Wednesday, July 8, 2020 4:14:50 PM
+    Started : Wednesday, July 8, 2020 8:30:47 PM
      Source : C:\Users\NIK\Source\Repos\ezMP\EZMP\
        Dest : C:\Users\NIK\Source\Repos\ezMP\EZMP\include\
   
@@ -60,9 +60,12 @@
      Files :        11         0        11         0         0         0
      Bytes :     6.9 k         0     6.9 k         0         0         0
      Times :   0:00:00   0:00:00                       0:00:00   0:00:00
-     Ended : Wednesday, July 8, 2020 4:14:50 PM
+     Ended : Wednesday, July 8, 2020 8:30:47 PM
   
+  Client.cpp
+  EZMP.cpp
   MPInterfacer.cpp
+C:\Users\NIK\Source\Repos\ezMP\EZMP\MPInterfacer.cpp(203,15): warning C4244: 'initializing': conversion from 'uint64_t' to 'uint32_t', possible loss of data
 C:\Users\NIK\Source\Repos\ezMP\EZMP\MPInterfacer.cpp(236,27): warning C4244: 'argument': conversion from 'uint64_t' to 'const _Kty', possible loss of data
           with
           [
@@ -78,4 +81,6 @@ C:\Users\NIK\Source\Repos\ezMP\EZMP\MPInterfacer.cpp(278,9): warning C4477: 'pri
 C:\Users\NIK\Source\Repos\ezMP\EZMP\MPInterfacer.cpp(278,9): message : consider using '%lli' in the format string
 C:\Users\NIK\Source\Repos\ezMP\EZMP\MPInterfacer.cpp(278,9): message : consider using '%Ii' in the format string
 C:\Users\NIK\Source\Repos\ezMP\EZMP\MPInterfacer.cpp(278,9): message : consider using '%I64i' in the format string
+  Server.cpp
+  Generating Code...
   EZMP.vcxproj -> C:\Users\NIK\Source\Repos\ezMP\EZMP\x64\Debug\EZMP.lib

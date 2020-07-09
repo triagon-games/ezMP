@@ -7,7 +7,7 @@
 #define __LIB_VER_PATCH__ 0
 
 #ifndef __GAME_VER__
-	#define __GAME_VER__ 0
+	#define __GAME_VER__ 1
 #endif
 
 #ifndef SECURE_PRIME_NUMBER
