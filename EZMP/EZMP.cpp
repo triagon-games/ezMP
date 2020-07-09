@@ -23,7 +23,7 @@ bool Test()
 
 	TESTS[4] = MPInterfacer::generateRuledKey(3001615222, 2813591304, SECURE_PRIME_NUMBER) == 227;
 
-	bool pass;
+	bool pass = true;
 	for (int i = 0; i < TEST_NUM; i++)
 	{
 		if (!TESTS[i]) pass = false;
