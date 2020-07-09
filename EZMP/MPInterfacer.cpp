@@ -116,6 +116,7 @@ Packet MPInterfacer::recvPacket()
 	}
 	if (incomingBytes != 0 && incomingBytes != SOCKET_ERROR)
 	{
+		if (!recvBuffer[8] == 26) return Packet();
 		//parsing the header
 		uint16_t headerLen = recvBuffer[8] << 8 | recvBuffer[7];
 

@@ -11,7 +11,7 @@
 #endif
 
 #ifndef SECURE_PRIME_NUMBER
-	#define SECURE_PRIME_NUMBER 1001
+	#define SECURE_PRIME_NUMBER 957317
 #endif
 
 #ifndef ACK_TIMEOUT
