@@ -297,7 +297,7 @@ void MPInterfacer::ListenerFunction() // will run continuously, invoking callbac
 			case HANDSHAKE_PACKET:
 			{
 				uint64_t incomingTime = 0;
-				if (!incoming.getPacketNum()) incomingTime = incoming.get64AtLocation(4);
+				if (!incoming.getPacketNum()) incomingTime = incoming.get64AtLocation(3);
 				onHandshakeReceive(incoming.get32AtLocation(0), incoming.getPacketNum(), incomingTime); // finishing the handshake 
 				break;
 			}
