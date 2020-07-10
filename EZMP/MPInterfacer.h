@@ -11,6 +11,7 @@
 #include <thread>
 #include <vector>
 #include "PortForwardEngine.h"
+#include "SSLAES.h"
 
 #pragma comment (lib, "Ws2_32.lib")
 #pragma comment (lib, "Mswsock.lib")
@@ -27,6 +28,9 @@ public:
 	~MPInterfacer();
 
 	void sendPacket(Packet* pkt, bool retry = false);
+	void sendPacket(Packet* pkt, bool retry, Utils::Endpoint endpoint);
+
+	void multicastPacket(Packet* pkt, std::vector<Utils::Endpoint> group);
 
 	Packet recvPacket();
 
@@ -38,6 +42,10 @@ public:
 		return ((uint64_t)a * (uint64_t)b) % P;
 	}
 
+	bool isServer;
+
+	SSLAES selfSSLContext;
+
 private:
 	std::thread ListenerThread;
 	std::thread ACKManagerThread;
@@ -46,19 +54,23 @@ private:
 
 	std::vector<Packet*> ACKBuffer;
 	std::vector<Utils::Endpoint> ServersideEndpoints;
+	std::vector<SSLAES> SubscriberAESContexts;
 	int ACKBufferLength = 0;
 
-	bool awaitPacket();
-	Packet encryptPacket(Packet pkt);
+	Packet encryptPacket(Packet pkt, SSLAES eContext);
 
 	void startHandshake();
 
 	uint32_t generatePublicKey(uint64_t referenceMillis);
 	uint32_t generatePrivateKey(std::string password);
-	void onHandshakeReceive(uint32_t secret, uint32_t exchangeNum, uint64_t referenceTime);
+	void onHandshakeReceive(uint32_t secret, uint32_t exchangeNum, uint64_t referenceTime, Utils::Endpoint source);
 
 	uint32_t publicKey = 0;
 	uint32_t privateKey = 0;
+
+	Utils::PortTranslation localPortMapping;
+	Utils::Endpoint whatAmI;
+
 protected: uint64_t sharedSecret = 0;
 
 	void ListenerFunction();

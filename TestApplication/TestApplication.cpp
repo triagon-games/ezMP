@@ -2,7 +2,7 @@
 //
 
 #include <iostream>
-#include <EZMP.h>
+#include <EZMP/EZMP.h>
 #include <string>
 
 void onPacketReceive(Packet p)

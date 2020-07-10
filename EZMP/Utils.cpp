@@ -57,10 +57,8 @@ Utils::PortTranslation Utils::getPortTranslation(uint16_t Port)
 	snprintf((char*)command.c_str(), 255, "%s%sstunclient.exe %s --localport %i", path.c_str(), "\\Stun\\", PUBLIC_STUN_SERVER, Port);
 	std::string stunReturn = exec(command.c_str());
 	std::string Ports[2];
-	//Ports[0] = 
 	bool found = false;
 	int finds = -1;
-	char test = 92;
 	stunReturn.erase(std::remove(stunReturn.begin(), stunReturn.end(), ' '), stunReturn.end());
 	for (int i = 1; i < stunReturn.size()-1; i++)
 	{
@@ -82,4 +80,74 @@ Utils::PortTranslation Utils::getPortTranslation(uint16_t Port)
 	catch (std::exception) { }
 
 	return pt;
+}
+
+uint8_t* Utils::getPublicIPAddress()
+{
+	std::string path = ExePath();
+	printf(path.c_str());
+	std::string command(255, ' ');
+	snprintf((char*)command.c_str(), 255, "%s%sstunclient.exe %s --localport %i", path.c_str(), "\\Stun\\", PUBLIC_STUN_SERVER, 20000);
+	std::string stunReturn = exec(command.c_str());
+	unsigned int firstIndex = stunReturn.find("Mapped address: ", 0) + 16;
+	std::string ip = "";
+	bool foundDelim = false;
+	std::string ipBytes[4];
+
+	uint8_t ipAddr[4];
+
+	for (int i = firstIndex; i < stunReturn.size(); i++)
+	{
+		if (stunReturn[i] == ':') foundDelim = true;
+		
+		if (!foundDelim) ip.push_back(stunReturn[i]);
+	}
+	int finds = 0;
+	for (int i = 0; i < ip.size(); i++)
+	{
+		if (ip[i] == '.')
+		{
+			finds++;
+		}
+		else
+		{
+			ipBytes[finds].push_back(ip[i]);
+		}
+	}
+	for (int i = 0; i < 4; i++)
+	{
+		ipAddr[i] = std::stoi(ipBytes[i]);
+	}
+	return ipAddr;
+}
+
+uint8_t* Utils::getIPFromString(std::string ip)
+{
+	int finds = 0;
+	uint8_t ipAddr[4];
+	std::string ipBytes[4];
+	for (int i = 0; i < ip.size(); i++)
+	{
+		if (ip[i] == '.')
+		{
+			finds++;
+		}
+		else
+		{
+			ipBytes[finds].push_back(ip[i]);
+		}
+	}
+	for (int i = 0; i < 4; i++)
+	{
+		ipAddr[i] = std::stoi(ipBytes[i]);
+	}
+	return ipAddr;
+}
+
+std::string Utils::getStringFromIP(uint8_t* ip)
+{
+	std::string ipStr;
+	for (int i = 0; i < 3; i++) ipStr += std::to_string(ip[i]) + '.';
+	ipStr += std::to_string(ip[3]);
+	return ipStr;
 }

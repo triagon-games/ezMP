@@ -21,7 +21,8 @@ uint16_t listenOnPort;
 
 MPInterfacer::MPInterfacer(uint64_t ClientUUID, uint16_t Port, uint8_t* address, bool isServer, std::string Pass)
 {
-	Utils::PortTranslation pt = Utils::getPortTranslation(Port);
+	whatAmI.IP = Utils::getStringFromIP(Utils::getPublicIPAddress());
+	whatAmI.portPair = Utils::getPortTranslation(Port);
 
 	sendFromAddr = address;
 	sendToPort = Port;
@@ -88,11 +89,13 @@ MPInterfacer::MPInterfacer(uint64_t ClientUUID, uint16_t Port, uint8_t* address,
 	ACKManagerThread = std::thread(&MPInterfacer::ACKManager, this);
 
 	privateKey = generatePrivateKey(Pass);
+	whatAmI.privateKey = privateKey;
 
 	if (!isServer)
 	{
 		startHandshake();
 	}
+	this->isServer = isServer;
 }
 
 MPInterfacer::~MPInterfacer()
@@ -160,10 +163,11 @@ Packet MPInterfacer::recvPacket()
 
 		incoming.setCompleteData(header, headerLen, payload, payloadLen, meta, metaLen); // shoving the data into the packet
 
-		incoming.sourceAddr[0] = m_SocketAddress.sin_addr.S_un.S_un_b.s_b1; // setting the ip address of the source that came in from the client object on receive function call
-		incoming.sourceAddr[1] = m_SocketAddress.sin_addr.S_un.S_un_b.s_b2; // seriously noit sure if this will work.
-		incoming.sourceAddr[2] = m_SocketAddress.sin_addr.S_un.S_un_b.s_b3;
-		incoming.sourceAddr[3] = m_SocketAddress.sin_addr.S_un.S_un_b.s_b4;
+		incoming.source.IP = std::to_string(incomingSocket.sin_addr.S_un.S_un_b.s_b1) + '.'
+			+ std::to_string(incomingSocket.sin_addr.S_un.S_un_b.s_b2) + '.'
+			+ std::to_string(incomingSocket.sin_addr.S_un.S_un_b.s_b3) + '.'
+			+ std::to_string(incomingSocket.sin_addr.S_un.S_un_b.s_b4);
+		incoming.source.portPair.OutboundPublic = incomingSocket.sin_port;
 
 		return incoming;
 	}
@@ -186,13 +190,9 @@ void MPInterfacer::HolePunch()
 	sendPacket(ack);
 }
 
-bool MPInterfacer::awaitPacket()
+Packet MPInterfacer::encryptPacket(Packet pkt, SSLAES eContext)
 {
-	return false;
-}
-
-Packet MPInterfacer::encryptPacket(Packet pkt)
-{
+	//uint8_t* encryptedData = SSLAES.
 	return pkt;
 }
 
@@ -210,7 +210,7 @@ void MPInterfacer::startHandshake()
 
 void MPInterfacer::sendPacket(Packet* pkt, bool retry)
 {
-	memcpy(pkt->sourceAddr, sendFromAddr, 4); // paste the source data into the packet object
+	memcpy(pkt->sourceAddr, Utils::getIPFromString(whatAmI.IP), 4); // paste the source data into the packet object
 	memcpy(&pkt->sourcePort, &sendToPort, sizeof(uint16_t)); // this data wont be sent anyways but who cares
 
 	std::vector<uint8_t> packet = pkt->getFullPacket();
@@ -229,6 +229,39 @@ void MPInterfacer::sendPacket(Packet* pkt, bool retry)
 	{
 		ACKBuffer.push_back(pkt);
 	}
+}
+
+void MPInterfacer::sendPacket(Packet* pkt, bool retry, Utils::Endpoint endpoint)
+{
+	sockaddr_in targetAddress;
+	targetAddress.sin_family = AF_INET;
+	targetAddress.sin_port = htons(endpoint.portPair.OutboundPublic);
+	inet_pton(AF_INET, (PSTR)&endpoint.IP, &targetAddress.sin_addr);
+
+	memcpy(pkt->sourceAddr, sendFromAddr, 4); // paste the source data into the packet object
+	memcpy(&pkt->sourcePort, &localPortMapping.OutboundPublic, sizeof(uint16_t)); // this data wont be sent anyways but who cares
+
+	std::vector<uint8_t> packet = pkt->getFullPacket();
+	char* fullPacket = (char*)&packet[0];
+
+	unsigned int pktlen = pkt->getFullPacketLength();
+
+	iError = sendto(m_Socket, fullPacket, pktlen, 0, (sockaddr*)&m_SocketAddress, sizeof(m_SocketAddress)); // sending the packet and getting a result code to see if it failed
+	if (iError == 0 || iError == -1)
+	{
+		printf("%s function failed when sending a packet line: %d\n error: %d", __func__, __LINE__, iError);
+		throw std::runtime_error("unable to send packet over from SOCKET");
+	}
+	pkt->timeSent = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count(); // packet time of sending
+	if (pkt->isAwaitACK() && !retry) // if the packet is awaitable, add it to the buffer to be checked and reset if timed out
+	{
+		ACKBuffer.push_back(pkt);
+	}
+}
+
+void MPInterfacer::multicastPacket(Packet* pkt, std::vector<Utils::Endpoint> group)
+{
+
 }
 
 uint32_t MPInterfacer::generatePublicKey(uint64_t referenceMillis)
@@ -266,7 +299,7 @@ uint32_t MPInterfacer::generatePrivateKey(std::string password)
 	return ((uint32_t*)&tmp)[0] ^ ((uint32_t*)&tmp)[1];
 }
 
-void MPInterfacer::onHandshakeReceive(uint32_t secret, uint32_t exchangeNum, uint64_t referenceTime)
+void MPInterfacer::onHandshakeReceive(uint32_t secret, uint32_t exchangeNum, uint64_t referenceTime, Utils::Endpoint source)
 {
 	if (exchangeNum == 0)
 	{
@@ -277,6 +310,17 @@ void MPInterfacer::onHandshakeReceive(uint32_t secret, uint32_t exchangeNum, uin
 		sendPacket(followUp); // send personal key
 	}
 	sharedSecret = generateRuledKey(secret, privateKey, SECURE_PRIME_NUMBER); // calculate the shared secret ... SHOULD be the same as on other side
+	SSLAES tmp((unsigned char*)&sharedSecret, sizeof(sharedSecret));
+	if (isServer)
+	{
+		source.privateKey = sharedSecret;
+		ServersideEndpoints.push_back(source);
+		SubscriberAESContexts.push_back(tmp);
+	}
+	else
+	{
+		selfSSLContext = tmp;
+	}
 	printf("\nShared secret: %i", sharedSecret);
 }
 
@@ -299,7 +343,7 @@ void MPInterfacer::ListenerFunction() // will run continuously, invoking callbac
 			{
 				uint64_t incomingTime = 0;
 				if (!incoming.getPacketNum()) incomingTime = incoming.get64AtLocation(8);
-				onHandshakeReceive(incoming.get64AtLocation(0), incoming.getPacketNum(), incomingTime); // finishing the handshake 
+				onHandshakeReceive(incoming.get64AtLocation(0), incoming.getPacketNum(), incomingTime, incoming.source); // finishing the handshake 
 				break;
 			}
 			case ACK_RESPONSE:
