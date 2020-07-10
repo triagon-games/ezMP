@@ -1,0 +1,1 @@
+ROBOCOPY . $(SolutionDir)..\build\$(Platform)\$(Configuration)\include\EZMP *.h /S /XD $(SolutionDir)..\build\

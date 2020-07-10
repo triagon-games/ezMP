@@ -1,2 +1,0 @@
-C:\Users\ninja\source\repos\ezMP\EZMP\x64\Debug\EZMP.lib
-C:\Users\ninja\source\repos\ezMP\EZMP\x64\Debug\EZMP.pdb
