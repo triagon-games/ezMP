@@ -167,7 +167,7 @@ Packet MPInterfacer::recvPacket()
 			+ std::to_string(incomingSocket.sin_addr.S_un.S_un_b.s_b2) + '.'
 			+ std::to_string(incomingSocket.sin_addr.S_un.S_un_b.s_b3) + '.'
 			+ std::to_string(incomingSocket.sin_addr.S_un.S_un_b.s_b4);
-		incoming.source.portPair.OutboundPublic = incomingSocket.sin_port;
+		incoming.source.portPair.OutboundPublic = htons(incomingSocket.sin_port);
 
 		if (incoming.isEncrypted())
 		{
