@@ -21,6 +21,8 @@ public:
     uint32_t appendData(uint32_t idata);
     uint32_t appendData(uint64_t idata);
 
+    void setData(std::vector<uint8_t> bytes);
+
     std::vector<uint8_t> getMetaData();
     uint32_t getMetaLength();
     std::vector<uint8_t> getHeaderData();

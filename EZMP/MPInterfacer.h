@@ -11,7 +11,7 @@
 #include <thread>
 #include <vector>
 #include "PortForwardEngine.h"
-#include "SSLAES.h"
+#include "Encryption.h"
 
 #pragma comment (lib, "Ws2_32.lib")
 #pragma comment (lib, "Mswsock.lib")
@@ -44,8 +44,6 @@ public:
 
 	bool isServer;
 
-	SSLAES selfSSLContext;
-
 private:
 	std::thread ListenerThread;
 	std::thread ACKManagerThread;
@@ -54,10 +52,10 @@ private:
 
 	std::vector<Packet*> ACKBuffer;
 	std::vector<Utils::Endpoint> ServersideEndpoints;
-	std::vector<SSLAES> SubscriberAESContexts;
 	int ACKBufferLength = 0;
 
-	Packet encryptPacket(Packet pkt, SSLAES eContext);
+	Packet encryptPacket(Packet pkt, uint64_t key);
+	Packet decryptPacket(Packet pkt, uint64_t key);
 
 	void startHandshake();
 

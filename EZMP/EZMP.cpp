@@ -21,7 +21,7 @@ bool Test()
 	TESTS[2] = __GAME_VER__ != 0;
 	TESTS[3] = SECURE_PRIME_NUMBER != 0;
 
-	TESTS[4] = true;// MPInterfacer::generateRuledKey(3001615222, 2813591304, SECURE_PRIME_NUMBER) == 227;
+	TESTS[4] = Encryption::aes_decrypt(Encryption::aes_encrypt("this is a test string", 227), 227)._Equal(std::string("this is a test string"));
 
 	bool pass = true;
 	for (int i = 0; i < TEST_NUM; i++)

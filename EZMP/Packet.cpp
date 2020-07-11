@@ -125,6 +125,11 @@ uint32_t Packet::appendData(uint64_t idata)
 	return appendData((uint8_t*)&idata, sizeof(uint64_t), 6);
 }
 
+void Packet::setData(std::vector<uint8_t> bytes)
+{
+	data = bytes;
+}
+
 std::vector<uint8_t> Packet::getMetaData()
 {
 	return meta;

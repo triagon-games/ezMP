@@ -8,6 +8,7 @@
 #include <WinSock2.h>
 #include <winerror.h>
 #include <ws2tcpip.h>
+#include <vector>
 
 #pragma comment (lib, "Ws2_32.lib")
 #pragma comment (lib, "Mswsock.lib")
@@ -59,5 +60,10 @@ public:
 	static uint8_t* getPublicIPAddress();
 	static uint8_t* getIPFromString(std::string ip);
 	static std::string getStringFromIP(uint8_t* ip);
+
+	static std::string stringFromBytes(uint8_t* bytes, uint32_t size);
+	static uint8_t* bytesFromString(std::string string, uint32_t* p_size);
+	static std::vector<uint8_t> vectorBytesFromString(std::string string);
+	static std::string stringFromVectorBytes(std::vector<uint8_t> bytes);
 };
 

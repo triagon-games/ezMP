@@ -151,3 +151,40 @@ std::string Utils::getStringFromIP(uint8_t* ip)
 	ipStr += std::to_string(ip[3]);
 	return ipStr;
 }
+
+std::string Utils::stringFromBytes(uint8_t* bytes, uint32_t size)
+{
+	std::string ret;
+	for (int i = 0; i < size; i++)
+	{
+		ret.push_back(bytes[i]);
+	}
+	return ret;
+}
+
+uint8_t* Utils::bytesFromString(std::string string, uint32_t* p_size)
+{
+	uint8_t* ret = (uint8_t*)&string[0];
+	memset(p_size, (uint32_t)string.size(), sizeof(uint32_t));
+	return ret;
+}
+
+std::vector<uint8_t> Utils::vectorBytesFromString(std::string string)
+{
+	std::vector<uint8_t> ret;
+	for (int i = 0; i < string.size(); i++)
+	{
+		ret.push_back(string[i]);
+	}
+	return ret;
+}
+
+std::string Utils::stringFromVectorBytes(std::vector<uint8_t> bytes)
+{
+	std::string ret;
+	for (int i = 0; i < bytes.size(); i++)
+	{
+		ret.push_back(bytes[i]);
+	}
+	return ret;
+}

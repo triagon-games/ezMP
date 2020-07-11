@@ -107,7 +107,8 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <AdditionalIncludeDirectories>$(SolutionDir)include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\build\$(Platform)\$(Configuration)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -118,7 +119,7 @@
       </Command>
     </PostBuildEvent>
     <PreBuildEvent>
-      <Command>ROBOCOPY .. $(SolutionDir)..\build\$(Platform)\$(Configuration)\include\ *.h /S /XD $(SolutionDir)..\build</Command>
+      <Command>CALL $(SolutionDir)..\copy_include.bat $(Platform) $(Configuration)</Command>
     </PreBuildEvent>
     <CustomBuildStep>
       <Command>
@@ -128,9 +129,12 @@
       <Message>Copying include files</Message>
     </CustomBuildStep>
     <Lib>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\build\$(Platform)\$(Configuration)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>cryptlibS.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -169,6 +173,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="aes_ni.h" />
     <ClInclude Include="Client.h">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
     </ClInclude>
@@ -197,7 +202,7 @@
     <ClInclude Include="Server.h">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</DeploymentContent>
     </ClInclude>
-    <ClInclude Include="SSLAES.h" />
+    <ClInclude Include="Encryption.h" />
     <ClInclude Include="Utils.h" />
   </ItemGroup>
   <ItemGroup>
@@ -214,7 +219,7 @@
     </ClCompile>
     <ClCompile Include="PortForwardEngine.cpp" />
     <ClCompile Include="Server.cpp" />
-    <ClCompile Include="SSLAES.cpp" />
+    <ClCompile Include="Encryption.cpp" />
     <ClCompile Include="Utils.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

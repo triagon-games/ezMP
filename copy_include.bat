@@ -1,1 +1,3 @@
-ROBOCOPY . $(SolutionDir)..\build\$(Platform)\$(Configuration)\include\EZMP *.h /S /XD $(SolutionDir)..\build\
+cd ..
+ROBOCOPY . .\build\%1\%2\include\ *.h /S /XD build
+if %errorlevel% lss 16 exit /b 0x00

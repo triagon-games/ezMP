@@ -67,7 +67,7 @@
   <!-- All Configurations -->
   <PropertyGroup Label="All Configurations">
     <ConfigurationType>StaticLibrary</ConfigurationType>
-    <TargetName>cryptlib</TargetName>
+    <TargetName>cryptlibS</TargetName>
     <TargetExt>.lib</TargetExt>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
