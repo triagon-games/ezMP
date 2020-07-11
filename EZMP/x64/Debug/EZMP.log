@@ -3,7 +3,7 @@
      ROBOCOPY     ::     Robust File Copy for Windows                              
   -------------------------------------------------------------------------------
   
-    Started : Saturday, July 11, 2020 2:08:14 PM
+    Started : Saturday, July 11, 2020 3:06:47 PM
      Source : C:\Users\NIK\Source\Repos\ezMP\
        Dest : C:\Users\NIK\Source\Repos\ezMP\build\x64\Debug\include\
   
@@ -313,9 +313,6 @@
   	  New Dir          0	C:\Users\NIK\Source\Repos\ezMP\CryptoPP\x64\cryptlib\Debug\cryptlib.tlog\
   	                  13	C:\Users\NIK\Source\Repos\ezMP\EZMP\
   	  *EXTRA File 		     313	SSLAES.h
-  	    Newer     		    2097	Packet.h
-    0%  
-  100%  
   	  New Dir          0	C:\Users\NIK\Source\Repos\ezMP\EZMP\.vs\
   	  New Dir          0	C:\Users\NIK\Source\Repos\ezMP\EZMP\.vs\EZMP\
   	  New Dir          0	C:\Users\NIK\Source\Repos\ezMP\EZMP\.vs\EZMP\DesignTimeBuild\
@@ -364,42 +361,18 @@
   
                  Total    Copied   Skipped  Mismatch    FAILED    Extras
       Dirs :       342       337         5         0         0         0
-     Files :       188         1       187         0         0         1
-     Bytes :    2.08 m     2.0 k    2.08 m         0         0       313
+     Files :       188         0       188         0         0         1
+     Bytes :    2.08 m         0    2.08 m         0         0       313
      Times :   0:00:00   0:00:00                       0:00:00   0:00:00
+     Ended : Saturday, July 11, 2020 3:06:48 PM
   
-  
-     Speed :             2097000 Bytes/sec.
-     Speed :             119.991 MegaBytes/min.
-     Ended : Saturday, July 11, 2020 2:08:14 PM
-  
-  Client.cpp
-  EZMP.cpp
-  MPInterfacer.cpp
-C:\Users\NIK\Source\Repos\ezMP\EZMP\MPInterfacer.cpp(122,27): warning C4806: '==': unsafe operation: no value of type 'bool' promoted to type 'int' can equal the given constant
-C:\Users\NIK\Source\Repos\ezMP\EZMP\MPInterfacer.cpp(164,81): warning C4242: 'argument': conversion from 'uint32_t' to 'uint16_t', possible loss of data
-C:\Users\NIK\Source\Repos\ezMP\EZMP\MPInterfacer.cpp(309,27): warning C4244: 'argument': conversion from 'uint64_t' to 'const _Kty', possible loss of data
-          with
-          [
-              _Kty=long
-          ]
-C:\Users\NIK\Source\Repos\ezMP\EZMP\MPInterfacer.cpp(309,43): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
-C:\Users\NIK\Source\Repos\ezMP\EZMP\MPInterfacer.cpp(334,37): warning C4244: 'argument': conversion from 'uint64_t' to 'const _Kty', possible loss of data
-          with
-          [
-              _Kty=long
-          ]
-C:\Users\NIK\Source\Repos\ezMP\EZMP\MPInterfacer.cpp(357,9): warning C4477: 'printf' : format string '%i' requires an argument of type 'int', but variadic argument 1 has type 'uint64_t'
-C:\Users\NIK\Source\Repos\ezMP\EZMP\MPInterfacer.cpp(357,9): message : consider using '%lli' in the format string
-C:\Users\NIK\Source\Repos\ezMP\EZMP\MPInterfacer.cpp(357,9): message : consider using '%Ii' in the format string
-C:\Users\NIK\Source\Repos\ezMP\EZMP\MPInterfacer.cpp(357,9): message : consider using '%I64i' in the format string
-C:\Users\NIK\Source\Repos\ezMP\EZMP\MPInterfacer.cpp(379,48): warning C4244: 'argument': conversion from 'uint64_t' to 'uint32_t', possible loss of data
   Packet.cpp
 C:\Users\NIK\Source\Repos\ezMP\EZMP\Packet.cpp(79,26): warning C4267: 'initializing': conversion from 'size_t' to 'uint16_t', possible loss of data
 C:\Users\NIK\Source\Repos\ezMP\EZMP\Packet.cpp(80,23): warning C4267: '+=': conversion from 'size_t' to 'uint32_t', possible loss of data
 C:\Users\NIK\Source\Repos\ezMP\EZMP\Packet.cpp(97,27): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+C:\Users\NIK\Source\Repos\ezMP\EZMP\Packet.cpp(142,20): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+C:\Users\NIK\Source\Repos\ezMP\EZMP\Packet.cpp(152,22): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+C:\Users\NIK\Source\Repos\ezMP\EZMP\Packet.cpp(162,20): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
 C:\Users\NIK\Source\Repos\ezMP\EZMP\Packet.cpp(169,32): warning C4267: 'initializing': conversion from 'size_t' to 'uint32_t', possible loss of data
 C:\Users\NIK\Source\Repos\ezMP\EZMP\Packet.cpp(196,50): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
-  Server.cpp
-  Generating Code...
   EZMP.vcxproj -> C:\Users\NIK\Source\Repos\ezMP\EZMP\..\build\x64\Debug\lib\EZMP.lib
