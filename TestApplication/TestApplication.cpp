@@ -5,7 +5,7 @@
 #include <EZMP/EZMP.h>
 #include <string>
 
-void onPacketReceive(Packet p)
+void onPacketReceive(Packet p, MPInterfacer* pmpi)
 {
 	std::string message;
 	for (unsigned int i = 0; i < p.getDataLength(); i++) message += p.getData()[i];

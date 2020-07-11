@@ -197,7 +197,7 @@ Packet MPInterfacer::recvPacket()
 	return Packet();
 }
 
-void MPInterfacer::attachReceiveCallback(void (*func)(Packet))
+void MPInterfacer::attachReceiveCallback(void (*func)(Packet, MPInterfacer*))
 {
 	m_ReceiveCallback = func; // attach receive callback
 }
@@ -412,7 +412,7 @@ void MPInterfacer::ListenerFunction() // will run continuously, invoking callbac
 					}
 					printf("ACK Sent\n");
 				}
-				m_ReceiveCallback(incoming);
+				m_ReceiveCallback(incoming, this);
 				break;
 			}
 		}

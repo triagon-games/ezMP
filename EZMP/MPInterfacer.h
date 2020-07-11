@@ -20,7 +20,7 @@
 class MPInterfacer
 {
 private: 
-	void (*m_ReceiveCallback)(Packet);
+	void (*m_ReceiveCallback)(Packet, MPInterfacer*);
 	void (*m_LatencyCallback)(uint16_t);
 
 public:
@@ -34,7 +34,7 @@ public:
 
 	Packet recvPacket();
 
-	void attachReceiveCallback(void (*func)(Packet));
+	void attachReceiveCallback(void (*func)(Packet, MPInterfacer*));
 	void attachLatencyCallback(void (*func)(uint16_t));
 
 	static uint64_t generateRuledKey(uint32_t a, uint32_t b, uint32_t P)
