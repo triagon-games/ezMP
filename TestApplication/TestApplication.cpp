@@ -43,13 +43,14 @@ int main(int argc, char* argv[])
 		printf("client mode\n");
 		interfacer->attachReceiveCallback(&onPacketReceive);
 
+		Packet* send;
 		while (true)
 		{
-			Packet send = Packet(false, false, true, 4, 1);
+			send = new Packet(false, true, true, 4, 1);
 			std::string toSend;
 			std::getline(std::cin, toSend);
-			send.appendData(const_cast<uint8_t*>(reinterpret_cast<const uint8_t*>(toSend.c_str())), toSend.length());
-			interfacer->sendPacket(&send);
+			send->appendData((uint8_t*)toSend.c_str(), toSend.size());
+			interfacer->sendPacket(send);
 		}
 	}
 }

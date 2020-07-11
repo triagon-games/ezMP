@@ -10,8 +10,9 @@ class Packet
 public:
     Packet(bool ordered, bool encrypted, bool awaitACK, uint8_t typeId, uint32_t packetNum);
     Packet();
+    /*
     ~Packet();
-
+    */
     void setCompleteData(std::vector<uint8_t> hdr, uint16_t hdrLen, std::vector<uint8_t> payload, uint32_t payloadLen, std::vector<uint8_t> meta, uint16_t metaLen);
     uint32_t appendData(uint8_t idata[], size_t size, uint8_t type = 0);
     uint32_t appendData(float diata);

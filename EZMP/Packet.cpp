@@ -50,10 +50,12 @@ Packet::Packet()
 	packetType = UNSPECIFIED_PACKET;
 }
 
+/*
 Packet::~Packet()
 {
 	//delete data;
 }
+*/
 
 void Packet::setCompleteData(std::vector<uint8_t> hdr, uint16_t hdrLen, std::vector<uint8_t> payload, uint32_t payloadLen, std::vector<uint8_t> meta, uint16_t metaLen)
 {
@@ -137,7 +139,7 @@ std::vector<uint8_t> Packet::getMetaData()
 
 uint32_t Packet::getMetaLength()
 {
-	return appendedMetaBytes;
+	return meta.size();
 }
 
 std::vector<uint8_t> Packet::getHeaderData()
@@ -147,7 +149,7 @@ std::vector<uint8_t> Packet::getHeaderData()
 
 uint32_t Packet::getHeaderLength()
 {
-	return headerDataSize;
+	return header.size();
 }
 
 std::vector<uint8_t> Packet::getData()
@@ -157,7 +159,7 @@ std::vector<uint8_t> Packet::getData()
 
 uint32_t Packet::getDataLength()
 {
-	return appendedBytes;
+	return data.size();
 }
 
 std::vector<uint8_t> Packet::getFullPacket()
