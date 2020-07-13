@@ -5,6 +5,8 @@
 #include <EZMP/EZMP.h>
 #include <string>
 
+MPInterfacer* interfacer;
+
 void onPacketReceive(Packet p)
 {
 	std::string message;
@@ -15,8 +17,8 @@ void onPacketReceive(Packet p)
 int main(int argc, char* argv[])
 {
 	char password[] = "im stuff";
-	uint8_t addr[] = { 192,168,11,19 };
-	//uint8_t addr[] = { 73,162,31,175 };
+	//uint8_t addr[] = { 192,168,11,19 };
+	uint8_t addr[] = { 73,162,31,175 };
 	//uint8_t addr[] = { 67,164,120,12 };
 
 	EZMP::Init();
@@ -29,7 +31,7 @@ int main(int argc, char* argv[])
 		std::string pass;
 		std::getline(std::cin, pass);
 
-		MPInterfacer* interfacer = new MPInterfacer(123, (uint16_t)40007, addr, true, pass);
+		interfacer = new MPInterfacer(123, (uint16_t)40007, addr, true, pass);
 		interfacer->attachReceiveCallback(&onPacketReceive);
 		printf("server mode");
 		std::getchar();
@@ -39,14 +41,14 @@ int main(int argc, char* argv[])
 		std::string pass;
 		std::getline(std::cin, pass);
 
-		MPInterfacer* interfacer = new MPInterfacer(123, (uint16_t)40007, addr, false, pass);
+		interfacer = new MPInterfacer(123, (uint16_t)40007, addr, false, pass);
 		printf("client mode\n");
 		interfacer->attachReceiveCallback(&onPacketReceive);
 
 		Packet* send;
 		while (true)
 		{
-			send = new Packet(false, false, true, 4, 1);
+			send = new Packet(false, false, false, 4, 1);
 			std::string toSend;
 			std::getline(std::cin, toSend);
 			send->appendData((uint8_t*)toSend.c_str(), toSend.size());

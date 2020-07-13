@@ -13,7 +13,7 @@ public:
     /*
     ~Packet();
     */
-    void setCompleteData(std::vector<uint8_t> hdr, uint16_t hdrLen, std::vector<uint8_t> payload, uint32_t payloadLen, std::vector<uint8_t> meta, uint16_t metaLen);
+    void setCompleteData(uint8_t* hdr, uint16_t hdrLen, std::vector<uint8_t> payload, uint32_t payloadLen, std::vector<uint8_t> meta, uint16_t metaLen);
     uint32_t appendData(uint8_t idata[], size_t size, uint8_t type = 0);
     uint32_t appendData(float diata);
     uint32_t appendData(double idata);
@@ -26,7 +26,7 @@ public:
 
     std::vector<uint8_t> getMetaData();
     uint32_t getMetaLength();
-    std::vector<uint8_t> getHeaderData();
+    uint8_t* getHeaderData();
     uint32_t getHeaderLength();
     std::vector<uint8_t> getData();
     uint32_t getDataLength();
@@ -56,7 +56,7 @@ public:
     Utils::Endpoint source;
 
 private:
-    std::vector<uint8_t> header;
+    uint8_t header[26];
     std::vector<uint8_t> data;
     std::vector<uint8_t> meta;
     uint32_t dataBytes = 0;

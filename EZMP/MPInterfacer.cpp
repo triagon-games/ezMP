@@ -136,7 +136,7 @@ Packet MPInterfacer::recvPacket()
 
 		Packet incoming = Packet(ordered, encrypted, awaitACK, recvBuffer[7], packetNum); // basically mocking a packet that is received ... makes it easier to deserialize and interpret data
 
-		std::vector<uint8_t> header;
+		uint8_t header[26];
 
 		std::vector<uint8_t> payload;
 
@@ -144,7 +144,7 @@ Packet MPInterfacer::recvPacket()
 
 		for (unsigned int i = 0; i < headerLen; i++)
 		{
-			header.push_back(recvBuffer[i]);
+			header[i] = (recvBuffer[i]);
 		}
 		if (payloadLen != 0)
 		{
@@ -367,14 +367,14 @@ void MPInterfacer::ListenerFunction() // will run continuously, invoking callbac
 		Packet incoming = recvPacket();
 		if (incoming.isAwaitACK()) // if the incoming packet is awaiting an ACK reply, send one right away ... should contain NULL data bytes, only the header
 		{
-			Packet ACK_REPLY = Packet(false, false, false, ACK_RESPONSE, incoming.getPacketNum());
+			Packet* ACK_REPLY = new Packet(false, false, false, ACK_RESPONSE, incoming.getPacketNum());
 			if (isServer)
 			{
-				sendPacket(&ACK_REPLY, false, incoming.source);
+				sendPacket(ACK_REPLY, false, incoming.source);
 			}
 			else
 			{
-				sendPacket(&ACK_REPLY);
+				sendPacket(ACK_REPLY);
 			}
 			printf("ACK Sent\n");
 		}

@@ -11,27 +11,27 @@ Packet::Packet(bool ordered, bool encrypted, bool awaitACK, uint8_t typeId, uint
 
 	appendedBytes = 0;
 
-	header.push_back(((uint8_t*)&packetNum)[3]); // PACKET NUMBER
-	header.push_back(((uint8_t*)&packetNum)[2]);
-	header.push_back(((uint8_t*)&packetNum)[1]);
-	header.push_back(((uint8_t*)&packetNum)[0]);
+	header[0] = (((uint8_t*)&packetNum)[3]); // PACKET NUMBER
+	header[1] = (((uint8_t*)&packetNum)[2]);
+	header[2] = (((uint8_t*)&packetNum)[1]);
+	header[3] = (((uint8_t*)&packetNum)[0]);
 
-	header.push_back(ordered); // ORDERED?
+	header[4] = (ordered); // ORDERED?
 
-	header.push_back(encrypted); // ENCRYPTED?
+	header[5] = (encrypted); // ENCRYPTED?
 
-	header.push_back(awaitACK); // AWAIT ACK?
+	header[6] = (awaitACK); // AWAIT ACK?
 
-	header.push_back(typeId); // PACKET TYPE
+	header[7] = (typeId); // PACKET TYPE
 
-	header.push_back(((uint8_t*)&headerDataSize)[1]);
-	header.push_back(((uint8_t*)&headerDataSize)[0]);
+	header[8] = (((uint8_t*)&headerDataSize)[1]);
+	header[9] = (((uint8_t*)&headerDataSize)[0]);
 
 	uint32_t hdr32int = headerDataSize; // DATA 0TH INDEX
-	header.push_back(((uint8_t*)&hdr32int)[3]);
-	header.push_back(((uint8_t*)&hdr32int)[2]);
-	header.push_back(((uint8_t*)&hdr32int)[1]);
-	header.push_back(((uint8_t*)&hdr32int)[0]);
+	header[10] = (((uint8_t*)&hdr32int)[3]);
+	header[11] = (((uint8_t*)&hdr32int)[2]);
+	header[12] = (((uint8_t*)&hdr32int)[1]);
+	header[13] = (((uint8_t*)&hdr32int)[0]);
 
 	packetType = typeId;
 	this->ordered = ordered;
@@ -57,9 +57,9 @@ Packet::~Packet()
 }
 */
 
-void Packet::setCompleteData(std::vector<uint8_t> hdr, uint16_t hdrLen, std::vector<uint8_t> payload, uint32_t payloadLen, std::vector<uint8_t> meta, uint16_t metaLen)
+void Packet::setCompleteData(uint8_t* hdr, uint16_t hdrLen, std::vector<uint8_t> payload, uint32_t payloadLen, std::vector<uint8_t> meta, uint16_t metaLen)
 {
-	header = hdr;
+	memcpy(header, hdr, 26);
 	data = payload;
 	this->meta = meta;
 
@@ -142,14 +142,14 @@ uint32_t Packet::getMetaLength()
 	return meta.size();
 }
 
-std::vector<uint8_t> Packet::getHeaderData()
+uint8_t* Packet::getHeaderData()
 {
 	return header;
 }
 
 uint32_t Packet::getHeaderLength()
 {
-	return header.size();
+	return 26;
 }
 
 std::vector<uint8_t> Packet::getData()
@@ -167,24 +167,27 @@ std::vector<uint8_t> Packet::getFullPacket()
 	std::vector<uint8_t> completePacket;
 
 	uint32_t dataLen = data.size();
-	header.push_back(((uint8_t*)&(dataLen))[3]); // how much data do we have?
-	header.push_back(((uint8_t*)&(dataLen))[2]);
-	header.push_back(((uint8_t*)&(dataLen))[1]);
-	header.push_back(((uint8_t*)&(dataLen))[0]);
+	header[14] = (((uint8_t*)&(dataLen))[3]); // how much data do we have?
+	header[15] = (((uint8_t*)&(dataLen))[2]);
+	header[16] = (((uint8_t*)&(dataLen))[1]);
+	header[17] = (((uint8_t*)&(dataLen))[0]);
 
 	uint32_t metaDataint = appendedBytes + headerDataSize; // INDEX 0TH METADATA
-	header.push_back(((uint8_t*)&(metaDataint))[3]);
-	header.push_back(((uint8_t*)&(metaDataint))[2]);
-	header.push_back(((uint8_t*)&(metaDataint))[1]);
-	header.push_back(((uint8_t*)&(metaDataint))[0]);
+	header[18] = (((uint8_t*)&(metaDataint))[3]);
+	header[19] = (((uint8_t*)&(metaDataint))[2]);
+	header[20] = (((uint8_t*)&(metaDataint))[1]);
+	header[21] = (((uint8_t*)&(metaDataint))[0]);
 
-	header.push_back(((uint8_t*)&(appendedMetaBytes))[3]); // METADATA LENGTH
-	header.push_back(((uint8_t*)&(appendedMetaBytes))[2]);
-	header.push_back(((uint8_t*)&(appendedMetaBytes))[1]);
-	header.push_back(((uint8_t*)&(appendedMetaBytes))[0]);
+	header[22] = (((uint8_t*)&(appendedMetaBytes))[3]); // METADATA LENGTH
+	header[23] = (((uint8_t*)&(appendedMetaBytes))[2]);
+	header[24] = (((uint8_t*)&(appendedMetaBytes))[1]);
+	header[25] = (((uint8_t*)&(appendedMetaBytes))[0]);
 
-	completePacket.reserve(header.size() + data.size() + meta.size());
-	completePacket.insert(completePacket.end(), header.begin(), header.end());
+	completePacket.reserve(26 + data.size() + meta.size());
+	for (int i = 0; i < 26; i++)
+	{
+		completePacket.push_back(header[i]);
+	}
 	completePacket.insert(completePacket.end(), data.begin(), data.end());
 	completePacket.insert(completePacket.end(), meta.begin(), meta.end());
 
@@ -193,7 +196,7 @@ std::vector<uint8_t> Packet::getFullPacket()
 
 uint32_t Packet::getFullPacketLength()
 {
-	return header.size() + data.size() + meta.size();
+	return 26 + data.size() + meta.size();
 }
 
 uint8_t Packet::getPacketType()

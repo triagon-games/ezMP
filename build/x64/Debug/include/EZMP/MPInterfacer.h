@@ -30,6 +30,7 @@ public:
 	void sendPacket(Packet* pkt, bool retry = false);
 	void sendPacket(Packet* pkt, bool retry, Utils::Endpoint endpoint);
 
+	std::vector<Utils::Endpoint> ServersideEndpoints;
 	void multicastPacket(Packet* pkt, std::vector<Utils::Endpoint> group);
 
 	Packet recvPacket();
@@ -51,7 +52,6 @@ private:
 	void HolePunch();
 
 	std::vector<Packet*> ACKBuffer;
-	std::vector<Utils::Endpoint> ServersideEndpoints;
 	int ACKBufferLength = 0;
 
 	Packet encryptPacket(Packet pkt, uint64_t key);
