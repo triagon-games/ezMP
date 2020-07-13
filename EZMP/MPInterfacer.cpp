@@ -119,9 +119,9 @@ Packet MPInterfacer::recvPacket()
 	}
 	if (incomingBytes != 0 && incomingBytes != SOCKET_ERROR)
 	{
-		if (!recvBuffer[8] == 26) return Packet();
+		if (recvBuffer[9] != 26) return Packet();
 		//parsing the header
-		uint16_t headerLen = recvBuffer[8] << 8 | recvBuffer[7];
+		uint16_t headerLen = recvBuffer[8] << 8 | recvBuffer[9];
 
 		uint32_t payloadStart = ((uint32_t)recvBuffer[10] << 24) | ((uint32_t)recvBuffer[11] << 16) | ((uint32_t)recvBuffer[12] << 8 )| ((uint32_t)recvBuffer[13]); // p)arsing where the payload begins
 		uint32_t payloadLen = ((uint32_t)recvBuffer[14] << 24) | ((uint32_t)recvBuffer[15] << 16) | ((uint32_t)recvBuffer[16] << 8 )| ((uint32_t)recvBuffer[17]); // p)arsing how long the payload is
@@ -365,6 +365,19 @@ void MPInterfacer::ListenerFunction() // will run continuously, invoking callbac
 		std::this_thread::sleep_for(std::chrono::milliseconds(LISTEN_INTERVAL));
 #endif
 		Packet incoming = recvPacket();
+		if (incoming.isAwaitACK()) // if the incoming packet is awaiting an ACK reply, send one right away ... should contain NULL data bytes, only the header
+		{
+			Packet ACK_REPLY = Packet(false, false, false, ACK_RESPONSE, incoming.getPacketNum());
+			if (isServer)
+			{
+				sendPacket(&ACK_REPLY, false, incoming.source);
+			}
+			else
+			{
+				sendPacket(&ACK_REPLY);
+			}
+			printf("ACK Sent\n");
+		}
 		switch (incoming.getPacketType())
 		{
 			case LATENCY_PACKET:
@@ -397,21 +410,13 @@ void MPInterfacer::ListenerFunction() // will run continuously, invoking callbac
 
 				break;
 			}
+			case SERVICE_PACKET:
+			{
+
+				break;
+			}
 			default:
 			{
-				if (incoming.isAwaitACK()) // if the incoming packet is awaiting an ACK reply, send one right away ... should contain NULL data bytes, only the header
-				{
-					Packet ACK_REPLY = Packet(false, false, false, ACK_RESPONSE, incoming.getPacketNum());
-					if (isServer)
-					{
-						sendPacket(&ACK_REPLY, false, incoming.source);
-					}
-					else
-					{
-						sendPacket(&ACK_REPLY);
-					}
-					printf("ACK Sent\n");
-				}
 				m_ReceiveCallback(incoming);
 				break;
 			}
