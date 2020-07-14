@@ -21,7 +21,15 @@ bool Test()
 	TESTS[2] = __GAME_VER__ != 0;
 	TESTS[3] = SECURE_PRIME_NUMBER != 0;
 
-	TESTS[4] = Encryption::aes_decrypt(Encryption::aes_encrypt("this is a test string", 227), 227)._Equal(std::string("this is a test string"));
+	std::string encrypted = Encryption::aes_encrypt("this is a test string", 227);
+	std::string decrypted = Encryption::aes_decrypt(encrypted, 227);
+
+	TESTS[4] = strcmp(decrypted.c_str(), "this is a test string") == 0;
+	assert(sizeof(float) * 2 == sizeof(double) && sizeof(double) == 8);
+	assert(sizeof(char) == 1);
+	assert(__GAME_VER__ != 0);
+	assert(SECURE_PRIME_NUMBER != 0);
+	assert(strcmp(decrypted.c_str(), "this is a test string") == 0);
 
 	bool pass = true;
 	for (int i = 0; i < TEST_NUM; i++)
