@@ -23,7 +23,9 @@ MPInterfacer::MPInterfacer(uint64_t ClientUUID, uint16_t Port, uint8_t* address,
 {
 	Config = cfg;
 
-	whatAmI.IP = Utils::getStringFromIP(Utils::getPublicIPAddress(Config.PublicStunServer));
+	uint8_t publicIP[4];
+	Utils::getPublicIPAddress(Config.PublicStunServer, publicIP);
+	whatAmI.IP = Utils::getStringFromIP(publicIP);
 	whatAmI.portPair = Utils::getPortTranslation(Port, Config.PublicStunServer);
 
 	sendFromAddr = address;
@@ -243,7 +245,9 @@ void MPInterfacer::startHandshake()
 
 void MPInterfacer::sendPacket(Packet* pkt, bool retry)
 {
-	memcpy(pkt->sourceAddr, Utils::getIPFromString(whatAmI.IP), 4); // paste the source data into the packet object
+	uint8_t srcAddr[4];
+	Utils::getIPFromString(whatAmI.IP, srcAddr);
+	memcpy(pkt->sourceAddr, srcAddr, 4); // paste the source data into the packet object
 	memcpy(&pkt->sourcePort, &sendToPort, sizeof(uint16_t)); // this data wont be sent anyways but who cares
 
 	if (pkt->isEncrypted()) *pkt = encryptPacket(*pkt, sharedSecret);

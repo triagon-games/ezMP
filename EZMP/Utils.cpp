@@ -82,7 +82,7 @@ Utils::PortTranslation Utils::getPortTranslation(uint16_t Port, std::string stun
 	return pt;
 }
 
-uint8_t* Utils::getPublicIPAddress(std::string stunServer)
+void Utils::getPublicIPAddress(std::string stunServer, uint8_t* ipAddr)
 {
 	std::string path = ExePath();
 	printf(path.c_str());
@@ -93,8 +93,8 @@ uint8_t* Utils::getPublicIPAddress(std::string stunServer)
 	std::string ip = "";
 	bool foundDelim = false;
 	std::string ipBytes[4];
-
-	uint8_t ipAddr[4];
+	ipAddr = (uint8_t*)malloc(4);
+	if (ipAddr == nullptr) throw std::exception("ipAddr malloc failed line: %i", __LINE__);
 
 	for (int i = firstIndex; i < stunReturn.size(); i++)
 	{
@@ -118,14 +118,16 @@ uint8_t* Utils::getPublicIPAddress(std::string stunServer)
 	{
 		ipAddr[i] = std::stoi(ipBytes[i]);
 	}
-	return ipAddr;
 }
 
-uint8_t* Utils::getIPFromString(std::string ip)
+void Utils::getIPFromString(std::string ip, uint8_t* _ipAddr)
 {
 	int finds = 0;
 	uint8_t ipAddr[4];
 	std::string ipBytes[4];
+	_ipAddr = (uint8_t*)malloc(4);
+	if (ipAddr == nullptr) throw std::exception("ipAddr malloc failed line: %i", __LINE__);
+
 	for (int i = 0; i < ip.size(); i++)
 	{
 		if (ip[i] == '.')
@@ -141,7 +143,7 @@ uint8_t* Utils::getIPFromString(std::string ip)
 	{
 		ipAddr[i] = std::stoi(ipBytes[i]);
 	}
-	return ipAddr;
+	memcpy(_ipAddr, ipAddr, 4);
 }
 
 std::string Utils::getStringFromIP(uint8_t* ip)
