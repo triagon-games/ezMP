@@ -38,3 +38,6 @@
 *.pdb
 *.idb
 *.lib
+
+# Directories
+build/
