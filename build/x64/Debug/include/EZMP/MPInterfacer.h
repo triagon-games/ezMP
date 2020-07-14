@@ -24,7 +24,23 @@ private:
 	void (*m_LatencyCallback)(uint16_t);
 
 public:
-	MPInterfacer(uint64_t ClientUUID, uint16_t Port, uint8_t* address, bool isServer, std::string Pass);
+	struct Configuration
+	{
+	public:
+		uint32_t ACKRetryCooldown = ACK_RETRY;
+		uint32_t ACKTimeoutTime = ACK_TIMEOUT;
+		uint32_t GameVersion = 1;
+		uint32_t SecurePrimeNumber = SECURE_PRIME_NUMBER;
+		std::string PublicStunServer = PUBLIC_STUN_SERVER;
+		uint32_t ListenInterval = 0;
+		uint32_t ACKInterval = 0;
+
+		Configuration() {}
+	};
+
+	Configuration Config;
+
+	MPInterfacer(uint64_t ClientUUID, uint16_t Port, uint8_t* address, bool isServer, std::string Pass, Configuration cfg = Configuration());
 	~MPInterfacer();
 
 	void sendPacket(Packet* pkt, bool retry = false);

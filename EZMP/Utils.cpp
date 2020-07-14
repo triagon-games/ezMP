@@ -82,12 +82,12 @@ Utils::PortTranslation Utils::getPortTranslation(uint16_t Port)
 	return pt;
 }
 
-uint8_t* Utils::getPublicIPAddress()
+uint8_t* Utils::getPublicIPAddress(std::string stunServer)
 {
 	std::string path = ExePath();
 	printf(path.c_str());
 	std::string command(255, ' ');
-	snprintf((char*)command.c_str(), 255, "%s%sstunclient.exe %s --localport %i", path.c_str(), "\\Stun\\", PUBLIC_STUN_SERVER, 20000);
+	snprintf((char*)command.c_str(), 255, "%s%sstunclient.exe %s --localport %i", path.c_str(), "\\Stun\\", stunServer, 20000);
 	std::string stunReturn = exec(command.c_str());
 	unsigned int firstIndex = stunReturn.find("Mapped address: ", 0) + 16;
 	std::string ip = "";

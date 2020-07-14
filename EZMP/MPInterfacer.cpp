@@ -19,9 +19,11 @@ uint8_t* sendFromAddr;
 uint16_t sendToPort;
 uint16_t listenOnPort;
 
-MPInterfacer::MPInterfacer(uint64_t ClientUUID, uint16_t Port, uint8_t* address, bool isServer, std::string Pass)
+MPInterfacer::MPInterfacer(uint64_t ClientUUID, uint16_t Port, uint8_t* address, bool isServer, std::string Pass, Configuration cfg)
 {
-	whatAmI.IP = Utils::getStringFromIP(Utils::getPublicIPAddress());
+	Config = cfg;
+
+	whatAmI.IP = Utils::getStringFromIP(Utils::getPublicIPAddress(Config.PublicStunServer));
 	whatAmI.portPair = Utils::getPortTranslation(Port);
 
 	sendFromAddr = address;
@@ -232,7 +234,7 @@ void MPInterfacer::startHandshake()
 	Packet* init = new Packet(false, false, true, HANDSHAKE_PACKET, 0); // will initialize the key exchange sequence
 	uint64_t time = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 	publicKey = generatePublicKey(time);
-	uint64_t pwr = generateRuledKey(publicKey, privateKey, SECURE_PRIME_NUMBER);
+	uint64_t pwr = generateRuledKey(publicKey, privateKey, Config.SecurePrimeNumber);
 
 	init->appendData(pwr);
 	init->appendData(time);
@@ -344,11 +346,11 @@ void MPInterfacer::onHandshakeReceive(uint32_t secret, uint32_t exchangeNum, uin
 	{
 		publicKey = generatePublicKey(referenceTime);
 		Packet* followUp = new Packet(false, false, true, HANDSHAKE_PACKET, 1); // will initialize the key exchange sequence
-		uint64_t pwr = generateRuledKey(privateKey, publicKey, SECURE_PRIME_NUMBER);
+		uint64_t pwr = generateRuledKey(privateKey, publicKey, Config.SecurePrimeNumber);
 		followUp->appendData(pwr);
 		sendPacket(followUp, false, source); // send personal key
 	}
-	sharedSecret = generateRuledKey(secret, privateKey, SECURE_PRIME_NUMBER); // calculate the shared secret ... SHOULD be the same as on other side
+	sharedSecret = generateRuledKey(secret, privateKey, Config.SecurePrimeNumber); // calculate the shared secret ... SHOULD be the same as on other side
 	if (isServer)
 	{
 		source.privateKey = sharedSecret;
@@ -361,9 +363,10 @@ void MPInterfacer::ListenerFunction() // will run continuously, invoking callbac
 {
 	while (true)
 	{
-#ifdef LISTEN_INTERVAL
-		std::this_thread::sleep_for(std::chrono::milliseconds(LISTEN_INTERVAL));
-#endif
+		if (Config.ListenInterval != 0)
+		{
+			std::this_thread::sleep_for(std::chrono::milliseconds(Config.ListenInterval));
+		}
 		Packet incoming = recvPacket();
 		if (incoming.isAwaitACK()) // if the incoming packet is awaiting an ACK reply, send one right away ... should contain NULL data bytes, only the header
 		{
@@ -428,13 +431,14 @@ void MPInterfacer::ACKManager()
 {
 	while (true)
 	{
-#ifdef ACK_INTERVAL
-		std::this_thread::sleep_for(std::chrono::milliseconds(ACK_INTERVAL));
-#endif
+		if (Config.ACKInterval != 0)
+		{
+			std::this_thread::sleep_for(std::chrono::milliseconds(Config.ACKInterval));
+		}
 		uint64_t time = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 		for (int i = 0; i < ACKBufferLength; i++)
 		{
-			if (time - ACKBuffer[i]->timeSent >= ACK_RETRY)
+			if (time - ACKBuffer[i]->timeSent >= Config.ACKRetryCooldown)
 			{
 				if (!isServer)
 				{
@@ -445,7 +449,7 @@ void MPInterfacer::ACKManager()
 					sendPacket(ACKBuffer[i], true, ACKBuffer[i]->source);
 				}
 			}
-			if (time - ACKBuffer[i]->timeSent >= ACK_TIMEOUT)
+			if (time - ACKBuffer[i]->timeSent >= Config.ACKTimeoutTime)
 			{
 				ACKBuffer.erase(ACKBuffer.begin() + i);
 			}

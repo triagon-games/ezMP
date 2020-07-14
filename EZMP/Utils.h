@@ -57,7 +57,7 @@ public:
 	};
 
 	static PortTranslation getPortTranslation(uint16_t Port);
-	static uint8_t* getPublicIPAddress();
+	static uint8_t* getPublicIPAddress(std::string stunServer);
 	static uint8_t* getIPFromString(std::string ip);
 	static std::string getStringFromIP(uint8_t* ip);
 
