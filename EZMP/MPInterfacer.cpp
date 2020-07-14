@@ -24,7 +24,7 @@ MPInterfacer::MPInterfacer(uint64_t ClientUUID, uint16_t Port, uint8_t* address,
 	Config = cfg;
 
 	whatAmI.IP = Utils::getStringFromIP(Utils::getPublicIPAddress(Config.PublicStunServer));
-	whatAmI.portPair = Utils::getPortTranslation(Port);
+	whatAmI.portPair = Utils::getPortTranslation(Port, Config.PublicStunServer);
 
 	sendFromAddr = address;
 	sendToPort = Port;

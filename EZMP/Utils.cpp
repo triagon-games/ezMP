@@ -49,12 +49,12 @@ std::string Utils::ByteAddrToString(uint8_t* addr)
 	return ip;
 }
 
-Utils::PortTranslation Utils::getPortTranslation(uint16_t Port)
+Utils::PortTranslation Utils::getPortTranslation(uint16_t Port, std::string stunServer)
 {
 	std::string path = ExePath();
 	printf(path.c_str());
 	std::string command(255, ' ');
-	snprintf((char*)command.c_str(), 255, "%s%sstunclient.exe %s --localport %i", path.c_str(), "\\Stun\\", PUBLIC_STUN_SERVER, Port);
+	snprintf((char*)command.c_str(), 255, "%s%sstunclient.exe %s --localport %i", path.c_str(), "\\Stun\\", stunServer.c_str(), Port);
 	std::string stunReturn = exec(command.c_str());
 	std::string Ports[2];
 	bool found = false;
@@ -87,7 +87,7 @@ uint8_t* Utils::getPublicIPAddress(std::string stunServer)
 	std::string path = ExePath();
 	printf(path.c_str());
 	std::string command(255, ' ');
-	snprintf((char*)command.c_str(), 255, "%s%sstunclient.exe %s --localport %i", path.c_str(), "\\Stun\\", stunServer, 20000);
+	snprintf((char*)command.c_str(), 255, "%s%sstunclient.exe %s --localport %i", path.c_str(), "\\Stun\\", stunServer.c_str(), 20000);
 	std::string stunReturn = exec(command.c_str());
 	unsigned int firstIndex = stunReturn.find("Mapped address: ", 0) + 16;
 	std::string ip = "";
