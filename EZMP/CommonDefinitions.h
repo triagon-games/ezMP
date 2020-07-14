@@ -3,8 +3,8 @@
 #define RECEIVE_BUFFER_LEN 1024
 
 #define __LIB_VER_MAJOR__ 0
-#define __LIB_VER_MINOR__ 3
-#define __LIB_VER_PATCH__ 20
+#define __LIB_VER_MINOR__ 4
+#define __LIB_VER_PATCH__ 2
 
 #ifndef __GAME_VER__
 	#define __GAME_VER__ 1

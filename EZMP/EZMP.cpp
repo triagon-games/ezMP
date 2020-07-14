@@ -8,6 +8,7 @@
 #include <chrono>
 #include <ctime>
 #include "EZMP.h"
+#include <cassert>
 
 bool Test()
 {
