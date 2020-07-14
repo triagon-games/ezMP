@@ -1,5 +1,6 @@
 #pragma once
 #include "MPInterfacer.h"
+#include "pch.h"
 class Client : public MPInterfacer
 {
 public:

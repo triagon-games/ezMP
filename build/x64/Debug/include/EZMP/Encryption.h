@@ -1,9 +1,15 @@
 #pragma once
 #include "pch.h" 
+#include "CommonDefinitions.h"
+#ifndef AES_INSTRUCTION_SET
 #include <CryptoPP/modes.h>
 #include <CryptoPP/aes.h>
 #include <CryptoPP/filters.h>
+#endif
+#ifdef AES_INSTRUCTION_SET
 #include "aes_ni.h"
+#include "Utils.h"
+#endif
 
 class Encryption
 {

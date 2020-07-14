@@ -1,6 +1,7 @@
 #pragma once
 #include <natupnp.h>
 #include <comutil.h>
+#include "pch.h"
 
 #pragma comment (lib, "comsuppw.lib")
 
