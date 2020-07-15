@@ -257,10 +257,12 @@ uint64_t Packet::get64AtLocation(int location)
 
 double Packet::getDoubleAtLocation(int location)
 {
-	return 0.0;
+	double* p = reinterpret_cast<double*>(get64AtLocation(location));
+	return *p;
 }
 
 float Packet::getFloatAtLocation(int location)
 {
-	return 0.0f;
+	float* p = reinterpret_cast<float*>(get32AtLocation(location));
+	return *p;
 }
