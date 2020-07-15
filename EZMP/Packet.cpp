@@ -264,6 +264,6 @@ double Packet::getDoubleAtLocation(int location)
 
 float Packet::getFloatAtLocation(int location)
 {
-	float* p = reinterpret_cast<float*>(get32AtLocation(location));
-	return *p;
+	uint32_t ffloatint = get32AtLocation(location);
+	return *reinterpret_cast<float*>(ffloatint);
 }
