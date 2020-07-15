@@ -172,16 +172,17 @@ std::vector<uint8_t> Packet::getFullPacket()
 	header[16] = (((uint8_t*)&(dataLen))[1]);
 	header[17] = (((uint8_t*)&(dataLen))[0]);
 
-	uint32_t metaDataint = appendedBytes + headerDataSize; // INDEX 0TH METADATA
+	uint32_t metaDataint = data.size() + 26; // INDEX 0TH METADATA
 	header[18] = (((uint8_t*)&(metaDataint))[3]);
 	header[19] = (((uint8_t*)&(metaDataint))[2]);
 	header[20] = (((uint8_t*)&(metaDataint))[1]);
 	header[21] = (((uint8_t*)&(metaDataint))[0]);
 
-	header[22] = (((uint8_t*)&(appendedMetaBytes))[3]); // METADATA LENGTH
-	header[23] = (((uint8_t*)&(appendedMetaBytes))[2]);
-	header[24] = (((uint8_t*)&(appendedMetaBytes))[1]);
-	header[25] = (((uint8_t*)&(appendedMetaBytes))[0]);
+	uint32_t metasize = meta.size();
+	header[22] = (((uint8_t*)&(metasize))[3]); // METADATA LENGTH
+	header[23] = (((uint8_t*)&(metasize))[2]);
+	header[24] = (((uint8_t*)&(metasize))[1]);
+	header[25] = (((uint8_t*)&(metasize))[0]);
 
 	completePacket.reserve(26 + data.size() + meta.size());
 	for (int i = 0; i < 26; i++)
