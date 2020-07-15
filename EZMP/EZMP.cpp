@@ -43,6 +43,5 @@ bool Test()
 int EZMP::Init()
 {
 	if (!Test()) throw std::runtime_error("SYSTEM TESTS FAILED");
-
 	return 0;
 }

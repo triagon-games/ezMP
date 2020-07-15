@@ -4,7 +4,7 @@
 
 #define __LIB_VER_MAJOR__ 0
 #define __LIB_VER_MINOR__ 4
-#define __LIB_VER_PATCH__ 2
+#define __LIB_VER_PATCH__ 5
 
 #ifndef __GAME_VER__
 	#define __GAME_VER__ 1

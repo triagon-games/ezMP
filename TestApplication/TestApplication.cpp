@@ -49,10 +49,11 @@ int main(int argc, char* argv[])
 		Packet* send;
 		while (true)
 		{
-			send = new Packet(false, true, false, 4, 1);
+			send = new Packet(false, true, false, 11, 1);
 			std::string toSend;
 			std::getline(std::cin, toSend);
-			send->appendData((uint8_t*)toSend.c_str(), toSend.size());
+			float sendFloat = std::stof(toSend);
+			send->appendData(sendFloat);
 			interfacer->sendPacket(send);
 		}
 	}

@@ -12,6 +12,7 @@
 #include <vector>
 #include "PortForwardEngine.h"
 #include "Encryption.h"
+#include <functional>
 
 #pragma comment (lib, "Ws2_32.lib")
 #pragma comment (lib, "Mswsock.lib")
@@ -20,8 +21,8 @@
 class MPInterfacer
 {
 private: 
-	void (*m_ReceiveCallback)(Packet);
-	void (*m_LatencyCallback)(uint16_t);
+	std::function<void(Packet)> m_ReceiveCallback;
+	std::function<void(uint16_t)> m_LatencyCallback;
 
 public:
 	struct Configuration
@@ -51,8 +52,8 @@ public:
 
 	Packet recvPacket();
 
-	void attachReceiveCallback(void (*func)(Packet));
-	void attachLatencyCallback(void (*func)(uint16_t));
+	void attachReceiveCallback(std::function<void(Packet)> func);
+	void attachLatencyCallback(std::function<void(uint16_t)> func);
 
 	static uint64_t generateRuledKey(uint32_t a, uint32_t b, uint32_t P)
 	{
