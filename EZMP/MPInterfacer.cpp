@@ -125,18 +125,18 @@ Packet MPInterfacer::recvPacket()
 	{
 		if (recvBuffer[9] != 26) return Packet();
 		//parsing the header
-		uint16_t headerLen = recvBuffer[9] << 8 | recvBuffer[8];
+		uint16_t headerLen = recvBuffer[8] << 8 | recvBuffer[9];
 
-		uint32_t payloadStart = ((uint32_t)recvBuffer[13] << 24) | ((uint32_t)recvBuffer[12] << 16) | ((uint32_t)recvBuffer[11] << 8 )| ((uint32_t)recvBuffer[10]); // p)arsing where the payload begins
-		uint32_t payloadLen = ((uint32_t)recvBuffer[17] << 24) | ((uint32_t)recvBuffer[16] << 16) | ((uint32_t)recvBuffer[15] << 8 )| ((uint32_t)recvBuffer[14]); // p)arsing how long the payload is
+		uint32_t payloadStart = ((uint32_t)recvBuffer[10] << 24) | ((uint32_t)recvBuffer[11] << 16) | ((uint32_t)recvBuffer[12] << 8 )| ((uint32_t)recvBuffer[13]); // p)arsing where the payload begins
+		uint32_t payloadLen = ((uint32_t)recvBuffer[14] << 24) | ((uint32_t)recvBuffer[15] << 16) | ((uint32_t)recvBuffer[16] << 8 )| ((uint32_t)recvBuffer[17]); // p)arsing how long the payload is
 
-		uint32_t metaStart = ((uint32_t)recvBuffer[21] << 24) | ((uint32_t)recvBuffer[20] << 16) | ((uint32_t)recvBuffer[19] << 8) | ((uint32_t)recvBuffer[18]); // parsing the meta start
-		uint32_t metaLen = ((uint32_t)recvBuffer[25] << 24) | ((uint32_t)recvBuffer[24] << 16) | ((uint32_t)recvBuffer[23] << 8 )| ((uint32_t)recvBuffer[22]); // p)arsing the meta length
+		uint32_t metaStart = ((uint32_t)recvBuffer[18] << 24) | ((uint32_t)recvBuffer[19] << 16) | ((uint32_t)recvBuffer[20] << 8) | ((uint32_t)recvBuffer[21]); // parsing the meta start
+		uint32_t metaLen = ((uint32_t)recvBuffer[22] << 24) | ((uint32_t)recvBuffer[23] << 16) | ((uint32_t)recvBuffer[24] << 8 )| ((uint32_t)recvBuffer[25]); // p)arsing the meta length
 
 		bool ordered = (recvBuffer[4] >= 0 ? recvBuffer[4] : false);
 		bool encrypted = (recvBuffer[5] >= 0 ? recvBuffer[5] : false);
 		bool awaitACK = (recvBuffer[6] >= 0 ? recvBuffer[6] : false);
-		uint32_t packetNum = ((uint32_t)recvBuffer[3] << 24) | ((uint32_t)recvBuffer[2] << 16) | ((uint32_t)recvBuffer[1] << 8) | ((uint32_t)recvBuffer[0]); // parsing the index of the packet
+		uint32_t packetNum = ((uint32_t)recvBuffer[0] << 24) | ((uint32_t)recvBuffer[1] << 16) | ((uint32_t)recvBuffer[2] << 8) | ((uint32_t)recvBuffer[3]); // parsing the index of the packet
 
 		Packet incoming = Packet(ordered, encrypted, awaitACK, recvBuffer[7], packetNum); // basically mocking a packet that is received ... makes it easier to deserialize and interpret data
 
