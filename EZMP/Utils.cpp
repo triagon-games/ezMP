@@ -157,7 +157,7 @@ std::string Utils::getStringFromIP(uint8_t* ip)
 std::string Utils::stringFromBytes(uint8_t* bytes, uint32_t size)
 {
 	std::string ret;
-	for (int i = 0; i < size; i++)
+	for (size_t i = 0; i < size; i++)
 	{
 		ret.push_back(bytes[i]);
 	}

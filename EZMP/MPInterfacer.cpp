@@ -22,12 +22,12 @@ uint16_t listenOnPort;
 MPInterfacer::MPInterfacer(uint64_t ClientUUID, uint16_t Port, uint8_t* address, bool isServer, std::string Pass, Configuration cfg)
 {
 	Config = cfg;
-
+	/*
 	uint8_t publicIP[4];
 	Utils::getPublicIPAddress(Config.PublicStunServer, publicIP);
 	whatAmI.IP = Utils::getStringFromIP(publicIP);
 	whatAmI.portPair = Utils::getPortTranslation(Port, Config.PublicStunServer);
-
+	*/
 	sendFromAddr = address;
 	sendToPort = Port;
 	listenOnPort = Port;
@@ -133,9 +133,24 @@ Packet MPInterfacer::recvPacket()
 		uint32_t metaStart = ((uint32_t)recvBuffer[18] << 24) | ((uint32_t)recvBuffer[19] << 16) | ((uint32_t)recvBuffer[20] << 8) | ((uint32_t)recvBuffer[21]); // parsing the meta start
 		uint32_t metaLen = ((uint32_t)recvBuffer[22] << 24) | ((uint32_t)recvBuffer[23] << 16) | ((uint32_t)recvBuffer[24] << 8 )| ((uint32_t)recvBuffer[25]); // p)arsing the meta length
 
-		bool ordered = (recvBuffer[4] >= 0 ? recvBuffer[4] : false);
-		bool encrypted = (recvBuffer[5] >= 0 ? recvBuffer[5] : false);
-		bool awaitACK = (recvBuffer[6] >= 0 ? recvBuffer[6] : false);
+		bool ordered = false;
+		bool encrypted = false;
+		bool awaitACK = false;
+		if (recvBuffer[4] > 0)
+			ordered = true;
+		else
+			ordered = false;
+
+		if (recvBuffer[5] > 0)
+			encrypted = true;
+		else
+			encrypted = false;
+
+		if (recvBuffer[6] > 0)
+			awaitACK = true;
+		else
+			awaitACK = false;
+		
 		uint32_t packetNum = ((uint32_t)recvBuffer[0] << 24) | ((uint32_t)recvBuffer[1] << 16) | ((uint32_t)recvBuffer[2] << 8) | ((uint32_t)recvBuffer[3]); // parsing the index of the packet
 
 		Packet incoming = Packet(ordered, encrypted, awaitACK, recvBuffer[7], packetNum); // basically mocking a packet that is received ... makes it easier to deserialize and interpret data
@@ -331,13 +346,13 @@ uint32_t MPInterfacer::generatePrivateKey(std::string password)
 		maxMinNumber += (uint64_t)(10, i);
 	}
 	srand((uint32_t)(milliseconds % UINT32_MAX));
-	uint64_t privateKey = (rand() + maxMinNumber) % UINT64_MAX;
-	privateKey = privateKey ^ uuid;
+	uint64_t _privateKey = (rand() + maxMinNumber) % UINT64_MAX;
+	_privateKey = _privateKey ^ uuid;
 
-	privateKey = (((uint64_t)(((uint32_t*)&privateKey)[0] ^ salt)) << 32) | (((uint32_t*)&privateKey)[1] ^ salt);
+	_privateKey = (((uint64_t)(((uint32_t*)&_privateKey)[0] ^ salt)) << 32) | (((uint32_t*)&_privateKey)[1] ^ salt);
 
 	size_t passHash = std::hash<std::string>{}(password);
-	size_t keyHash = std::hash<long>{}(privateKey);
+	size_t keyHash = std::hash<long>{}(_privateKey);
 
 	uint64_t tmp = keyHash ^ passHash;
 
@@ -360,7 +375,7 @@ void MPInterfacer::onHandshakeReceive(uint32_t secret, uint32_t exchangeNum, uin
 		source.privateKey = sharedSecret;
 		ServersideEndpoints.push_back(source);
 	}
-	printf("\nShared secret: %i", sharedSecret);
+	//printf("\nShared secret: %i", sharedSecret);
 }
 
 void MPInterfacer::ListenerFunction() // will run continuously, invoking callbacks and analyzing the incoming data

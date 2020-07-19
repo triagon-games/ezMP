@@ -1,13 +1,12 @@
 // EZMP.cpp : Defines the functions for the static library.
 //
-
+#include "EZMP.h"
 #include "pch.h"
 #include "framework.h"
 #include <stdio.h>
 #include <time.h>
 #include <chrono>
 #include <ctime>
-#include "EZMP.h"
 #include <cassert>
 
 bool Test()

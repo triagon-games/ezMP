@@ -1,5 +1,6 @@
-#include "pch.h"
 #include "Packet.h"
+#include "pch.h"
+
 
 uint16_t metaDataChunkSize = sizeof(uint32_t) + sizeof(uint16_t) + sizeof(uint8_t); // metedata semantics ::: VARIABLE INDEX | VARIABLE SIZE | VARIABLE TYPE
 uint16_t headerDataSize;
@@ -57,11 +58,11 @@ Packet::~Packet()
 }
 */
 
-void Packet::setCompleteData(uint8_t* hdr, uint16_t hdrLen, std::vector<uint8_t> payload, uint32_t payloadLen, std::vector<uint8_t> meta, uint16_t metaLen)
+void Packet::setCompleteData(uint8_t* hdr, uint16_t hdrLen, std::vector<uint8_t> payload, uint32_t payloadLen, std::vector<uint8_t> _meta, uint16_t metaLen)
 {
 	memcpy(header, hdr, 26);
 	data = payload;
-	this->meta = meta;
+	this->meta = _meta;
 
 	appendedBytes = payloadLen;
 	appendedMetaBytes = metaLen;
@@ -265,5 +266,5 @@ double Packet::getDoubleAtLocation(int location)
 float Packet::getFloatAtLocation(int location)
 {
 	uint32_t ffloatint = get32AtLocation(location);
-	return *reinterpret_cast<float*>(ffloatint);
+	return *(float *)&ffloatint;
 }
