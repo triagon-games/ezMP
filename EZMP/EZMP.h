@@ -2,7 +2,7 @@
 #pragma warning( push )
 #pragma warning( disable : 4006 )
 #include "Client.h"
-#include "MPInterfacer.h"
+#include "MPInterface.h"
 #include "Packet.h"
 
 namespace EZMP

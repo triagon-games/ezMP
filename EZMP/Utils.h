@@ -62,7 +62,7 @@ public:
 	static std::string getStringFromIP(uint8_t* ip);
 
 	static std::string stringFromBytes(uint8_t* bytes, uint32_t size);
-	static uint8_t* bytesFromString(std::string string, uint32_t* p_size);
+	static void bytesFromString(std::string string, uint32_t* p_size, uint8_t* bytes);
 	static std::vector<uint8_t> vectorBytesFromString(std::string string);
 	static std::string stringFromVectorBytes(std::vector<uint8_t> bytes);
 };

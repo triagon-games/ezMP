@@ -193,6 +193,7 @@
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <AdditionalIncludeDirectories>$(SolutionDir)..\build\$(Platform)\$(Configuration)\include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -362,10 +363,13 @@
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug-DLL|x64'">true</DeploymentContent>
     </ClInclude>
-    <ClInclude Include="MPInterfacer.h">
+    <ClInclude Include="MPInterface.h">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug-DLL|x64'">true</DeploymentContent>
     </ClInclude>
+    <ClInclude Include="Nameof.hpp" />
+    <ClInclude Include="NetworkTable.h" />
+    <ClInclude Include="NTPacket.h" />
     <ClInclude Include="Packet.h">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug-DLL|x64'">true</DeploymentContent>
@@ -386,7 +390,9 @@
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="DataStructures.cpp" />
     <ClCompile Include="EZMP.cpp" />
-    <ClCompile Include="MPInterfacer.cpp" />
+    <ClCompile Include="MPInterface.cpp" />
+    <ClCompile Include="NetworkTable.cpp" />
+    <ClCompile Include="NTPacket.cpp" />
     <ClCompile Include="Packet.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

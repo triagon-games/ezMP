@@ -37,6 +37,8 @@ public:
 		uint32_t ACKInterval = 0;
 
 		Configuration() {}
+	private:
+		int CPPVER = __cplusplus;
 	};
 
 	Configuration Config;

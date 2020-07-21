@@ -5,10 +5,19 @@
 #include <vector>
 #include "Utils.h"
 
+struct VariableData
+{
+public:
+    uint32_t startIndex;
+    uint16_t variableSize;
+    uint8_t variableType;
+};
+
 class Packet
 {
 public:
-    Packet(bool ordered, bool encrypted, bool awaitACK, uint8_t typeId, uint32_t packetNum);
+
+    Packet(bool multicastable, bool encrypted, bool awaitACK, uint8_t typeId, uint32_t packetNum);
     Packet();
     /*
     ~Packet();
@@ -32,6 +41,7 @@ public:
     uint32_t getDataLength();
     std::vector<uint8_t> getFullPacket();
     uint32_t getFullPacketLength();
+    std::vector<VariableData> getVariables();
 
     uint8_t getPacketType();
     uint32_t getPacketNum();
@@ -59,6 +69,7 @@ private:
     uint8_t header[26];
     std::vector<uint8_t> data;
     std::vector<uint8_t> meta;
+    std::vector<VariableData> variables;
     uint32_t dataBytes = 0;
     uint32_t appendedBytes = 0;
     uint32_t appendedMetaBytes = 0;

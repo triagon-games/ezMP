@@ -24,9 +24,6 @@
     <ClInclude Include="Packet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MPInterfacer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="CommonDefinitions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -54,6 +51,18 @@
     <ClInclude Include="aes_ni.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="NetworkTable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MPInterface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Nameof.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NTPacket.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="EZMP.cpp">
@@ -63,9 +72,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Packet.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MPInterfacer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="DataStructures.cpp">
@@ -84,6 +90,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Encryption.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NetworkTable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MPInterface.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NTPacket.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

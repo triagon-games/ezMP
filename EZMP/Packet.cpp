@@ -6,7 +6,7 @@ uint16_t metaDataChunkSize = sizeof(uint32_t) + sizeof(uint16_t) + sizeof(uint8_
 uint16_t headerDataSize;
 // header semantics ::: PACKET NUMBER | ORDERED? | ENCRYPTED? | AWAIT ACK? | PACKET TYPE | HEADER LENGTH | DATA 0TH INDEX | DATA LENGTH | METADATA 0TH INDEX | METADATA LENGTH
 
-Packet::Packet(bool ordered, bool encrypted, bool awaitACK, uint8_t typeId, uint32_t packetNum)
+Packet::Packet(bool multicastable, bool encrypted, bool awaitACK, uint8_t typeId, uint32_t packetNum)
 {
 	headerDataSize = sizeof(uint32_t) + sizeof(bool) + sizeof(bool) + sizeof(bool) + sizeof(uint8_t) + sizeof(uint16_t) + sizeof(uint32_t) + sizeof(uint32_t) + sizeof(uint32_t) + sizeof(uint32_t);
 
@@ -17,7 +17,7 @@ Packet::Packet(bool ordered, bool encrypted, bool awaitACK, uint8_t typeId, uint
 	header[2] = (((uint8_t*)&packetNum)[1]);
 	header[3] = (((uint8_t*)&packetNum)[0]);
 
-	header[4] = (ordered); // ORDERED?
+	header[4] = (multicastable); // ORDERED?
 
 	header[5] = (encrypted); // ENCRYPTED?
 
@@ -35,7 +35,7 @@ Packet::Packet(bool ordered, bool encrypted, bool awaitACK, uint8_t typeId, uint
 	header[13] = (((uint8_t*)&hdr32int)[0]);
 
 	packetType = typeId;
-	this->ordered = ordered;
+	this->ordered = multicastable;
 	this->encrypted = encrypted;
 	this->awaitACK = awaitACK;
 	this->packetNum = packetNum;
@@ -66,6 +66,14 @@ void Packet::setCompleteData(uint8_t* hdr, uint16_t hdrLen, std::vector<uint8_t>
 
 	appendedBytes = payloadLen;
 	appendedMetaBytes = metaLen;
+
+	VariableData vd;
+	for (int i = 0; i < meta.size() / 7; i++)
+	{
+		vd.startIndex = ((uint32_t)(meta[i * 7 + 3] << 24) | (uint32_t)(meta[i * 7 + 2] << 16) | (uint32_t)(meta[i * 7 + 1] << 8) | (uint32_t)(meta[i * 7]));
+		vd.variableSize = (meta[i * 7 + 5] << 8 | meta[i * 7 + 4]);
+		vd.variableType = (meta[i * 7 + 6]);
+	}
 }
 
 /*
@@ -94,38 +102,43 @@ uint32_t Packet::appendData(uint8_t idata[], size_t size, uint8_t type)
 	meta.push_back(((uint8_t*)&size)[0]);
 
 	meta.push_back(type);
+	VariableData vd;
+	vd.startIndex = appendIndex;
+	vd.variableSize = size;
+	vd.variableType = type;
+	variables.push_back(vd);
 
 	return appendedBytes-size; // returns the index of the first byte of the variable in the data array
 }
 
 uint32_t Packet::appendData(float idata)
 {
-	return appendData(ConvertFloat(idata), sizeof(float), 1);
+	return appendData(ConvertFloat(idata), sizeof(float), PACKET_FLOAT);
 }
 
 uint32_t Packet::appendData(double idata)
 {
-	return appendData(ConvertDouble(idata), 2);
+	return appendData(ConvertDouble(idata), PACKET_DOUBLE);
 }
 
 uint32_t Packet::appendData(uint8_t idata)
 {
-	return appendData(&(idata), sizeof(uint8_t), 3);
+	return appendData(&(idata), sizeof(uint8_t), PACKET_BYTE);
 }
 
 uint32_t Packet::appendData(uint16_t idata)
 {
-	return appendData(Convert16(idata), sizeof(uint16_t), 4);
+	return appendData(Convert16(idata), sizeof(uint16_t), PACKET_U16);
 }
 
 uint32_t Packet::appendData(uint32_t idata)
 {
-	return appendData(Convert32(idata), sizeof(uint32_t), 5);
+	return appendData(Convert32(idata), sizeof(uint32_t), PACKET_U32);
 }
 
 uint32_t Packet::appendData(uint64_t idata)
 {
-	return appendData((uint8_t*)&idata, sizeof(uint64_t), 6);
+	return appendData((uint8_t*)&idata, sizeof(uint64_t), PACKET_U64);
 }
 
 void Packet::setData(std::vector<uint8_t> bytes)
@@ -199,6 +212,11 @@ std::vector<uint8_t> Packet::getFullPacket()
 uint32_t Packet::getFullPacketLength()
 {
 	return 26 + data.size() + meta.size();
+}
+
+std::vector<VariableData> Packet::getVariables()
+{
+	return variables;
 }
 
 uint8_t Packet::getPacketType()

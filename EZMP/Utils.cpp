@@ -164,11 +164,11 @@ std::string Utils::stringFromBytes(uint8_t* bytes, uint32_t size)
 	return ret;
 }
 
-uint8_t* Utils::bytesFromString(std::string string, uint32_t* p_size)
+void Utils::bytesFromString(std::string string, uint32_t* p_size, uint8_t* bytes)
 {
-	uint8_t* ret = (uint8_t*)&string[0];
+	bytes = (uint8_t*)malloc(string.size());
+	memcpy(bytes, &string[0], string.size());
 	memset(p_size, (uint32_t)string.size(), sizeof(uint32_t));
-	return ret;
 }
 
 std::vector<uint8_t> Utils::vectorBytesFromString(std::string string)
