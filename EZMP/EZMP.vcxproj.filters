@@ -57,10 +57,13 @@
     <ClInclude Include="MPInterface.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Nameof.hpp">
+    <ClInclude Include="NTPacket.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="NTPacket.h">
+    <ClInclude Include="Debug.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DLLDefinitions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -7,7 +7,7 @@
 
 namespace EZMP
 {
-	int Init();
+	EZMP_DLL int Init();
 }
 
 #pragma warning( pop )

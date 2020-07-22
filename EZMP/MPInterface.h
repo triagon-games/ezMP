@@ -43,19 +43,19 @@ public:
 
 	Configuration Config;
 
-	MPInterfacer(uint64_t ClientUUID, uint16_t Port, uint8_t* address, bool isServer, std::string Pass, Configuration cfg = Configuration());
-	~MPInterfacer();
+	EZMP_DLL MPInterfacer(uint64_t ClientUUID, uint16_t Port, uint8_t* address, bool isServer, std::string Pass, Configuration cfg = Configuration());
+	EZMP_DLL ~MPInterfacer();
 
-	void sendPacket(Packet* pkt, bool retry = false);
-	void sendPacket(Packet* pkt, bool retry, Utils::Endpoint endpoint);
+	EZMP_DLL void sendPacket(Packet* pkt, bool retry = false);
+	EZMP_DLL void sendPacket(Packet* pkt, bool retry, Utils::Endpoint endpoint);
 
 	std::vector<Utils::Endpoint> ServersideEndpoints;
-	void multicastPacket(Packet* pkt, std::vector<Utils::Endpoint> group);
+	EZMP_DLL void multicastPacket(Packet* pkt, std::vector<Utils::Endpoint> group);
 
 	Packet recvPacket();
 
-	void attachReceiveCallback(std::function<void(Packet)> func);
-	void attachLatencyCallback(std::function<void(uint16_t)> func);
+	EZMP_DLL void attachReceiveCallback(std::function<void(Packet)> func);
+	EZMP_DLL void attachLatencyCallback(std::function<void(uint16_t)> func);
 
 	static uint64_t generateRuledKey(uint32_t a, uint32_t b, uint32_t P)
 	{

@@ -2,7 +2,7 @@
 //
 
 #include <iostream>
-#include <EZMP/EZMP.h>
+#include <EZMP.h>
 #include <string>
 
 MPInterfacer* interfacer;

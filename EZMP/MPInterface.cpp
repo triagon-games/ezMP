@@ -22,12 +22,12 @@ uint16_t listenOnPort;
 MPInterfacer::MPInterfacer(uint64_t ClientUUID, uint16_t Port, uint8_t* address, bool isServer, std::string Pass, Configuration cfg)
 {
 	Config = cfg;
-	/*
+	
 	uint8_t publicIP[4];
 	Utils::getPublicIPAddress(Config.PublicStunServer, publicIP);
 	whatAmI.IP = Utils::getStringFromIP(publicIP);
 	whatAmI.portPair = Utils::getPortTranslation(Port, Config.PublicStunServer);
-	*/
+	
 	sendFromAddr = address;
 	sendToPort = Port;
 	listenOnPort = Port;
