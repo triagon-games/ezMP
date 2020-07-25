@@ -380,6 +380,7 @@ void MPInterfacer::onHandshakeReceive(uint32_t secret, uint32_t exchangeNum, uin
 			if (source.IP == ServersideEndpoints[i].IP && source.portPair.OutboundPublic == ServersideEndpoints[i].portPair.OutboundPublic)
 			{
 				unique = false;
+				ServersideEndpoints[i] = source;
 			}
 		}
 		if (unique)
