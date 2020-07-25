@@ -29,8 +29,7 @@ Packet* NTPacket::getBasePacket()
 	return m_Packet;
 }
 
-template<typename T>
-T NTPacket::getVariableByEnumeration(uint16_t id)
+EZMP_DLL float NTPacket::getFloatByEnumeration(uint16_t id)
 {
 	std::vector<VariableData> enumerators;
 	std::vector<VariableData> variables;
@@ -45,54 +44,153 @@ T NTPacket::getVariableByEnumeration(uint16_t id)
 	}
 	for (int i = 0; i < enumerators.size(); i++)
 	{
-		if (m_Packet->get16AtLocation(enumerators[i].startIndex) == id)
+		if (m_Packet->get16AtLocation(enumerators[i].startIndex) == id && variables[i].variableType == PACKET_FLOAT)
 		{
-			switch (variables[i].variableType)
-			{
-			case PACKET_FLOAT:
-				return m_Packet->getFloatAtLocation(variables[i].startIndex);
-				break;
-			case PACKET_DOUBLE:
-				return m_Packet->getDoubleAtLocation(variables[i].startIndex);
-				break;
-			case PACKET_BYTE:
-				return m_Packet->get8AtLocation(variables[i].startIndex);
-				break;
-			case PACKET_U16:
-				return m_Packet->get16AtLocation(variables[i].startIndex);
-				break;
-			case PACKET_U32:
-				return m_Packet->get32AtLocation(variables[i].startIndex);
-				break;
-			case PACKET_U64:
-				return m_Packet->get64AtLocation(variables[i].startIndex);
-				break;
-			}
+			return m_Packet->getFloatAtLocation(variables[i].startIndex);
 		}
 	}
-	return -1.0001f;
+	return NULL;
 }
 
-template<typename T>
-uint32_t NTPacket::appendVariable(T var, uint16_t enumeration)
+EZMP_DLL double NTPacket::getDoubleByEnumeration(uint16_t id)
 {
-	switch (typeid(var).name())
+	std::vector<VariableData> enumerators;
+	std::vector<VariableData> variables;
+	std::vector<VariableData> alldata = m_Packet->getVariables();
+	for (int i = 0; i < alldata.size(); i++)
 	{
-	case typeid(float).name():
-		break;
-	case typeid(double).name():
-		break;
-	case typeid(uint8_t).name():
-		break;
-	case typeid(uint16_t).name():
-		break;
-	case typeid(uint32_t).name():
-		break;
-	case typeid(uint64_t).name():
-		break;
-	default:
-		throw std::exception("Unsupported variable type: %s", typeid(var).name());
+		if (alldata[i].variableType == PACKET_VARIABLE_NAME)
+		{
+			enumerators.push_back(alldata[i]);
+			variables.push_back(alldata[i + 1]);
+		}
 	}
-	m_Packet->appendData((uint8_t*)&enumeration, 2, PACKET_VARIABLE_NAME);
-	m_Packet->appendData(var);
+	for (int i = 0; i < enumerators.size(); i++)
+	{
+		if (m_Packet->get16AtLocation(enumerators[i].startIndex) == id && variables[i].variableType == PACKET_DOUBLE)
+		{
+			return m_Packet->getDoubleAtLocation(variables[i].startIndex);
+		}
+	}
+	return NULL;
+}
+
+EZMP_DLL uint8_t NTPacket::getByteByEnumeration(uint16_t id)
+{
+	std::vector<VariableData> enumerators;
+	std::vector<VariableData> variables;
+	std::vector<VariableData> alldata = m_Packet->getVariables();
+	for (int i = 0; i < alldata.size(); i++)
+	{
+		if (alldata[i].variableType == PACKET_VARIABLE_NAME)
+		{
+			enumerators.push_back(alldata[i]);
+			variables.push_back(alldata[i + 1]);
+		}
+	}
+	for (int i = 0; i < enumerators.size(); i++)
+	{
+		if (m_Packet->get16AtLocation(enumerators[i].startIndex) == id && variables[i].variableType == PACKET_BYTE)
+		{
+			return m_Packet->get8AtLocation(variables[i].startIndex);
+		}
+	}
+	return NULL;
+}
+
+EZMP_DLL uint16_t NTPacket::getShortByEnumeration(uint16_t id)
+{
+	std::vector<VariableData> enumerators;
+	std::vector<VariableData> variables;
+	std::vector<VariableData> alldata = m_Packet->getVariables();
+	for (int i = 0; i < alldata.size(); i++)
+	{
+		if (alldata[i].variableType == PACKET_VARIABLE_NAME)
+		{
+			enumerators.push_back(alldata[i]);
+			variables.push_back(alldata[i + 1]);
+		}
+	}
+	for (int i = 0; i < enumerators.size(); i++)
+	{
+		if (m_Packet->get16AtLocation(enumerators[i].startIndex) == id && variables[i].variableType == PACKET_DOUBLE)
+		{
+			return m_Packet->getDoubleAtLocation(variables[i].startIndex);
+		}
+	}
+	return NULL;
+}
+
+EZMP_DLL uint32_t NTPacket::getIntByEnumeration(uint16_t id)
+{
+	std::vector<VariableData> enumerators;
+	std::vector<VariableData> variables;
+	std::vector<VariableData> alldata = m_Packet->getVariables();
+	for (int i = 0; i < alldata.size(); i++)
+	{
+		if (alldata[i].variableType == PACKET_VARIABLE_NAME)
+		{
+			enumerators.push_back(alldata[i]);
+			variables.push_back(alldata[i + 1]);
+		}
+	}
+	for (int i = 0; i < enumerators.size(); i++)
+	{
+		if (m_Packet->get16AtLocation(enumerators[i].startIndex) == id && variables[i].variableType == PACKET_U32)
+		{
+			return m_Packet->get32AtLocation(variables[i].startIndex);
+		}
+	}
+	return NULL;
+}
+
+EZMP_DLL uint64_t NTPacket::getLongByEnumeration(uint16_t id)
+{
+	std::vector<VariableData> enumerators;
+	std::vector<VariableData> variables;
+	std::vector<VariableData> alldata = m_Packet->getVariables();
+	for (int i = 0; i < alldata.size(); i++)
+	{
+		if (alldata[i].variableType == PACKET_VARIABLE_NAME)
+		{
+			enumerators.push_back(alldata[i]);
+			variables.push_back(alldata[i + 1]);
+		}
+	}
+	for (int i = 0; i < enumerators.size(); i++)
+	{
+		if (m_Packet->get16AtLocation(enumerators[i].startIndex) == id && variables[i].variableType == PACKET_U64)
+		{
+			return m_Packet->getDoubleAtLocation(variables[i].startIndex);
+		}
+	}
+	return NULL;
+}
+
+EZMP_DLL std::string NTPacket::getStringByEnumeration(uint16_t id)
+{
+	std::vector<VariableData> enumerators;
+	std::vector<VariableData> variables;
+	std::vector<VariableData> alldata = m_Packet->getVariables();
+	for (int i = 0; i < alldata.size(); i++)
+	{
+		if (alldata[i].variableType == PACKET_VARIABLE_NAME)
+		{
+			enumerators.push_back(alldata[i]);
+			variables.push_back(alldata[i + 1]);
+		}
+	}
+	for (int i = 0; i < enumerators.size(); i++)
+	{
+		if (m_Packet->get16AtLocation(enumerators[i].startIndex) == id && variables[i].variableType == PACKET_DOUBLE)
+		{
+			std::string ret;
+			for (int x = variables[i].startIndex; x < variables[i].startIndex + variables[i].variableSize; x++)
+			{
+				ret.push_back(m_Packet->getData()[x]);
+			}
+			return ret;
+		}
+	}
+	return NULL;
 }

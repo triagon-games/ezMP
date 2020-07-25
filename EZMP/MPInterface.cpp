@@ -195,9 +195,10 @@ Packet MPInterfacer::recvPacket()
 				int subscriberIndex = -1;
 				for (int i = 0; i < ServersideEndpoints.size(); i++)
 				{
-					if (ServersideEndpoints[i].IP == incoming.source.IP)
+					if (ServersideEndpoints[i].IP == incoming.source.IP && ServersideEndpoints[i].portPair.OutboundLocal == incoming.source.portPair.OutboundLocal)
 					{
 						subscriberIndex = i;
+						incoming.source.privateKey = ServersideEndpoints[i].privateKey;
 					}
 				}
 				if (subscriberIndex != -1)

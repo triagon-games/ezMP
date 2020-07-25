@@ -30,6 +30,7 @@ public:
     EZMP_DLL uint32_t appendData(uint16_t idata);
     EZMP_DLL uint32_t appendData(uint32_t idata);
     EZMP_DLL uint32_t appendData(uint64_t idata);
+    EZMP_DLL uint32_t appendData(std::string idata);
 
     EZMP_DLL void setData(std::vector<uint8_t> bytes);
 

@@ -141,6 +141,11 @@ uint32_t Packet::appendData(uint64_t idata)
 	return appendData((uint8_t*)&idata, sizeof(uint64_t), PACKET_U64);
 }
 
+EZMP_DLL uint32_t Packet::appendData(std::string idata)
+{
+	return appendData((uint8_t*)idata.c_str(), idata.size(), PACKET_STRING);
+}
+
 void Packet::setData(std::vector<uint8_t> bytes)
 {
 	data = bytes;

@@ -57,12 +57,17 @@ public:
 	EZMP_DLL void attachReceiveCallback(std::function<void(Packet)> func);
 	EZMP_DLL void attachLatencyCallback(std::function<void(uint16_t)> func);
 
+	EZMP_DLL std::vector<Utils::Endpoint> getConnectedUsers() { return ServersideEndpoints; }
+	EZMP_DLL Utils::Endpoint getWhatAmI() { return whatAmI; }
+
 	static uint64_t generateRuledKey(uint32_t a, uint32_t b, uint32_t P)
 	{
 		return ((uint64_t)a * (uint64_t)b) % P;
 	}
 
 	bool isServer;
+
+	Utils::Endpoint whatAmI;
 
 private:
 	std::thread ListenerThread;
@@ -86,7 +91,6 @@ private:
 	uint32_t privateKey = 0;
 
 	Utils::PortTranslation localPortMapping;
-	Utils::Endpoint whatAmI;
 
 protected: uint64_t sharedSecret = 0;
 
