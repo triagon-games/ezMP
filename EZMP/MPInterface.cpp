@@ -195,7 +195,7 @@ Packet MPInterfacer::recvPacket()
 				int subscriberIndex = -1;
 				for (int i = 0; i < ServersideEndpoints.size(); i++)
 				{
-					if (ServersideEndpoints[i].IP == incoming.source.IP && ServersideEndpoints[i].portPair.OutboundLocal == incoming.source.portPair.OutboundLocal)
+					if (ServersideEndpoints[i].IP == incoming.source.IP && ServersideEndpoints[i].portPair.OutboundPublic == incoming.source.portPair.OutboundPublic)
 					{
 						subscriberIndex = i;
 						incoming.source.privateKey = ServersideEndpoints[i].privateKey;
@@ -374,7 +374,18 @@ void MPInterfacer::onHandshakeReceive(uint32_t secret, uint32_t exchangeNum, uin
 	if (isServer)
 	{
 		source.privateKey = sharedSecret;
-		ServersideEndpoints.push_back(source);
+		bool unique = true;
+		for (int i = 0; i < ServersideEndpoints.size(); i++)
+		{
+			if (source.IP == ServersideEndpoints[i].IP && source.portPair.OutboundPublic == ServersideEndpoints[i].portPair.OutboundPublic)
+			{
+				unique = false;
+			}
+		}
+		if (unique)
+		{
+			ServersideEndpoints.push_back(source);
+		}
 	}
 	//printf("\nShared secret: %i", sharedSecret);
 }

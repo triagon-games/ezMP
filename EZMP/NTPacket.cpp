@@ -192,5 +192,5 @@ EZMP_DLL std::string NTPacket::getStringByEnumeration(uint16_t id)
 			return ret;
 		}
 	}
-	return NULL;
+	return "";
 }

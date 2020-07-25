@@ -1,4 +1,5 @@
 #pragma once
+#pragma warning(disable : 26451)
 #include "pch.h"
 #include <cstddef>
 #include "DataStructures.h"
