@@ -52,7 +52,6 @@ std::string Utils::ByteAddrToString(uint8_t* addr)
 Utils::PortTranslation Utils::getPortTranslation(uint16_t Port, std::string stunServer)
 {
 	std::string path = ExePath();
-	printf(path.c_str());
 	std::string command(255, ' ');
 	snprintf((char*)command.c_str(), 255, "%s%sstunclient.exe %s --localport %i", path.c_str(), "\\Stun\\", stunServer.c_str(), Port);
 	std::string stunReturn = exec(command.c_str());
@@ -85,7 +84,6 @@ Utils::PortTranslation Utils::getPortTranslation(uint16_t Port, std::string stun
 void Utils::getPublicIPAddress(std::string stunServer, uint8_t* ipAddr)
 {
 	std::string path = ExePath();
-	printf(path.c_str());
 	std::string command(255, ' ');
 	snprintf((char*)command.c_str(), 255, "%s%sstunclient.exe %s --localport %i", path.c_str(), "\\Stun\\", stunServer.c_str(), 20000);
 	std::string stunReturn = exec(command.c_str());

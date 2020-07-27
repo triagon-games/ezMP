@@ -182,7 +182,7 @@ EZMP_DLL std::string NTPacket::getStringByEnumeration(uint16_t id)
 	}
 	for (int i = 0; i < enumerators.size(); i++)
 	{
-		if (m_Packet->get16AtLocation(enumerators[i].startIndex) == id && variables[i].variableType == PACKET_DOUBLE)
+		if (m_Packet->get16AtLocation(enumerators[i].startIndex) == id && variables[i].variableType == PACKET_STRING)
 		{
 			std::string ret;
 			for (int x = variables[i].startIndex; x < variables[i].startIndex + variables[i].variableSize; x++)

@@ -4,8 +4,8 @@
 #define RECEIVE_BUFFER_LEN 1024
 
 #define __LIB_VER_MAJOR__ 0
-#define __LIB_VER_MINOR__ 5
-#define __LIB_VER_PATCH__ 13
+#define __LIB_VER_MINOR__ 6
+#define __LIB_VER_PATCH__ 6
 
 #define DEBUG_VERBOSITY_LEVEL 1
 

@@ -13,25 +13,8 @@ public:
 
 	EZMP_DLL template<typename T> uint32_t appendVariable(T var, uint16_t enumeration)
 	{
-		switch (typeid(var).name())
-		{
-		case typeid(float).name():
-			break;
-		case typeid(double).name():
-			break;
-		case typeid(uint8_t).name():
-			break;
-		case typeid(uint16_t).name():
-			break;
-		case typeid(uint32_t).name():
-			break;
-		case typeid(uint64_t).name():
-			break;
-		default:
-			throw std::exception("Unsupported variable type: %s", typeid(var).name());
-		}
 		m_Packet->appendData((uint8_t*)&enumeration, 2, PACKET_VARIABLE_NAME);
-		m_Packet->appendData(var);
+		return m_Packet->appendData(var);
 	}
 
 	EZMP_DLL float getFloatByEnumeration(uint16_t id);

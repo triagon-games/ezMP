@@ -360,7 +360,7 @@
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug-DLL|x64'">true</DeploymentContent>
     </ClInclude>
-    <ClInclude Include="Debug.hpp" />
+    <ClInclude Include="Debug.h" />
     <ClInclude Include="DLLDefinitions.h" />
     <ClInclude Include="EZMP.h">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>

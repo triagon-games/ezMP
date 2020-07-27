@@ -266,7 +266,7 @@ uint8_t Packet::get8AtLocation(int location)
 
 uint16_t Packet::get16AtLocation(int location)
 {
-	return (data[location] << 8 | data[location+1]);
+	return (data[location+1] << 8 | data[location]);
 }
 
 uint32_t Packet::get32AtLocation(int location)

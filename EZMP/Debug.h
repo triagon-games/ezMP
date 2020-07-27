@@ -1,6 +1,7 @@
 #pragma once
 #include "pch.h"
 #include "CommonDefinitions.h"
+#include <wtypes.h>
 
 namespace DEBUG
 {
