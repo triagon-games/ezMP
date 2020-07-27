@@ -113,7 +113,7 @@ EZMP_DLL uint16_t NTPacket::getShortByEnumeration(uint16_t id)
 	}
 	for (int i = 0; i < enumerators.size(); i++)
 	{
-		if (m_Packet->get16AtLocation(enumerators[i].startIndex) == id && variables[i].variableType == PACKET_DOUBLE)
+		if (m_Packet->get16AtLocation(enumerators[i].startIndex) == id && variables[i].variableType == PACKET_U16)
 		{
 			return m_Packet->getDoubleAtLocation(variables[i].startIndex);
 		}
