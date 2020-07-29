@@ -36,17 +36,17 @@ EZMP_DLL float NTPacket::getFloatByEnumeration(uint16_t id)
 	std::vector<VariableData> alldata = m_Packet->getVariables();
 	for (int i = 0; i < alldata.size(); i++)
 	{
-		if (alldata[i].variableType == PACKET_VARIABLE_NAME)
+		if (alldata[i].variableType == PACKET_VARIABLE_NAME) // read out all of the enumerators and their following variables
 		{
 			enumerators.push_back(alldata[i]);
 			variables.push_back(alldata[i + 1]);
 		}
 	}
-	for (int i = 0; i < enumerators.size(); i++)
+	for (int i = 0; i < enumerators.size(); i++) // go through all of the enumerators
 	{
-		if (m_Packet->get16AtLocation(enumerators[i].startIndex) == id && variables[i].variableType == PACKET_FLOAT)
+		if (m_Packet->get16AtLocation(enumerators[i].startIndex) == id && variables[i].variableType == PACKET_FLOAT) // if enumeration matches query and return type
 		{
-			return m_Packet->getFloatAtLocation(variables[i].startIndex);
+			return m_Packet->getFloatAtLocation(variables[i].startIndex); // return the variable
 		}
 	}
 	return NULL;
@@ -115,7 +115,7 @@ EZMP_DLL uint16_t NTPacket::getShortByEnumeration(uint16_t id)
 	{
 		if (m_Packet->get16AtLocation(enumerators[i].startIndex) == id && variables[i].variableType == PACKET_U16)
 		{
-			return m_Packet->getDoubleAtLocation(variables[i].startIndex);
+			return m_Packet->get16AtLocation(variables[i].startIndex);
 		}
 	}
 	return NULL;
@@ -161,7 +161,7 @@ EZMP_DLL uint64_t NTPacket::getLongByEnumeration(uint16_t id)
 	{
 		if (m_Packet->get16AtLocation(enumerators[i].startIndex) == id && variables[i].variableType == PACKET_U64)
 		{
-			return m_Packet->getDoubleAtLocation(variables[i].startIndex);
+			return m_Packet->get64AtLocation(variables[i].startIndex);
 		}
 	}
 	return NULL;
