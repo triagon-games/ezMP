@@ -11,7 +11,8 @@ public:
 	EZMP_DLL uint16_t getPacketEnumeration();
 	EZMP_DLL Packet* getBasePacket();
 
-	EZMP_DLL template<typename T> uint32_t appendVariable(T var, uint16_t enumeration)
+	template<typename T>
+	EZMP_DLL uint32_t appendVariable(T var, uint16_t enumeration)
 	{
 		m_Packet->appendData((uint8_t*)&enumeration, 2, PACKET_VARIABLE_NAME);
 		return m_Packet->appendData(var);
