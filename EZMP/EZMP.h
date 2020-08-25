@@ -4,6 +4,7 @@
 #include "Client.h"
 #include "MPInterface.h"
 #include "Packet.h"
+#include "NTPacket.h"
 
 namespace EZMP
 {

@@ -53,6 +53,17 @@ MPInterfacer::MPInterfacer(uint64_t ClientUUID, uint16_t Port, uint8_t* address,
 	m_ListenSocketAddress.sin_family = AF_INET;
 	m_ListenSocketAddress.sin_port = htons(Port);
 
+#ifndef NO_UPNP
+	try
+	{
+		if (Config.tryUPnP)
+		{
+			PortForwardEngine::UPnPportForward(Port, Port);
+		}
+	}
+	catch (std::exception ex) {}
+#endif
+	\
 	if (!isServer)
 	{
 		iError = bind(m_Socket, (sockaddr*)&m_ListenSocketAddress, sizeof(m_ListenSocketAddress)); // setting the outbound port
@@ -65,14 +76,6 @@ MPInterfacer::MPInterfacer(uint64_t ClientUUID, uint16_t Port, uint8_t* address,
 	}
 	else
 	{
-#ifndef NO_UPNP
-		try
-		{
-			//PortForwardEngine::UPnPportForward(Port, Port);
-		}
-		catch (std::exception ex) {}
-#endif
-
 		iError = bind(m_Socket, (sockaddr*)&m_ListenSocketAddress, sizeof(m_ListenSocketAddress)); // setting the inbound port
 		if (iError != 0)
 		{
@@ -211,7 +214,6 @@ Packet MPInterfacer::recvPacket()
 				incoming = decryptPacket(incoming, sharedSecret);
 			}
 		}
-
 		return incoming;
 	}
 	return Packet();

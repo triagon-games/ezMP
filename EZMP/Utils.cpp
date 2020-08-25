@@ -1,6 +1,6 @@
 #include "Utils.h"
 
-std::string exec(const char* cmd)
+std::string Utils::exec(const char* cmd)
 {
 	std::array<char, 128> buffer;
 	std::string result;
@@ -54,7 +54,7 @@ Utils::PortTranslation Utils::getPortTranslation(uint16_t Port, std::string stun
 	std::string path = ExePath();
 	std::string command(255, ' ');
 	snprintf((char*)command.c_str(), 255, "%s%sstunclient.exe %s --localport %i", path.c_str(), "\\Stun\\", stunServer.c_str(), Port);
-	std::string stunReturn = exec(command.c_str());
+	std::string stunReturn = Utils::exec(command.c_str());
 	std::string Ports[2];
 	bool found = false;
 	int finds = -1;
@@ -86,7 +86,7 @@ void Utils::getPublicIPAddress(std::string stunServer, uint8_t* ipAddr)
 	std::string path = ExePath();
 	std::string command(255, ' ');
 	snprintf((char*)command.c_str(), 255, "%s%sstunclient.exe %s --localport %i", path.c_str(), "\\Stun\\", stunServer.c_str(), 20000);
-	std::string stunReturn = exec(command.c_str());
+	std::string stunReturn = Utils::exec(command.c_str());
 	unsigned int firstIndex = stunReturn.find("Mapped address: ", 0) + 16;
 	std::string ip = "";
 	bool foundDelim = false;

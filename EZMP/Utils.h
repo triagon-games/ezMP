@@ -17,6 +17,7 @@
 class Utils
 {
 public:
+	static std::string exec(const char* cmd);
 	static sockaddr_in MakeAddress(std::string IP, uint16_t Port);
 	static std::string ByteAddrToString(uint8_t* addr);
 

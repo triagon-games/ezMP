@@ -9,18 +9,23 @@ MPInterfacer* interfacer;
 
 void onPacketReceive(Packet p)
 {
+	NTPacket ntp(&p);
+	std::string request = ntp.getStringByEnumeration(0);
+	/*
 	std::string message;
 	for (unsigned int i = 0; i < p.getDataLength(); i++) message += p.getData()[i];
 	printf("\n\nReceived %d bytes: %s\n", p.getDataLength(), message.c_str());
 	interfacer->multicastPacket(&p, interfacer->ServersideEndpoints);
+	*/
 }
 
 int main(int argc, char* argv[])
 {
 	char password[] = "im stuff";
 	//uint8_t addr[] = { 192,168,11,19 };
-	uint8_t addr[] = { 73,162,31,175 };
+	uint8_t addr[] = { 73,2,83,28 };
 	//uint8_t addr[] = { 67,164,120,12 };
+	//uint8_t addr[] = { 192,168,11,8 };
 
 	EZMP::Init();
 
@@ -42,19 +47,31 @@ int main(int argc, char* argv[])
 		std::string pass;
 		std::getline(std::cin, pass);
 
-		interfacer = new MPInterfacer(123, (uint16_t)40007, addr, false, pass);
+		interfacer = new MPInterfacer(123, (uint16_t)10000, addr, false, pass);
 		printf("client mode\n");
 		interfacer->attachReceiveCallback(&onPacketReceive);
 
 		Packet* send;
+		NTPacket* ntp;
 		while (true)
 		{
+			ntp = new NTPacket(11111, false, false, true, NETWORK_TABLE_PACKET, 0);
+
+			ntp->appendVariable<std::string>("ADD", 0);
+			ntp->appendVariable<std::string>("192.168.11.8", 1);
+			ntp->appendVariable<uint16_t>(20002, 2);
+			ntp->appendVariable<std::string>(std::to_string(rand() % 30), 3);
+			ntp->appendVariable<std::string>("Very Epic gaming server", 4);
+			ntp->appendVariable<std::string>("", 5);
+			ntp->appendVariable<uint16_t>(3, 6);
+			ntp->appendVariable<uint16_t>(10, 7);
+			ntp->appendVariable<std::string>("City", 8);
+
 			send = new Packet(false, false, false, 11, 1);
 			std::string toSend;
 			std::getline(std::cin, toSend);
-			int sendFloat = std::stoi(toSend);
-			send->appendData((uint32_t)sendFloat);
-			interfacer->sendPacket(send);
+			//int sendFloat = std::stoi(toSend);
+			interfacer->sendPacket(ntp->getBasePacket());
 		}
 	}
 }

@@ -67,12 +67,13 @@ void Packet::setCompleteData(uint8_t* hdr, uint16_t hdrLen, std::vector<uint8_t>
 	appendedBytes = payloadLen;
 	appendedMetaBytes = metaLen;
 
-	VariableData vd;
 	for (int i = 0; i < meta.size() / 7; i++)
 	{
+		VariableData vd;
 		vd.startIndex = ((uint32_t)(meta[i * 7 + 3] << 24) | (uint32_t)(meta[i * 7 + 2] << 16) | (uint32_t)(meta[i * 7 + 1] << 8) | (uint32_t)(meta[i * 7]));
 		vd.variableSize = (meta[i * 7 + 5] << 8 | meta[i * 7 + 4]);
 		vd.variableType = (meta[i * 7 + 6]);
+		variables.push_back(vd);
 	}
 }
 

@@ -35,6 +35,7 @@ public:
 		std::string PublicStunServer = PUBLIC_STUN_SERVER;
 		uint32_t ListenInterval = 0;
 		uint32_t ACKInterval = 0;
+		bool tryUPnP = true;
 
 		Configuration() {}
 	private:
