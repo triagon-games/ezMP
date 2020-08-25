@@ -70,8 +70,8 @@ void Packet::setCompleteData(uint8_t* hdr, uint16_t hdrLen, std::vector<uint8_t>
 	for (int i = 0; i < meta.size() / 7; i++)
 	{
 		VariableData vd;
-		vd.startIndex = ((uint32_t)(meta[i * 7 + 3] << 24) | (uint32_t)(meta[i * 7 + 2] << 16) | (uint32_t)(meta[i * 7 + 1] << 8) | (uint32_t)(meta[i * 7]));
-		vd.variableSize = (meta[i * 7 + 5] << 8 | meta[i * 7 + 4]);
+		vd.startIndex = ((uint32_t)(meta[i * 7] << 24) | (uint32_t)(meta[i * 7 + 1] << 16) | (uint32_t)(meta[i * 7 + 2] << 8) | (uint32_t)(meta[i * 7 + 3]));
+		vd.variableSize = (meta[i * 7 + 4] << 8 | meta[i * 7 + 5]);
 		vd.variableType = (meta[i * 7 + 6]);
 		variables.push_back(vd);
 	}
