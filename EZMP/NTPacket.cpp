@@ -2,8 +2,11 @@
 
 NTPacket::NTPacket(Packet* p) // deriving NTPacket from Packet
 {
-	m_Packet = p;
-	m_packetID = m_Packet->get16AtLocation(0);
+	if (p->getPacketType() == NETWORK_TABLE_PACKET)
+	{
+		m_Packet = p;
+		m_packetID = m_Packet->get16AtLocation(0);
+	}
 }
 
 NTPacket::NTPacket(uint16_t id, Packet* p)
@@ -21,7 +24,7 @@ NTPacket::NTPacket(uint16_t id, bool multicastable, bool encrypted, bool awaitAC
 
 uint16_t NTPacket::getPacketEnumeration()
 {
-	return m_Packet->get16AtLocation(0);
+	return m_packetID;
 }
 
 Packet* NTPacket::getBasePacket()

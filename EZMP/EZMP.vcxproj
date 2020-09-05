@@ -396,6 +396,7 @@
   <ItemGroup>
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="DataStructures.cpp" />
+    <ClCompile Include="Debug.cpp" />
     <ClCompile Include="EZMP.cpp" />
     <ClCompile Include="MPInterface.cpp" />
     <ClCompile Include="NetworkTable.cpp" />

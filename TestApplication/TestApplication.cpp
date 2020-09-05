@@ -9,8 +9,15 @@ MPInterfacer* interfacer;
 
 void onPacketReceive(Packet p)
 {
-	NTPacket ntp(&p);
-	std::string request = ntp.getStringByEnumeration(0);
+	if (p.getPacketType() == NETWORK_TABLE_PACKET)
+	{
+		NTPacket ntp(&p);
+		if (ntp.getPacketEnumeration() == 11112)
+		{
+			std::string request = ntp.getStringByEnumeration(0);
+
+		}
+	}
 	/*
 	std::string message;
 	for (unsigned int i = 0; i < p.getDataLength(); i++) message += p.getData()[i];
@@ -72,6 +79,10 @@ int main(int argc, char* argv[])
 			std::getline(std::cin, toSend);
 			//int sendFloat = std::stoi(toSend);
 			interfacer->sendPacket(ntp->getBasePacket());
+			ntp = new NTPacket(11111, false, false, true, NETWORK_TABLE_PACKET, 0);
+			ntp->appendVariable("GET", 0);
+			interfacer->sendPacket(ntp->getBasePacket());
 		}
+		interfacer->~MPInterfacer();
 	}
 }

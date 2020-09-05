@@ -8,6 +8,7 @@
 #include <iphlpapi.h>
 #include "pch.h"
 #include "Utils.h"
+#include "Debug.h"
 
 #include <vector>
 
@@ -21,5 +22,5 @@ class PortForwardEngine
 {
 public:
 	static bool UPnPportForward(long internalPort, long externalPort);
-	static void UDPHolePunch(SOCKET sendSock, sockaddr_in sendSockAddr);
+	static bool UPnPRemoveMapping(long externalPort);
 };

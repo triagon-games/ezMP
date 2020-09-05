@@ -107,13 +107,11 @@ MPInterfacer::MPInterfacer(uint64_t ClientUUID, uint16_t Port, uint8_t* address,
 
 MPInterfacer::~MPInterfacer()
 {
-	/*
+	
 	ListenerThread.~thread();
 	ACKManagerThread.~thread();
-	closesocket(recvSock);
-	closesocket(sendSock);
 	WSACleanup();
-	*/
+	
 }
 
 Packet MPInterfacer::recvPacket()
