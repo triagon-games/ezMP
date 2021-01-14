@@ -1,0 +1,10 @@
+C:\Users\NIK\Source\Repos\ezMP\build\x64\Debug\lib\Client.h
+C:\Users\NIK\Source\Repos\ezMP\build\x64\Debug\lib\CommonDefinitions.h
+C:\Users\NIK\Source\Repos\ezMP\build\x64\Debug\lib\DataStructures.h
+C:\Users\NIK\Source\Repos\ezMP\build\x64\Debug\lib\EZMP.h
+C:\Users\NIK\Source\Repos\ezMP\build\x64\Debug\lib\framework.h
+C:\Users\NIK\Source\Repos\ezMP\build\x64\Debug\lib\MPInterface.h
+C:\Users\NIK\Source\Repos\ezMP\build\x64\Debug\lib\Packet.h
+C:\Users\NIK\Source\Repos\ezMP\build\x64\Debug\lib\pch.h
+C:\Users\NIK\Source\Repos\ezMP\build\x64\Debug\lib\EZMP.pdb
+C:\Users\NIK\Source\Repos\ezMP\EZMP\x64\Debug\EZMP.pdb

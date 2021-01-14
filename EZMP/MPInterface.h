@@ -61,9 +61,20 @@ public:
 	EZMP_DLL std::vector<Utils::Endpoint> getConnectedUsers() { return ServersideEndpoints; }
 	EZMP_DLL Utils::Endpoint getWhatAmI() { return whatAmI; }
 
-	static uint64_t generateRuledKey(uint32_t a, uint32_t b, uint32_t P)
+	static uint64_t generateRuledKey(uint64_t a, uint64_t b, uint64_t P)
 	{
-		return ((uint64_t)a * (uint64_t)b) % P;
+		
+		uint64_t key = 1;
+		
+		for (int i = 0; i < b; i++)
+		{
+			key = (key * a) % P;
+		}
+		
+
+		//key = a * b % P;
+
+		return key;
 	}
 
 	bool isServer;

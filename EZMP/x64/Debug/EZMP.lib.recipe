@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project>
+  <ProjectOutputs></ProjectOutputs>
+  <ContentFiles>C:\Users\NIK\Source\Repos\ezMP\EZMP\Client.h;C:\Users\NIK\Source\Repos\ezMP\EZMP\CommonDefinitions.h;C:\Users\NIK\Source\Repos\ezMP\EZMP\DataStructures.h;C:\Users\NIK\Source\Repos\ezMP\EZMP\EZMP.h;C:\Users\NIK\Source\Repos\ezMP\EZMP\framework.h;C:\Users\NIK\Source\Repos\ezMP\EZMP\MPInterface.h;C:\Users\NIK\Source\Repos\ezMP\EZMP\Packet.h;C:\Users\NIK\Source\Repos\ezMP\EZMP\pch.h</ContentFiles>
+  <SatelliteDlls></SatelliteDlls>
+  <NonRecipeFileRefs></NonRecipeFileRefs>
+</Project>
